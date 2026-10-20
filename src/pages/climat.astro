@@ -1,6 +1,8 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { palette } from "../data/palette";
 import Section from "../components/Section.astro";
+import { etapeDe } from "../data/navigation";
 import Figure from "../components/Figure.astro";
 import PlotFigure from "../components/PlotFigure.astro";
 import ChiffreCle from "../components/ChiffreCle.astro";
@@ -38,50 +40,57 @@ const stations = [...new Set(joursChauds.map((d) => d.station))].map((station) =
 });
 const merignac = stations.find((s) => s.station.startsWith("Mérignac"))!;
 const centreVille = stations.find((s) => s.station.includes("Paulin"))!;
+
+const surtitre = "mb-4 text-10 font-bold tracking-surtitre uppercase";
+const titre2 = "max-w-24ch text-titre-section font-bold";
+const texte2Colonnes = "mt-6.5 grid grid-cols-2 gap-8 text-15 leading-long text-neutral-700 max-md:grid-cols-1 max-md:gap-4";
+const bouton = "inline-flex items-center justify-between gap-5 rounded-full border-2 px-5 py-3 text-14 font-bold transition duration-180 survol:-translate-y-0.5 max-md:px-4 max-md:text-13";
+const anneau = "absolute rounded-full border-2 border-brand-red";
 ---
 
 <Layout
   titre="Le climat"
   description="Incendies de 2022 en Gironde et jours à 30 °C ou plus depuis 1950 à Mérignac, Villenave-d'Ornon et Bordeaux-Paulin."
 >
-  <div class="climate-page">
-  <Section class="climate-hero">
-    <p class="climate-eyebrow">Chaleur &amp; incendies · Bordeaux Métropole</p>
-    <h1 class="text-3xl font-bold tracking-tight md:text-5xl">Le climat</h1>
-    <div class="mt-4 max-w-2xl text-lg text-neutral-700">
+  <div class="bg-creme">
+  <Section class="relative overflow-hidden border-b border-brand-orange/25 bg-linear-115 from-jaune-pale to-jaune-dore text-brand-navy" interieur="relative max-w-290 px-gouttiere py-16 max-md:py-10">
+    <p class="relative z-1 mb-3 text-12 font-bold tracking-label uppercase opacity-80">{etapeDe("/climat/")}</p>
+    <p class="relative z-1 mb-5 max-w-13/20 text-11 font-semibold tracking-label text-brand-blue uppercase max-md:max-w-full max-md:text-10">Chaleur &amp; incendies · Bordeaux Métropole</p>
+    <h1 class="text-titre-climat leading-none font-bold tracking-titre">Le climat</h1>
+    <div class="relative z-1 mt-4 max-w-31/50 text-17 leading-texte text-neutral-700 max-md:max-w-full">
       L'été 2022 a marqué la Gironde. Derrière les incendies, une tendance de fond
       se dessine, les jours de forte chaleur sont de plus en plus nombreux depuis 1950.
     </div>
-    <nav class="climate-jump" aria-label="Dans cette page">
-      <a href="#feux" class="button-primary">Les incendies de 2022 <span aria-hidden="true">↗</span></a>
-      <a href="#jours-chauds" class="button-secondary">L'évolution des températures <span aria-hidden="true">→</span></a>
+    <nav class="relative z-1 mt-7 flex max-w-13/20 flex-wrap gap-3.5 max-md:max-w-full max-md:gap-3" aria-label="Dans cette page">
+      <a href="#feux" class:list={[bouton, "border-brand-orange bg-brand-orange text-brand-navy survol:bg-brand-orange-clair survol:shadow-rouge"]}>Les incendies de 2022 <span aria-hidden="true">↗</span></a>
+      <a href="#jours-chauds" class:list={[bouton, "border-brand-navy text-brand-navy survol:bg-papier survol:shadow-bleu"]}>L'évolution des températures <span aria-hidden="true">→</span></a>
     </nav>
-    <div class="climate-orbits" aria-hidden="true">
-      <span class="climate-ring climate-ring-outer"></span>
-      <span class="climate-ring climate-ring-middle"></span>
-      <span class="climate-ring climate-ring-inner"></span>
+    <div class="pointer-events-none absolute top-1/2 right-gouttiere-large size-57.5 -translate-y-1/2 max-md:relative max-md:top-auto max-md:right-auto max-md:mx-auto max-md:mt-7.5 max-md:size-31.25 max-md:translate-y-0" aria-hidden="true">
+      <span class:list={[anneau, "inset-0 animate-orbite-45 border-dashed opacity-70"]}></span>
+      <span class:list={[anneau, "inset-5.5 animate-orbite-32-inverse border-3 border-l-brand-red/15 max-md:inset-3.75"]}></span>
+      <span class:list={[anneau, "inset-11.25 animate-orbite-24 border-brand-red/35 border-t-brand-red max-md:inset-7.5"]}></span>
     </div>
   </Section>
 
-  <Section class="climate-summary">
+  <Section interieur="max-w-290 px-gouttiere pt-10 pb-14 max-md:pt-7 max-md:pb-10">
     <h2 class="sr-only">Chiffres clés</h2>
-    <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 sm:[&>:last-child]:col-span-2 lg:[&>:last-child]:col-span-1">
-      <ChiffreCle valeur={formatNombre(feux2022.hectaresGironde)} unite="hectares" titre="Des forêts sous pression">
+    <div class="grid gap-4.5 sm:grid-cols-2 sm:*:last:col-span-2 lg:grid-cols-3 lg:*:last:col-span-1">
+      <ChiffreCle compact valeur={formatNombre(feux2022.hectaresGironde)} unite="hectares" titre="Des forêts sous pression">
         brûlés par les incendies de forêt en Gironde en 2022
       </ChiffreCle>
-      <ChiffreCle valeur={merignac.record.jours30} unite="jours" titre="Un été qui a marqué la Gironde">
+      <ChiffreCle compact valeur={merignac.record.jours30} unite="jours" titre="Un été qui a marqué la Gironde">
         à 30 °C ou plus à Mérignac en {merignac.record.annee}, un record
       </ChiffreCle>
-      <ChiffreCle valeur={formatDecimal(merignac.apres / merignac.avant)} unite="fois plus" titre="Une tendance qui s'installe">
+      <ChiffreCle compact valeur={formatDecimal(merignac.apres / merignac.avant)} unite="fois plus" titre="Une tendance qui s'installe">
         de jours à 30 °C à Mérignac entre 1996 et 2025 qu'entre 1950 et 1979
       </ChiffreCle>
     </div>
   </Section>
 
-  <Section id="feux" class="climate-chapter climate-fires">
-    <p class="section-kicker">Les incendies · Un territoire vulnérable</p>
-    <h2 class="text-2xl font-bold">2022, un été hors norme</h2>
-    <div class="mt-4 max-w-2xl space-y-4 text-neutral-700">
+  <Section id="feux" class="border-t border-sable">
+    <p class:list={[surtitre, "text-brique"]}>Les incendies · Un territoire vulnérable</p>
+    <h2 class={titre2}>2022, un été hors norme</h2>
+    <div class={texte2Colonnes}>
       <p>
         En 2022, les incendies ont brûlé {formatNombre(feux2022.hectaresGironde)} hectares en Gironde. C'est plus
         de {ratio2022} fois la surface brûlée pendant les {autresAnnees.length} autres années réunies
@@ -95,6 +104,7 @@ const centreVille = stations.find((s) => s.station.includes("Paulin"))!;
     </div>
 
     <Figure
+      etroit
       titre={`En 2022, plus de ${ratio2022} fois la surface brûlée des ${autresAnnees.length} autres années réunies`}
       sousTitre={`Surface brûlée par les incendies de forêt en Gironde, par an, de ${premiereAnnee} à ${derniereAnnee}`}
       note={`L'échelle est la même pour toutes les années. À côté de 2022, les autres paraissent presque nulles. La plus forte avant 2022 est ${pireAvant2022.annee}, avec ${formatNombre(pireAvant2022.hectaresGironde)} hectares.`}
@@ -116,7 +126,7 @@ const centreVille = stations.find((s) => s.station.includes("Paulin"))!;
             Plot.barY(feuxParAn, {
               x: "annee",
               y: "hectaresGironde",
-              fill: (d) => (d.annee === 2022 ? "#DB371E" : "#F8A52C"),
+              fill: (d) => (d.annee === 2022 ? palette.miseEnAvant : palette.gris),
               title: (d) => `${d.annee} · ${formatNombre(d.hectaresGironde)} hectares · ${d.feuxGironde} feux`,
             }),
             Plot.text([feux2022], {
@@ -138,10 +148,10 @@ const centreVille = stations.find((s) => s.station.includes("Paulin"))!;
     </Figure>
   </Section>
 
-  <Section id="jours-chauds" class="climate-chapter climate-temperatures">
-    <p class="section-kicker">Les températures · Une hausse durable</p>
-    <h2 class="text-2xl font-bold">De plus en plus de jours à 30 °C</h2>
-    <div class="mt-4 max-w-2xl space-y-4 text-neutral-700">
+  <Section id="jours-chauds" class="border-t border-ligne bg-brume">
+    <p class:list={[surtitre, "text-brand-blue"]}>Les températures · Une hausse durable</p>
+    <h2 class={titre2}>De plus en plus de jours à 30 °C</h2>
+    <div class={texte2Colonnes}>
       <p>
         À Mérignac, on comptait en moyenne {formatDecimal(merignac.avant)} jours à 30 °C ou plus par an
         entre 1950 et 1979. Entre 1996 et 2025, on en compte {formatDecimal(merignac.apres)}, soit
@@ -155,30 +165,30 @@ const centreVille = stations.find((s) => s.station.includes("Paulin"))!;
       </p>
     </div>
 
-    <div class="climate-table mt-8 overflow-x-auto" tabindex="0" role="region" aria-label="Comparaison des stations météo">
-      <table class="w-full max-w-3xl text-left text-sm">
-        <caption class="mb-2 text-left font-semibold">
+    <div class="mt-8 overflow-x-auto rounded-bloc border border-ligne bg-white p-6 max-md:p-4" tabindex="0" role="region" aria-label="Comparaison des stations météo">
+      <table class="w-full min-w-135 text-left text-13 tabular-nums">
+        <caption class="mb-2 pb-4 text-left text-15 font-semibold text-brand-navy">
           Jours à 30 °C ou plus par an, en moyenne
         </caption>
-        <thead class="border-b border-neutral-300">
+        <thead class="bg-neutral-50">
           <tr>
-            <th scope="col" class="py-2 pr-4">Station</th>
-            <th scope="col" class="py-2 pr-4 text-right">1950-1979</th>
-            <th scope="col" class="py-2 pr-4 text-right">1996-2025</th>
-            <th scope="col" class="py-2 text-right">Record</th>
+            <th scope="col" class="px-3 py-3.5">Station</th>
+            <th scope="col" class="px-3 py-3.5 text-right">1950-1979</th>
+            <th scope="col" class="px-3 py-3.5 text-right">1996-2025</th>
+            <th scope="col" class="px-3 py-3.5 text-right">Record</th>
           </tr>
         </thead>
         <tbody>
           {
             stations.map((s) => (
-              <tr class="border-b border-neutral-200">
-                <th scope="row" class="py-2 pr-4 font-normal">{s.station}</th>
-                <td class="py-2 pr-4 text-right">
+              <tr class="border-b border-neutral-200 last:border-0">
+                <th scope="row" class="px-3 py-3.5 font-normal">{s.station}</th>
+                <td class="px-3 py-3.5 text-right">
                   {formatDecimal(s.avant)}
                   {s.debut > 1950 && <span class="text-neutral-600"> (depuis {s.debut})</span>}
                 </td>
-                <td class="py-2 pr-4 text-right font-bold">{formatDecimal(s.apres)}</td>
-                <td class="py-2 text-right">{s.record.jours30} jours en {s.record.annee}</td>
+                <td class="px-3 py-3.5 text-right font-bold text-brand-blue">{formatDecimal(s.apres)}</td>
+                <td class="px-3 py-3.5 text-right">{s.record.jours30} jours en {s.record.annee}</td>
               </tr>
             ))
           }
@@ -187,6 +197,7 @@ const centreVille = stations.find((s) => s.station.includes("Paulin"))!;
     </div>
 
     <Figure
+      etroit
       titre="De plus en plus de jours à 30 °C ou plus depuis 1950"
       sousTitre="Nombre de jours par an où la température maximale atteint 30 °C ou plus, dans trois stations de la métropole"
       note="Les points sont les années, les lignes la moyenne des 10 dernières années. Seules les années complètes sont gardées."
@@ -215,79 +226,16 @@ const centreVille = stations.find((s) => s.station.includes("Paulin"))!;
     </Figure>
   </Section>
 
-  <Section class="climate-next">
-    <p class="section-kicker">Comprendre l'exposition près de chez vous</p>
-    <h2 class="text-2xl font-bold">Où fait-il le plus chaud en ville ?</h2>
-    <p class="mt-4 max-w-2xl text-neutral-700">
+  <Section class="px-gouttiere py-14 max-md:py-9" interieur="relative max-w-258 overflow-hidden rounded-3xl bg-brand-navy p-encart text-papier contour-orange">
+    <p class:list={[surtitre, "text-brand-orange"]}>Comprendre l'exposition près de chez vous</p>
+    <h2 class="text-titre-encart font-bold">Où fait-il le plus chaud en ville ?</h2>
+    <p class="mt-4 max-w-55ch text-15 text-neutral-300">
       Toutes les rues ne chauffent pas de la même façon. Découvrez les îlots de
       chaleur et de fraîcheur relevés dans la métropole.
     </p>
-    <a
-      href="/ilots/"
-      class="method-link"
-    >
+    <a href="/ilots/" class="mt-7 inline-flex items-center justify-between gap-7.5 rounded-xl bg-brand-orange px-4.5 py-3 text-13 font-bold text-brand-navy transition duration-200 survol:-translate-y-0.5 survol:shadow-encart">
       Voir les îlots de chaleur
     </a>
   </Section>
   </div>
 </Layout>
-
-<style is:global>
-.climate-page { background: #fffaf1; }
-.climate-page .content-section > div { max-width: 1160px; padding-inline: clamp(24px, 5vw, 64px); }
-.climate-page > .climate-hero { position: relative; overflow: hidden; background: linear-gradient(115deg, #fff0c2, #f9d98c); color: #051c36; border-bottom: 1px solid rgb(248 165 44 / 25%); }
-.climate-page .climate-hero > div { padding-top: 64px; padding-bottom: 64px; }
-.climate-page .climate-hero h1 { font-size: clamp(3.2rem, 6vw, 5rem); line-height: 1; font-weight: 700; letter-spacing: -.055em; }
-.climate-page .climate-hero .text-neutral-700 { position: relative; z-index: 1; max-width: 62%; color: #304c65; line-height: 1.8; font-size: 17px; }
-.climate-jump { display: flex; flex-wrap: wrap; gap: 14px; position: relative; z-index: 1; margin-top: 28px; max-width: 65%; }
-.climate-jump a { padding: 12px 20px; font-size: 14px; border-radius: 999px; }
-.climate-jump .button-secondary { color: #051c36; border-color: #051c36; }
-.climate-jump .button-secondary:is(:hover, :focus-visible) { background: #fff8ed; }
-.climate-page .climate-summary > div { padding-block: 40px 56px; }
-.climate-summary .grid { gap: 18px; }
-.climate-summary .key-stat { padding: 26px 24px 34px; border-radius: 18px; box-shadow: 0 6px 16px rgb(5 28 54 / 6%); }
-.climate-summary .stat-title { font-size: 13px; margin-bottom: 18px; color: #fff8ed; }
-.climate-summary .stat-value > span:first-child { font-size: clamp(2.5rem, 3.5vw, 3.2rem); }
-.climate-summary .stat-value > span + span { font-size: 17px; }
-.climate-summary .key-stat > p:last-child { font-size: 13px; line-height: 1.7; }
-.climate-page .climate-chapter > div { padding-block: 64px; }
-.climate-chapter .section-kicker { font-size: 10px; letter-spacing: .14em; }
-.climate-chapter h2 { font-size: clamp(1.9rem, 3.2vw, 2.65rem); max-width: 24ch; }
-.climate-chapter h2 + div { max-width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 26px; font-size: 15px; line-height: 1.85; }
-.climate-chapter h2 + div > p { margin: 0; }
-.climate-fires { border-top: 1px solid #eee3d1; }
-.climate-fires .section-kicker { color: #b72e19; }
-.climate-temperatures { background: #f0f5f8; border-top: 1px solid #e1eaf0; }
-.climate-page .data-figure { margin-top: 32px; border: 1px solid #e4e9ed; border-radius: 22px; padding: clamp(18px, 3vw, 32px); box-shadow: 0 8px 28px rgb(5 28 54 / 4%); }
-.climate-page .data-figure figcaption { padding-bottom: 18px; border-bottom: 1px solid #eaf1f6; }
-.climate-page .data-figure figcaption > p:first-child { font-size: clamp(17px, 2vw, 21px); font-weight: 600; max-width: 55ch; }
-.climate-page .data-figure figcaption > p + p { font-size: 13px; margin-top: 8px; }
-.climate-page .data-figure > p { font-size: 12px; line-height: 1.7; max-width: 95ch; }
-.climate-page .data-figure > div > div > svg { margin-inline: auto; }
-.climate-table { background: white; border: 1px solid #e1eaf0; border-radius: 18px; padding: 24px; }
-.climate-table table { max-width: none; min-width: 540px; font-size: 13px; font-variant-numeric: tabular-nums; }
-.climate-table caption { padding-bottom: 16px; color: #051c36; font-size: 15px; }
-.climate-table thead { background: #f3f7fa; border: 0; }
-.climate-table th, .climate-table td { padding: 14px 12px; }
-.climate-table tbody tr:last-child { border-bottom: 0; }
-.climate-table td.font-bold { color: #0e68a4; }
-.climate-page .climate-next { padding: 56px clamp(24px, 5vw, 64px); }
-.climate-page .climate-next > div { position: relative; overflow: hidden; max-width: 1032px; background: #051c36; color: #fff8ed; border-radius: 24px; padding: clamp(28px, 4vw, 48px); }
-.climate-next .section-kicker { color: #f8a52c; font-size: 10px; }
-.climate-next h2 { font-size: clamp(24px, 3vw, 34px); }
-.climate-next .text-neutral-700 { color: #bdcfde; font-size: 15px; max-width: 55ch; }
-.climate-next :focus-visible { outline-color: #f8a52c; }
-@media (max-width: 767px) {
-  .climate-page .climate-hero > div { padding-block: 40px; }
-  .climate-page .climate-hero .text-neutral-700, .climate-jump { max-width: 100%; }
-  .climate-jump { gap: 12px; }
-  .climate-jump a { font-size: 13px; padding: 12px 16px; }
-  .climate-page .climate-orbits { width: 125px; height: 125px; margin-top: 30px; }
-  .climate-page .climate-summary > div { padding-block: 28px 40px; }
-  .climate-page .climate-chapter > div { padding-block: 40px; }
-  .climate-chapter h2 + div { grid-template-columns: 1fr; gap: 16px; }
-  .climate-table { padding: 16px; }
-  .climate-page .climate-next { padding-block: 36px; }
-}
-
-</style>

@@ -25,7 +25,3 @@ pnpm-debug.log*
 
 # Local Netlify folder
 .netlify
-
-# Notes de travail (restent sur l'ordinateur)
-CONTEXTE-SAE303.md
-notebook-SAE303-cellules.md

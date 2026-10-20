@@ -9,31 +9,29 @@ import { rubriques } from "../data/navigation";
   description="Cette page n'existe pas ou a été déplacée."
   indexer={false}
 >
-  <Section>
+  <Section
+    class="relative overflow-hidden border-b-2 border-brand-navy bg-brand-orange after:pointer-events-none after:absolute after:-top-37.5 after:-right-25 after:size-85 after:rounded-full after:border-45 after:border-brand-red after:opacity-22"
+    interieur="max-w-300 px-4 py-18 max-md:py-12"
+  >
     <div class="py-12 md:py-20">
-      <p class="text-8xl font-bold tracking-tight text-neutral-300 md:text-9xl" aria-hidden="true">
-        404
-      </p>
-      <h1 class="mt-4 text-3xl font-bold md:text-4xl">Cette page est introuvable</h1>
-      <p class="mt-4 max-w-xl text-lg text-neutral-700">
+      <p class="text-8xl font-bold tracking-tight text-neutral-300 md:text-9xl" aria-hidden="true">404</p>
+      <h1 class="relative z-1 mt-4 text-titre-404 leading-titre font-bold tracking-titre md:leading-chiffre">Cette page est introuvable</h1>
+      <p class="mt-4 max-w-xl text-lg">
         L'adresse est peut-être mal écrite, ou la page a été déplacée. Vous pouvez
         revenir à l'accueil ou choisir une rubrique.
       </p>
-      <a
-        href="/"
-        class="mt-8 inline-block rounded-full bg-neutral-900 px-5 py-3 font-medium text-white hover:bg-neutral-700"
-      >
+      <a href="/" class="mt-8 inline-block rounded-full border border-brand-navy bg-brand-navy px-5 py-3 font-semibold text-white transition duration-180 hover:bg-neutral-700 survol:-translate-y-0.5 survol:shadow-orange">
         Revenir à l'accueil
       </a>
     </div>
 
     <nav aria-labelledby="titre-rubriques-404">
-      <h2 id="titre-rubriques-404" class="font-semibold">Rubriques</h2>
+      <h2 id="titre-rubriques-404" class="max-w-212.5 text-titre-accueil font-semibold">Rubriques</h2>
       <ul class="mt-4 flex flex-wrap gap-2">
         {
           rubriques.map(({ url, titre }) => (
             <li>
-              <a href={url} class="block rounded-full border border-neutral-300 px-4 py-2 hover:border-neutral-900">
+              <a href={url} class="block rounded-full border border-brand-navy px-4 py-2 font-semibold transition duration-180 survol:-translate-y-0.5 survol:shadow-orange">
                 {titre}
               </a>
             </li>

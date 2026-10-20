@@ -3,52 +3,71 @@ import IconeGithub from "../assets/icones/github.svg";
 import IconeObservable from "../assets/icones/observable.svg";
 import { site } from "../data/site";
 import { rubriques } from "../data/navigation";
+
+const conteneur = "mx-auto w-full max-w-300 px-gouttiere-large max-md:px-6";
+const titreColonne = "mb-5 text-12 font-semibold tracking-pied text-brand-orange uppercase max-md:mb-3";
+const lienRessource = "inline-flex items-center gap-2.5 text-13 hover:text-brand-orange hover:underline max-md:gap-2 max-md:text-14";
 ---
 
-<footer class="site-footer text-sm text-neutral-300">
-  <div class="footer-main footer-container">
-    <div class="footer-about">
-      <a href="/" class="site-brand flex items-center gap-2 text-lg font-semibold text-white">
-        <img src="/Logo.png" alt="" width="64" height="64" class="brand-logo" />
-        <span class="brand-wordmark">Bordeaux<span>Surchauffe</span></span>
+<footer class="relative border-t-7 border-brand-blue bg-brand-navy text-sm text-neutral-300 max-md:border-t-4 contour-orange">
+  <div class:list={[conteneur, "grid gap-12 pt-14 pb-12 md:grid-cols-pied max-md:gap-8 max-md:pt-8 max-md:pb-8"]}>
+    <div>
+      <a href="/" class="flex shrink-0 items-center gap-3 text-white hover:text-brand-orange">
+        <img src="/Logo.png" alt="" width="64" height="64" class="size-16 shrink-0 rounded-full object-contain max-md:size-12" />
+        <span class="block text-xl leading-logo font-bold tracking-logo max-md:text-17">
+          Bordeaux<span class="block text-26 text-brand-orange max-md:text-22">Surchauffe</span>
+        </span>
       </a>
-      <p class="mt-3 max-w-xs">
+      <p class="mt-5 max-w-30ch leading-texte max-md:mt-2.5 max-md:max-w-36ch max-md:text-12 max-md:leading-normal">
         Un regard sur la chaleur à Bordeaux Métropole à partir de données publiques.
       </p>
     </div>
 
     <nav aria-labelledby="footer-rubriques">
-      <h2 id="footer-rubriques" class="footer-heading">Explorer</h2>
-      <ul class="footer-links">
+      <h2 id="footer-rubriques" class={titreColonne}>Explorer</h2>
+      <ul class="grid gap-3">
         {
           rubriques.map(({ url, titre }) => (
             <li>
-              <a href={url} class="hover:text-white hover:underline">{titre}</a>
+              <a href={url} class="underline-offset-4 hover:text-brand-orange hover:underline max-md:text-14 max-md:text-glace">
+                {titre}
+              </a>
             </li>
           ))
         }
       </ul>
     </nav>
-    <div class="footer-resources">
-      <h2 class="footer-heading">Les coulisses du projet</h2>
-      <p>Retrouvez les analyses et le code qui donnent vie aux données.</p>
-      <ul class="footer-links">
-        <li><a href={site.notebook} class="footer-resource"><IconeObservable class="size-5" aria-hidden="true" /><span><span class="footer-resource-prefix">Les analyses sur </span>Observable</span></a></li>
-        <li><a href={site.depot} class="footer-resource"><IconeGithub class="size-5" aria-hidden="true" /><span><span class="footer-resource-prefix">Le code sur </span>GitHub</span></a></li>
+
+    <div>
+      <h2 class={titreColonne}>Les coulisses du projet</h2>
+      <p class="mb-4.5 text-13 leading-note max-md:hidden">Retrouvez les analyses et le code qui donnent vie aux données.</p>
+      <ul class="grid gap-3">
+        <li>
+          <a href={site.notebook} class={lienRessource}>
+            <IconeObservable class="size-5 shrink-0 max-md:text-brand-orange" aria-hidden="true" />
+            <span><span class="max-md:hidden">Les analyses sur </span>Observable</span>
+          </a>
+        </li>
+        <li>
+          <a href={site.depot} class={lienRessource}>
+            <IconeGithub class="size-5 shrink-0 max-md:text-brand-orange" aria-hidden="true" />
+            <span><span class="max-md:hidden">Le code sur </span>GitHub</span>
+          </a>
+        </li>
       </ul>
     </div>
   </div>
 
-  <div class="footer-bottom">
-    <div
-      class="footer-container footer-credits"
-    >
-      <p class="footer-authors">
-        <span class="footer-credit-label">Un projet réalisé par</span>
-        <span>{site.auteurs}</span>
+  <div class="border-t border-neutral-300/16">
+    <div class:list={[conteneur, "flex flex-wrap items-center justify-between gap-x-8 gap-y-5 py-6 text-12 max-md:flex-col max-md:items-start max-md:gap-1.5 max-md:py-3.5 max-md:text-10"]}>
+      <p class="grid gap-0.75 max-md:gap-0.5 max-md:leading-normal">
+        <span class="text-10 tracking-credit text-neutral-300 max-md:hidden">Un projet réalisé par</span>
+        <span class="max-md:text-12 max-md:text-glace">{site.auteurs}</span>
       </p>
       <p>{site.formation}</p>
-      <a href="#contenu" class="footer-back">Retour en haut <span aria-hidden="true">↑</span></a>
+      <a href="#contenu" class="inline-flex items-center gap-3 text-papier hover:text-brand-orange max-md:self-end max-md:min-h-10 max-md:py-1.5 max-md:text-11">
+        Retour en haut <span class="text-brand-orange" aria-hidden="true">↑</span>
+      </a>
     </div>
   </div>
 </footer>

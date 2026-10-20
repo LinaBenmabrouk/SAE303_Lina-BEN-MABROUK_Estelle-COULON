@@ -56,43 +56,107 @@ const telechargements = [
   { fichier: "feux-par-an.json", url: urlFeuxParAn, contenu: "Feux et surfaces brûlées en Gironde, par an" },
   { fichier: "communes-carte.json", url: urlCommunesCarte, contenu: "Contours des 28 communes avec la part en îlot de chaleur" },
 ];
+const traitements = [
+  ["Météo.", "Nous gardons seulement les années complètes, avec 12 mois mesurés. Pour chaque année, nous comptons les jours où la température maximale atteint 30 °C ou plus. La courbe montre la moyenne des 10 dernières années."],
+  ["Îlots de chaleur.", "Les zones n'ont pas de code commune. Nous plaçons chaque zone dans sa commune à partir de son point central."],
+  ["Population.", "Les carreaux INSEE utilisent un autre système de coordonnées. Nous les convertissons en longitude et latitude, puis nous découpons chaque carreau en points tous les 200 m et répartissons ses habitants entre ces points. Le centre seul ne suffisait pas, il donnait 0 habitant à Martignas-sur-Jalle."],
+  ["Exposition.", "Un habitant est compté en îlot de chaleur si son point tombe dans une zone au moins 3 °C plus chaude que la moyenne de la métropole."],
+  ["Revenus.", "Nous classons les carreaux selon le niveau de vie moyen de leurs habitants, puis nous formons 5 groupes qui comptent chacun le même nombre d'habitants."],
+  ["Incendies.", "Nous additionnons les surfaces brûlées en Gironde pour chaque année, de 2006 à 2025."],
+];
+
+const controles = [
+  "52 zones d'îlots ne tombent dans aucune commune et sont écartées.",
+  "Les 28 communes ont toutes des habitants après la jointure.",
+  "Nous comptons environ 759 000 habitants dans la métropole.",
+];
+
+const limites = [
+  "Les îlots mesurent la température de surface du sol, pas celle de l'air.",
+  "Le fichier des îlots ne contient que les écarts marqués, de 3 °C ou plus. Les zones proches de la moyenne n'y figurent pas.",
+  "Les habitants sont supposés répartis de façon égale dans chaque carreau.",
+  "Les données de population datent de 2019 et celles des îlots de 2022.",
+  "Le total d'habitants est plus bas que la population officielle, car Filosofi ne compte que les ménages fiscaux ordinaires.",
+];
+
+const biais = [
+  "Les îlots reposent sur deux journées d'été. Une autre journée aurait pu donner une autre carte.",
+  "Les personnes qui vivent en collectivité, comme les résidents des maisons de retraite, ne sont pas comptées. Ce sont pourtant parmi les plus fragiles face à la chaleur.",
+  "Le niveau de vie est une moyenne par carreau. Elle lisse les écarts entre voisins et peut cacher un lien entre revenus et chaleur.",
+  "Les trois stations ne sont pas placées au même endroit. La station du centre-ville subit elle-même l'effet d'îlot de chaleur, celle de l'aéroport est en périphérie. Les relevés sont bruts et non homogénéisés.",
+  "La BDIFF ne recense que les feux déclarés. L'année 2022 domine la série et écrase les autres années sur le graphique.",
+];
+
+const raccourcis = [
+  ["#sources", "Les sources", "border-brand-orange bg-brand-orange text-brand-navy"],
+  ["#traitements", "Les calculs", "border-brand-blue bg-brand-blue text-white"],
+  ["#limites", "Les limites", "border-brand-red bg-brand-red text-white"],
+  ["#telechargements", "Les fichiers", "border-white/20"],
+];
+const routes = [
+  ["V1", "Distribution des écarts de température", "Îlots de chaleur", "A", "…"],
+  ["V2", "Carte de la part des habitants en îlot de chaleur", "Les habitants", "A", "…"],
+  ["V3", "Jours à 30 °C ou plus depuis 1950", "Le climat", "A", "…"],
+  ["V4", "Comparaison de ma commune", "Ma commune", "B", "…"],
+  ["V5", "Surfaces brûlées en Gironde", "Le climat", "A", "…"],
+  ["V6", "Exposition selon le niveau de vie", "Les habitants", "A", "…"],
+];
+const cellule = "px-4 py-4.5";
+const bordures = ["border-l-brand-orange", "border-l-brand-red", "border-l-brand-blue"];
+
+const surtitre = "mb-4 text-10 font-bold tracking-surtitre uppercase";
+const titre2 = "max-w-212.5 text-titre-section font-bold";
+const titre3 = "text-20 leading-select font-semibold text-brand-red-fonce";
+const listeLimites = "mt-2 list-disc space-y-3 rounded-bloc border border-brand-red/12 bg-rose-pale py-6 pr-7 pl-11 text-sm leading-long text-neutral-700 marker:text-brand-red";
+const orbite = "absolute rounded-full";
 ---
 
 <Layout
   titre="Méthode"
   description="Sources, dates, licences, traitements et limites des données du site. Données téléchargeables et lien vers notre notebook Observable."
 >
-  <div class="methode-page">
-  <Section class="methode-hero">
-    <p class="section-kicker">Des données aux explications</p>
-    <h1 class="text-3xl font-bold tracking-tight md:text-5xl">Méthode</h1>
-    <div class="mt-4 max-w-2xl text-lg text-neutral-700">
+  <div class="bg-creme">
+  <Section class="relative overflow-hidden bg-brand-navy text-papier contour-orange" interieur="relative max-w-290 px-gouttiere py-16 max-md:py-10">
+    <p class:list={[surtitre, "relative z-1 text-brand-orange"]}>Des données aux explications</p>
+    <h1 class="relative z-1 text-titre-page leading-titre font-bold tracking-titre md:leading-none">Méthode</h1>
+    <div class="relative z-1 mt-6 max-w-63/100 text-17 leading-texte text-neutral-200 max-md:max-w-full">
       D'où viennent les chiffres de ce site, comment nous les avons calculés et ce
       qu'ils ne disent pas. Tout ce qui est publié ici peut être vérifié.
     </div>
-    <nav class="methode-jump" aria-label="Dans cette page">
-      <a href="#sources">Les sources</a><a href="#traitements">Les calculs</a><a href="#limites">Les limites</a><a href="#telechargements">Les fichiers</a>
+    <nav class="relative z-1 mt-7 flex max-w-17/25 flex-wrap gap-3 max-md:max-w-full max-md:gap-2.5" aria-label="Dans cette page">
+      {
+        raccourcis.map(([href, texte, couleur]) => (
+          <a href={href} class:list={[couleur, "rounded-full border px-4.5 py-2.75 text-13 font-semibold transition duration-200 survol:-translate-y-0.75 survol:shadow-raccourci"]}>{texte}</a>
+        ))
+      }
     </nav>
-    <div class="methode-orbits" aria-hidden="true"><span></span><span></span><span></span></div>
+    <div class="pointer-events-none absolute top-1/2 right-16 size-52.5 -translate-y-1/2 max-md:relative max-md:top-auto max-md:right-auto max-md:mx-auto max-md:mt-8 max-md:size-32.5 max-md:translate-y-0" aria-hidden="true">
+      <span class:list={[orbite, "inset-0 animate-orbite-60 border-2 border-dashed border-brand-orange"]}></span>
+      <span class:list={[orbite, "inset-6 animate-orbite-40-inverse border-3 border-brand-red border-l-transparent max-md:inset-4"]}></span>
+      <span class:list={[orbite, "inset-12 animate-orbite-30 border-3 border-brand-blue border-r-transparent max-md:inset-8"]}></span>
+    </div>
+    <div class="absolute bottom-0 left-1/2 flex h-1.25 w-screen -translate-x-1/2" aria-hidden="true">
+      <span class="flex-1 bg-brand-orange"></span>
+      <span class="flex-1 bg-brand-red"></span>
+      <span class="flex-1 bg-brand-blue"></span>
+    </div>
   </Section>
 
   <Section id="sources">
-    <p class="section-kicker">L'origine des chiffres</p>
-    <h2 class="text-2xl font-bold">Sources</h2>
-    <div class="mt-4 max-w-2xl space-y-4 text-neutral-700">
-      <p>
-        Le site croise cinq jeux de données publics. Pour la météo, nous suivons
-        trois stations de Météo-France, Mérignac (aéroport), Villenave-d'Ornon et
-        Bordeaux-Paulin (centre-ville).
-      </p>
-    </div>
+    <p class:list={[surtitre, "text-ocre"]}>L'origine des chiffres</p>
+    <h2 class={titre2}>Sources</h2>
+    <p class="mt-4 max-w-2xl text-neutral-700">
+      Le site croise cinq jeux de données publics. Pour la météo, nous suivons
+      trois stations de Météo-France, Mérignac (aéroport), Villenave-d'Ornon et
+      Bordeaux-Paulin (centre-ville).
+    </p>
 
     <ul class="mt-8 space-y-3 md:hidden">
       {
         sources.map(({ nom, producteur, dates, licence, url }) => (
-          <li class="rounded-xl border border-neutral-200 p-4 text-sm">
-            <a href={url} class="font-semibold underline">{nom}</a>
-            <dl class="mt-2 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1">
+          <li class="rounded-xl border border-sable bg-white p-5.5 text-sm leading-texte">
+            <a href={url} class="font-semibold text-brand-blue underline underline-offset-3">{nom}</a>
+            <dl class="mt-2 grid grid-cols-fiche gap-x-4 gap-y-1">
               <dt class="text-neutral-600">Producteur</dt>
               <dd>{producteur}</dd>
               <dt class="text-neutral-600">Dates</dt>
@@ -105,27 +169,25 @@ const telechargements = [
       }
     </ul>
 
-    <div class="mt-8 hidden overflow-x-auto md:block">
-      <table class="w-full text-left text-sm">
+    <div class="mt-8 hidden overflow-x-auto rounded-bloc border border-sable bg-white md:block">
+      <table class="w-full text-left text-13 leading-note">
         <caption class="sr-only">Sources des données, dates et licences</caption>
-        <thead class="border-b border-neutral-300">
+        <thead class="bg-creme-jaune text-brand-navy">
           <tr>
-            <th scope="col" class="py-2 pr-4">Jeu de données</th>
-            <th scope="col" class="py-2 pr-4">Producteur</th>
-            <th scope="col" class="py-2 pr-4">Dates</th>
-            <th scope="col" class="py-2">Licence</th>
+            <th scope="col" class="px-4 py-4.5">Jeu de données</th>
+            <th scope="col" class="px-4 py-4.5">Producteur</th>
+            <th scope="col" class="px-4 py-4.5">Dates</th>
+            <th scope="col" class="px-4 py-4.5">Licence</th>
           </tr>
         </thead>
         <tbody>
           {
             sources.map(({ nom, producteur, dates, licence, url }) => (
-              <tr class="border-b border-neutral-200">
-                <td class="py-2 pr-4">
-                  <a href={url} class="underline">{nom}</a>
-                </td>
-                <td class="py-2 pr-4">{producteur}</td>
-                <td class="py-2 pr-4">{dates}</td>
-                <td class="py-2">{licence}</td>
+              <tr class="border-b border-neutral-200 last:border-0 hover:bg-creme">
+                <td class="px-4 py-4.5"><a href={url} class="text-brand-blue underline underline-offset-3">{nom}</a></td>
+                <td class="px-4 py-4.5">{producteur}</td>
+                <td class="px-4 py-4.5">{dates}</td>
+                <td class="px-4 py-4.5">{licence}</td>
               </tr>
             ))
           }
@@ -134,122 +196,58 @@ const telechargements = [
     </div>
   </Section>
 
-  <Section id="traitements" fond>
-    <p class="section-kicker">Comment les données sont croisées</p>
-    <h2 class="text-2xl font-bold">Traitements appliqués</h2>
-    <ul class="mt-4 max-w-2xl list-disc space-y-3 pl-6 text-neutral-700">
-      <li>
-        <strong>Météo.</strong> Nous gardons seulement les années complètes, avec
-        12 mois mesurés. Pour chaque année, nous comptons les jours où la
-        température maximale atteint 30 °C ou plus. La courbe montre la moyenne
-        des 10 dernières années.
-      </li>
-      <li>
-        <strong>Îlots de chaleur.</strong> Les zones n'ont pas de code commune.
-        Nous plaçons chaque zone dans sa commune à partir de son point central.
-      </li>
-      <li>
-        <strong>Population.</strong> Les carreaux INSEE utilisent un autre système
-        de coordonnées. Nous les convertissons en longitude et latitude, puis nous
-        découpons chaque carreau en points tous les 200 m et répartissons ses
-        habitants entre ces points. Le centre seul ne suffisait pas, il donnait
-        0 habitant à Martignas-sur-Jalle.
-      </li>
-      <li>
-        <strong>Exposition.</strong> Un habitant est compté en îlot de chaleur si
-        son point tombe dans une zone au moins 3 °C plus chaude que la moyenne de
-        la métropole.
-      </li>
-      <li>
-        <strong>Revenus.</strong> Nous classons les carreaux selon le niveau de
-        vie moyen de leurs habitants, puis nous formons 5 groupes qui comptent
-        chacun le même nombre d'habitants.
-      </li>
-      <li>
-        <strong>Incendies.</strong> Nous additionnons les surfaces brûlées en
-        Gironde pour chaque année, de 2006 à 2025.
-      </li>
+  <Section id="traitements" class="border-y border-ligne bg-ciel-bleu">
+    <p class:list={[surtitre, "text-brand-blue"]}>Comment les données sont croisées</p>
+    <h2 class={titre2}>Traitements appliqués</h2>
+    <ul class="mt-7.5 grid grid-cols-2 gap-5 max-md:grid-cols-1">
+      {
+        traitements.map(([titre, texte]) => (
+          <li class="rounded-bloc border border-bord-bleu bg-white p-6.5 text-sm leading-long text-neutral-700">
+            <strong class="mb-3 block text-17 text-brand-blue">{titre}</strong> {texte}
+          </li>
+        ))
+      }
     </ul>
 
     <h3 class="mt-8 text-lg font-semibold">Contrôles</h3>
-    <ul class="mt-2 max-w-2xl list-disc space-y-2 pl-6 text-neutral-700">
-      <li>52 zones d'îlots ne tombent dans aucune commune et sont écartées.</li>
-      <li>Les 28 communes ont toutes des habitants après la jointure.</li>
-      <li>Nous comptons environ 759 000 habitants dans la métropole.</li>
+    <ul class="mt-2 list-disc space-y-2 rounded-bloc bg-glace py-6 pr-6 pl-11 text-sm leading-long text-neutral-700">
+      {controles.map((texte) => <li>{texte}</li>)}
     </ul>
   </Section>
 
   <Section id="limites">
-    <p class="section-kicker">Ce que les chiffres ne disent pas</p>
-    <h2 class="text-2xl font-bold">Limites et biais</h2>
+    <p class:list={[surtitre, "text-brand-red-fonce"]}>Ce que les chiffres ne disent pas</p>
+    <h2 class={titre2}>Limites et biais</h2>
 
-    <h3 class="mt-6 text-lg font-semibold">Limites</h3>
-    <ul class="mt-2 max-w-2xl list-disc space-y-3 pl-6 text-neutral-700">
-      <li>
-        Les îlots mesurent la température de surface du sol, pas celle de l'air.
-      </li>
-      <li>
-        Le fichier des îlots ne contient que les écarts marqués, de 3 °C ou plus.
-        Les zones proches de la moyenne n'y figurent pas.
-      </li>
-      <li>
-        Les habitants sont supposés répartis de façon égale dans chaque carreau.
-      </li>
-      <li>
-        Les données de population datent de 2019 et celles des îlots de 2022.
-      </li>
-      <li>
-        Le total d'habitants est plus bas que la population officielle, car
-        Filosofi ne compte que les ménages fiscaux ordinaires.
-      </li>
+    <h3 class:list={[titre3, "mt-6"]}>Limites</h3>
+    <ul class={listeLimites}>
+      {limites.map((texte) => <li>{texte}</li>)}
     </ul>
 
-    <h3 class="mt-8 text-lg font-semibold">Biais identifiés</h3>
-    <ul class="mt-2 max-w-2xl list-disc space-y-3 pl-6 text-neutral-700">
-      <li>
-        Les îlots reposent sur deux journées d'été. Une autre journée aurait pu
-        donner une autre carte.
-      </li>
-      <li>
-        Les personnes qui vivent en collectivité, comme les résidents des maisons
-        de retraite, ne sont pas comptées. Ce sont pourtant parmi les plus
-        fragiles face à la chaleur.
-      </li>
-      <li>
-        Le niveau de vie est une moyenne par carreau. Elle lisse les écarts entre
-        voisins et peut cacher un lien entre revenus et chaleur.
-      </li>
-      <li>
-        Les trois stations ne sont pas placées au même endroit. La station du
-        centre-ville subit elle-même l'effet d'îlot de chaleur, celle de
-        l'aéroport est en périphérie. Les relevés sont bruts et non
-        homogénéisés.
-      </li>
-      <li>
-        La BDIFF ne recense que les feux déclarés. L'année 2022 domine la série
-        et écrase les autres années sur le graphique.
-      </li>
+    <h3 class:list={[titre3, "mt-8"]}>Biais identifiés</h3>
+    <ul class={listeLimites}>
+      {biais.map((texte) => <li>{texte}</li>)}
     </ul>
   </Section>
 
-  <Section id="telechargements" fond>
-    <p class="section-kicker">Explorer et réutiliser</p>
-    <h2 class="text-2xl font-bold">Données téléchargeables</h2>
+  <Section id="telechargements" class="border-y border-ligne bg-ciel-gris">
+    <p class:list={[surtitre, "text-brand-blue"]}>Explorer et réutiliser</p>
+    <h2 class={titre2}>Données téléchargeables</h2>
     <p class="mt-4 max-w-2xl text-neutral-700">
       Les fichiers utilisés par le site, au format JSON, tels qu'exportés depuis
       notre notebook.
     </p>
     <ul class="mt-6 grid gap-3 md:grid-cols-2">
       {
-        telechargements.map(({ fichier, url, contenu }) => (
+        telechargements.map(({ fichier, url, contenu }, i) => (
           <li>
             <a
               href={url}
               download={fichier}
-              class="methode-download block h-full"
+              class:list={[bordures[i % 3], "block h-full rounded-2xl border border-l-3 border-neutral-200 bg-white p-6 transition duration-200 survol:-translate-y-0.75 survol:shadow-fichier"]}
             >
-              <span class="font-mono text-sm font-semibold">⬇ {fichier}</span>
-              <span class="mt-1 block text-sm text-neutral-700">{contenu}</span>
+              <span class="font-mono text-13 font-semibold wrap-anywhere">⬇ {fichier}</span>
+              <span class="mt-3 block text-13 leading-note text-neutral-700">{contenu}</span>
             </a>
           </li>
         ))
@@ -257,86 +255,52 @@ const telechargements = [
     </ul>
   </Section>
 
-  <Section id="notebook">
-    <h2 class="text-2xl font-bold">Le notebook</h2>
-    <p class="mt-4 max-w-2xl text-neutral-700">
+  <Section id="routes">
+    <p class:list={[surtitre, "text-brand-blue"]}>Comment les graphiques sont produits</p>
+    <h2 class={titre2}>Routes d'export</h2>
+    <ul class="mt-4 max-w-2xl space-y-1 text-neutral-700">
+      <li><strong>A</strong> · le graphique est calculé une fois, à la construction du site.</li>
+      <li><strong>B</strong> · le graphique est calculé dans le navigateur du lecteur, à chaque choix.</li>
+      <li><strong>C</strong> · une page est générée pour chaque valeur.</li>
+    </ul>
+
+    <div class="mt-8 overflow-x-auto rounded-bloc border border-sable bg-white">
+      <table class="w-full min-w-135 text-left text-13 leading-note">
+        <caption class="sr-only">Route d'export de chaque visualisation</caption>
+        <thead class="bg-creme-jaune text-brand-navy">
+          <tr>
+            <th scope="col" class={cellule}>Visualisation</th>
+            <th scope="col" class={cellule}>Page</th>
+            <th scope="col" class={cellule}>Route</th>
+            <th scope="col" class={cellule}>Pourquoi</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            routes.map(([code, nom, page, route, pourquoi]) => (
+              <tr class="border-b border-neutral-200 last:border-0">
+                <th scope="row" class:list={[cellule, "font-normal"]}><strong>{code}</strong> · {nom}</th>
+                <td class={cellule}>{page}</td>
+                <td class:list={[cellule, "font-bold text-brand-blue"]}>{route}</td>
+                <td class={cellule}>{pourquoi}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </Section>
+
+  <Section id="notebook" class="px-gouttiere py-14 max-md:py-9" interieur="max-w-258 rounded-3xl border-t-4 border-brand-orange bg-brand-navy p-encart text-papier contour-orange">
+    <h2 class="text-titre-encart font-bold">Le notebook</h2>
+    <p class="mt-4 max-w-2xl text-15 leading-texte text-neutral-300">
       Tous les calculs sont faits dans notre notebook Observable. On y trouve le
       chargement des données, les contrôles, les jointures et le code de chaque
       graphique.
     </p>
-    <a
-      href={site.notebook}
-      class="method-link"
-    >
+    <a href={site.notebook} class="mt-7 inline-flex items-center justify-between gap-7.5 rounded-xl bg-brand-orange px-4.5 py-3 text-13 font-bold text-brand-navy transition duration-200 survol:-translate-y-0.5 survol:shadow-encart">
       Voir le notebook Observable
     </a>
   </Section>
   </div>
 </Layout>
-
-<style is:global>
-  .methode-page { background: #fffaf1; }
-  .methode-page .content-section > div { max-width: 1160px; padding: 64px clamp(24px, 5vw, 64px); }
-  .methode-page .section-kicker { font-size: 10px; letter-spacing: .14em; }
-  .methode-page h2 { font-size: clamp(1.9rem, 3.2vw, 2.65rem); }
-  .methode-page .methode-hero { position: relative; overflow: hidden; background: #051c36; color: #fff8ed; }
-  .methode-hero::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, #f8a52c 0% 33%, #db371e 33% 66%, #0e68a4 66%); }
-  .methode-hero > div { position: relative; }
-  .methode-hero .section-kicker { position: relative; z-index: 1; color: #f8a52c; }
-  .methode-hero h1 { position: relative; z-index: 1; font-size: clamp(2.8rem, 5.5vw, 4.8rem); letter-spacing: -.055em; }
-  .methode-hero .text-neutral-700 { position: relative; z-index: 1; max-width: 63%; color: #d5e1eb; line-height: 1.8; font-size: 17px; margin-top: 24px; }
-  .methode-jump { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; max-width: 68%; }
-  .methode-jump a { padding: 11px 18px; border: 1px solid rgb(255 255 255 / 20%); border-radius: 999px; font-size: 13px; font-weight: 600; transition: transform 200ms, box-shadow 200ms; }
-  .methode-jump a:nth-child(1) { background: #f8a52c; color: #051c36; border-color: #f8a52c; }
-  .methode-jump a:nth-child(2) { background: #0e68a4; color: white; border-color: #0e68a4; }
-  .methode-jump a:nth-child(3) { background: #db371e; color: white; border-color: #db371e; }
-  .methode-jump a:is(:hover, :focus-visible) { transform: translateY(-3px); box-shadow: 0 6px 18px rgb(0 0 0 / 25%); }
-  .methode-hero :focus-visible { outline-color: #f8a52c; }
-  .methode-orbits { position: absolute; right: 64px; top: 50%; width: 210px; height: 210px; transform: translateY(-50%); pointer-events: none; }
-  .methode-orbits span { position: absolute; inset: 0; border: 2px dashed #f8a52c; border-radius: 50%; animation: orbit-turn 60s linear infinite; }
-  .methode-orbits span:nth-child(2) { inset: 24px; border: 3px solid #db371e; border-left-color: transparent; animation-duration: 40s; animation-direction: reverse; }
-  .methode-orbits span:nth-child(3) { inset: 48px; border: 3px solid #0e68a4; border-right-color: transparent; animation-duration: 30s; }
-  .methode-page #sources .section-kicker { color: #986015; }
-  .methode-page #sources > div > .overflow-x-auto { border: 1px solid #eee3d1; border-radius: 18px; background: white; }
-  .methode-page table { font-size: 13px; line-height: 1.7; }
-  .methode-page thead { background: #fff0cc; border: 0; color: #051c36; }
-  .methode-page th, .methode-page td { padding: 18px 16px; }
-  .methode-page tbody tr:last-child { border: 0; }
-  .methode-page tbody tr:hover { background: #fffaf1; }
-  .methode-page #sources ul li { border-color: #eee3d1; background: white; padding: 22px; line-height: 1.8; }
-  .methode-page #traitements { background: #eef5fa; border-block: 1px solid #e1eaf0; }
-  .methode-page #traitements > div > ul:first-of-type { max-width: none; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 0; list-style: none; margin-top: 30px; }
-  .methode-page #traitements > div > ul:first-of-type li { padding: 26px; background: white; border: 1px solid #dce7ef; border-radius: 18px; margin: 0; font-size: 14px; line-height: 1.85; }
-  .methode-page #traitements strong { display: block; font-size: 17px; color: #0e68a4; margin-bottom: 12px; }
-  .methode-page #traitements > div > ul:last-child { max-width: none; padding: 24px 24px 24px 44px; background: #e0edf6; border-radius: 18px; font-size: 14px; line-height: 1.85; }
-  .methode-page #limites .section-kicker { color: #bd301b; }
-  .methode-page #limites h3 { font-size: 20px; color: #bd301b; }
-  .methode-page #limites ul { max-width: none; padding: 24px 28px 24px 44px; background: #fff0eb; border: 1px solid rgb(219 55 30 / 12%); border-radius: 18px; font-size: 14px; line-height: 1.85; }
-  .methode-page #limites li::marker { color: #db371e; }
-  .methode-page #telechargements { background: #edf3f8; border-block: 1px solid #e1eaf0; }
-  .methode-download { padding: 24px; border: 1px solid #d5e1eb; border-left: 3px solid #0e68a4; border-radius: 16px; background: white; transition: transform 200ms, box-shadow 200ms; }
-  .methode-page #telechargements li:nth-child(3n + 1) .methode-download { border-left-color: #f8a52c; }
-  .methode-page #telechargements li:nth-child(3n + 2) .methode-download { border-left-color: #db371e; }
-  .methode-download > span:first-child { font-size: 13px; overflow-wrap: anywhere; }
-  .methode-download > span + span { margin-top: 12px; line-height: 1.7; font-size: 13px; }
-  .methode-download:is(:hover, :focus-visible) { transform: translateY(-3px); box-shadow: 0 8px 20px rgb(5 28 54 / 8%); }
-  .methode-page #notebook { padding: 56px clamp(24px, 5vw, 64px); }
-  .methode-page #notebook > div { max-width: 1032px; padding: clamp(28px, 4vw, 48px); border-radius: 24px; background: #051c36; color: #fff8ed; border-top: 4px solid #f8a52c; }
-  .methode-page #notebook h2 { font-size: clamp(24px, 3vw, 34px); }
-  .methode-page #notebook .text-neutral-700 { color: #bdcfde; font-size: 15px; line-height: 1.8; }
-  .methode-page #notebook :focus-visible { outline-color: #f8a52c; }
-  @media (max-width: 767px) {
-    .methode-page .content-section > div { padding-block: 40px; }
-    .methode-hero .text-neutral-700, .methode-jump { max-width: 100%; }
-    .methode-jump { gap: 10px; }
-    .methode-orbits { position: relative; top: auto; right: auto; width: 130px; height: 130px; transform: none; margin: 32px auto 0; }
-    .methode-orbits span:nth-child(2) { inset: 16px; }
-    .methode-orbits span:nth-child(3) { inset: 32px; }
-    .methode-page #traitements > div > ul:first-of-type { grid-template-columns: 1fr; }
-    .methode-page #notebook { padding-block: 36px; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .methode-orbits span { animation: none; }
-    .methode-jump a:is(:hover, :focus-visible), .methode-download:is(:hover, :focus-visible) { transform: none; }
-  }
-</style>

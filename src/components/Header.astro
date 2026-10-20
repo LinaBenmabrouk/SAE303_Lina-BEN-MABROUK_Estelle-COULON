@@ -2,13 +2,24 @@
 import { rubriques, memeChemin } from "../data/navigation";
 
 const cheminActuel = Astro.url.pathname;
+
+const couleurs = [
+  "survol:bg-brand-orange survol:text-brand-navy actif:bg-brand-orange actif:text-brand-navy max-md:bg-brand-orange max-md:text-brand-navy",
+  "survol:bg-brand-blue survol:text-white actif:bg-brand-blue actif:text-white max-md:bg-brand-blue max-md:text-white",
+  "survol:bg-brand-red survol:text-white actif:bg-brand-red actif:text-white max-md:bg-brand-red max-md:text-white",
+  "md:survol:bg-brand-navy md:survol:text-white md:actif:bg-brand-navy md:actif:text-white max-md:bg-papier max-md:text-brand-navy",
+  "survol:bg-brand-orange survol:text-brand-navy actif:bg-brand-orange actif:text-brand-navy max-md:bg-brand-orange max-md:text-brand-navy",
+];
+const delais = ["group-ouvert/nav:delay-80", "group-ouvert/nav:delay-110", "group-ouvert/nav:delay-140", "group-ouvert/nav:delay-170", "group-ouvert/nav:delay-200"];
 ---
 
-<header class="site-header sticky top-0 z-20 border-b border-neutral-200 bg-white/95 backdrop-blur">
-  <div class="relative mx-auto flex h-14 max-w-5xl items-center justify-between px-4 md:h-16">
-    <a href="/" class="site-brand flex items-center gap-2 text-lg font-semibold tracking-tight">
-      <img src="/Logo.png" alt="" width="64" height="64" class="brand-logo" />
-      <span class="brand-wordmark">Bordeaux<span>Surchauffe</span></span>
+<header class="sticky top-0 z-20 border-b-2 border-brand-navy bg-papier">
+  <div class="relative mx-auto flex h-18 max-w-300 items-center justify-between gap-4 px-4 md:h-22 md:max-tab:gap-2">
+    <a href="/" class="flex shrink-0 items-center gap-3">
+      <img src="/Logo.png" alt="" width="64" height="64" class="size-12 shrink-0 rounded-full object-contain md:size-15 md:max-tab:size-11.25" />
+      <span class="block text-17 leading-logo font-bold tracking-logo md:max-tab:text-14">
+        Bordeaux<span class="block text-22 md:max-tab:text-18">Surchauffe</span>
+      </span>
     </a>
 
     <button
@@ -16,28 +27,34 @@ const cheminActuel = Astro.url.pathname;
       type="button"
       aria-expanded="false"
       aria-controls="menu-principal"
-      class="-mr-2 flex size-11 items-center justify-center rounded-lg hover:bg-neutral-100 md:hidden"
+      class="group -mr-2 flex size-11 items-center justify-center rounded-bouton bg-brand-navy text-brand-orange transition duration-180 survol:-translate-y-0.5 survol:shadow-orange aria-expanded:bg-brand-orange aria-expanded:text-brand-navy md:hidden"
     >
       <span class="sr-only">Menu</span>
-      <span class="menu-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+      <span class="relative h-4.5 w-5.5" aria-hidden="true">
+        <span class="absolute top-0 left-0 h-0.5 w-5.5 rounded-xs bg-current transition duration-300 group-aria-expanded:translate-y-2 group-aria-expanded:rotate-45"></span>
+        <span class="absolute top-2 left-0 h-0.5 w-4 rounded-xs bg-current transition duration-300 group-aria-expanded:-translate-x-1.5 group-aria-expanded:opacity-0"></span>
+        <span class="absolute top-4 left-0 h-0.5 w-5.5 rounded-xs bg-current transition duration-300 group-aria-expanded:-translate-y-2 group-aria-expanded:-rotate-45"></span>
+      </span>
     </button>
 
     <nav
       id="menu-principal"
       aria-label="Menu principal"
-      class="site-nav"
       data-open="false"
+      class="group/nav max-md:invisible max-md:absolute max-md:inset-x-3 max-md:top-full max-md:mt-2 max-md:grid max-md:-translate-y-2.5 max-md:grid-rows-ferme max-md:rounded-figure max-md:bg-brand-navy max-md:opacity-0 max-md:shadow-menu max-md:transition-all max-md:duration-350 max-md:ouvert:visible max-md:ouvert:translate-y-0 max-md:ouvert:grid-rows-ouvert max-md:ouvert:opacity-100"
     >
-      <ul class="flex flex-col gap-1 p-3 md:flex-row md:p-0 md:text-sm">
+      <ul class="flex flex-col max-md:min-h-0 max-md:overflow-hidden max-md:group-ouvert/nav:overflow-y-auto md:flex-row md:gap-1 md:text-sm">
         {
-          rubriques.map(({ url, titre }) => (
-            <li>
+          rubriques.map(({ url, titre }, i) => (
+            <li class:list={[delais[i], "max-md:-translate-y-2 max-md:px-3 max-md:py-1 max-md:opacity-0 max-md:transition max-md:duration-250 max-md:first:pt-3 max-md:last:pb-3 max-md:group-ouvert/nav:translate-y-0 max-md:group-ouvert/nav:opacity-100"]}>
               <a
                 href={url}
                 aria-current={memeChemin(url, cheminActuel) ? "page" : undefined}
-                class="block rounded-lg px-4 py-3 text-neutral-700 hover:bg-neutral-100 aria-[current=page]:bg-neutral-900 aria-[current=page]:text-white md:rounded-full md:px-3 md:py-1.5"
+                class:list={[couleurs[i], "group/lien relative flex items-center gap-3 font-semibold text-brand-navy transition duration-220 max-md:min-h-12.5 max-md:rounded-lien max-md:border max-md:border-transparent max-md:px-4.5 max-md:py-3 max-md:text-15 max-md:survol:translate-x-0.75 max-md:survol:border-current max-md:survol:shadow-lien-mobile md:rounded-full md:px-3 md:py-1.5 md:survol:-translate-y-0.5 md:survol:shadow-lien md:max-tab:px-2 md:max-tab:text-12"]}
               >
-                <span>{titre}</span>
+                <span class="max-md:group-actif/lien:underline max-md:group-actif/lien:decoration-2 max-md:group-actif/lien:underline-offset-6">
+                  {titre}
+                </span>
               </a>
             </li>
           ))

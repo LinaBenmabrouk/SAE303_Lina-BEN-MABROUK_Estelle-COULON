@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Section from "../components/Section.astro";
+import { etapeDe } from "../data/navigation";
 import Figure from "../components/Figure.astro";
 import {
   exposition,
@@ -15,33 +16,40 @@ import {
 
 const communeParDefaut = "Bordeaux";
 const infos = infosCommune(communeParDefaut);
+
+const surtitre = "mb-4 text-10 font-bold tracking-surtitre uppercase";
+const orbite = "absolute rounded-full border-2";
 ---
 
 <Layout
   titre="Ma commune"
   description="Choisissez votre commune de Bordeaux Métropole et découvrez la part de ses habitants qui vivent dans un îlot de chaleur."
 >
-  <div class="commune-page">
-  <Section class="commune-hero">
-    <p class="section-kicker">Votre territoire · Bordeaux Métropole</p>
-    <h1 class="text-3xl font-bold tracking-tight md:text-5xl">Ma commune</h1>
-    <div class="mt-4 max-w-2xl text-lg text-neutral-700">
+  <div class="bg-creme">
+  <Section class="relative overflow-hidden bg-linear-115 from-brand-navy to-marine-clair text-papier contour-orange" interieur="relative max-w-300 px-gouttiere py-16 max-md:py-10">
+    <p class="relative z-1 mb-3 text-12 font-bold tracking-label uppercase opacity-80">{etapeDe("/ma-commune/")}</p>
+    <p class:list={[surtitre, "relative z-1 text-brand-orange"]}>Votre territoire · Bordeaux Métropole</p>
+    <h1 class="relative z-1 max-w-3/4 text-titre-page leading-titre font-bold tracking-titre max-md:max-w-full md:leading-none">Ma commune</h1>
+    <div class="relative z-1 mt-6 max-w-16/25 text-17 leading-texte text-neutral-200 max-md:max-w-full">
       Ma commune est-elle plus exposée à la chaleur que les autres ? Choisissez-la
       et comparez-la aux {exposition.length - 1} autres communes de Bordeaux Métropole.
     </div>
-    <a href="#choix" class="button-primary commune-start">Explorer ma commune <span aria-hidden="true">↗</span></a>
-    <div class="commune-orbits" aria-hidden="true"><span></span><span></span></div>
+    <a href="#choix" class="relative z-1 mt-7 inline-flex items-center justify-between gap-5 rounded-full border-2 border-brand-orange bg-brand-orange px-5 py-3 text-14 font-bold text-brand-navy transition duration-180 survol:-translate-y-0.5 survol:bg-brand-orange-clair survol:shadow-rouge">Explorer ma commune <span aria-hidden="true">↗</span></a>
+    <div class="pointer-events-none absolute top-1/2 right-16 size-52.5 -translate-y-1/2 max-md:relative max-md:top-auto max-md:right-auto max-md:mx-auto max-md:mt-8 max-md:size-32.5 max-md:translate-y-0" aria-hidden="true">
+      <span class:list={[orbite, "inset-0 animate-orbite-60 border-dashed border-brand-red/80"]}></span>
+      <span class:list={[orbite, "inset-6.5 animate-orbite-40-inverse border-brand-red border-b-transparent max-md:inset-4.5"]}></span>
+    </div>
   </Section>
 
-  <Section id="choix">
-    <div class="commune-workspace">
-      <div class="commune-sidebar">
-        <div class="commune-picker">
-          <label for="commune" class="block font-semibold">Choisissez votre commune</label>
+  <Section id="choix" interieur="max-w-300 px-gouttiere py-16 max-md:py-10">
+    <div class="grid grid-cols-commune items-start gap-7 max-ml:grid-cols-1">
+      <div class="sticky top-28 grid gap-5 max-ml:static max-ml:grid-cols-2 max-ml:items-start max-xs:grid-cols-1">
+        <div class="rounded-bloc border border-ligne bg-white p-5.5">
+          <label for="commune" class="block text-14 font-semibold">Choisissez votre commune</label>
           <div class="relative mt-2">
             <select
               id="commune"
-              class="w-full appearance-none rounded-lg border border-neutral-300 bg-white py-2 pr-10 pl-3 text-lg"
+              class="w-full appearance-none rounded-lg border border-neutral-300 bg-neutral-50 py-3 pr-10 pl-3 text-16 leading-select"
             >
               {
                 listeCommunes.map((nom) => (
@@ -60,7 +68,7 @@ const infos = infosCommune(communeParDefaut);
               <path d="M5 8l5 5 5-5" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
           </div>
-          <p class="mt-2 text-sm text-neutral-600 max-md:hidden">
+          <p class="mt-2 text-12 leading-note text-neutral-600 max-md:hidden">
             Vous pouvez aussi cliquer sur une barre du graphique.
           </p>
         </div>
@@ -68,132 +76,79 @@ const infos = infosCommune(communeParDefaut);
         <div
           aria-live="polite"
           aria-atomic="true"
-          class="commune-result"
+          class="relative isolate overflow-hidden rounded-bloc bg-brand-navy p-6.5 text-papier max-ml:col-start-2 max-ml:row-span-2 max-ml:row-start-1 max-xs:col-auto max-xs:row-auto after:absolute after:-top-13.75 after:-right-16.25 after:-z-1 after:size-32.5 after:rounded-full after:border-2 after:border-brand-red/50 after:outline after:outline-offset-14 after:outline-brand-red/30 after:outline-dashed"
         >
-          <p id="nom-commune" class="text-sm tracking-widest text-neutral-300 uppercase">
+          <p id="nom-commune" class="text-12 leading-nom font-semibold tracking-widest text-brand-orange uppercase">
             {infos.nom}
           </p>
-          <p class="mt-1 text-4xl font-bold">
+          <p class="mt-4.5 text-48 leading-chiffre font-bold tracking-tighter">
             <span id="part">{formatPart(infos.part)}</span> %
           </p>
-          <p class="text-sm text-neutral-300">des habitants vivent dans un îlot de chaleur</p>
-          <p id="ecart" class="mt-3 text-sm text-neutral-300">{phraseEcart(infos.ecart)}</p>
+          <p class="mt-2.5 text-sm leading-note text-neutral-300">des habitants vivent dans un îlot de chaleur</p>
+          <p id="ecart" class="mt-3 border-t border-neutral-300/20 pt-4 text-12 leading-note text-neutral-300">{phraseEcart(infos.ecart)}</p>
         </div>
 
-        <dl class="divide-y divide-neutral-200 rounded-xl border border-neutral-200 text-sm">
-          <div class="flex justify-between gap-4 p-3">
+        <dl class="divide-y divide-neutral-200 rounded-bloc border border-ligne bg-white px-4 py-1 text-sm">
+          <div class="flex justify-between gap-4.5 py-3.75">
             <dt class="text-neutral-600">Habitants</dt>
-            <dd id="habitants" class="font-bold">{formatNombre(infos.habitants)}</dd>
+            <dd id="habitants" class="text-right font-bold whitespace-nowrap text-brand-navy">{formatNombre(infos.habitants)}</dd>
           </div>
-          <div class="flex justify-between gap-4 p-3">
+          <div class="flex justify-between gap-4.5 py-3.75">
             <dt class="text-neutral-600">En îlot de chaleur</dt>
-            <dd id="exposes" class="font-bold">{formatNombre(infos.exposes)}</dd>
+            <dd id="exposes" class="text-right font-bold whitespace-nowrap text-brand-navy">{formatNombre(infos.exposes)}</dd>
           </div>
-          <div class="flex justify-between gap-4 p-3">
+          <div class="flex justify-between gap-4.5 py-3.75">
             <dt class="text-neutral-600">Rang (1 = la plus exposée)</dt>
-            <dd class="font-bold">
-              <span id="rang">{infos.rang}</span> sur {exposition.length}
-            </dd>
+            <dd class="text-right font-bold whitespace-nowrap text-brand-navy"><span id="rang">{infos.rang}</span> sur {exposition.length}</dd>
           </div>
         </dl>
 
-        <p class="text-sm text-neutral-600">
+        <p class="px-1.5 text-12 leading-note text-neutral-600">
           L'adresse de la page change avec la commune, vous pouvez la partager.
         </p>
       </div>
 
-      <div class="min-w-0 [&>figure]:mt-0">
+      <div class="min-w-0 *:mt-0">
         <Figure
+          compact
           titre={`Selon la commune, de ${Math.round(moinsExposee.part)} % à ${Math.round(plusExposee.part)} % des habitants vivent dans un îlot de chaleur`}
           sousTitre="Part des habitants vivant dans une zone au moins 3 °C plus chaude que la moyenne de la métropole, par commune"
           note="La ligne en pointillés indique la moyenne de la métropole. Les habitants viennent des carreaux INSEE de 2019, les îlots des relevés de l'été 2022."
           source="Bordeaux Métropole 2022 et INSEE Filosofi 2019"
         >
-          <div id="graphique" class="min-h-[620px] md:min-h-[676px]"></div>
+          <div id="graphique" class="min-h-155 md:min-h-169"></div>
         </Figure>
       </div>
     </div>
   </Section>
 
-  <Section class="commune-next">
-    <p class="section-kicker">Prendre du recul</p>
-    <h2 class="text-2xl font-bold">Et les autres communes ?</h2>
-    <p class="mt-4 max-w-2xl text-neutral-700">
+  <Section id="conclusion" class="border-y border-ligne bg-brume">
+    <p class:list={[surtitre, "text-brand-blue"]}>Conclusion</p>
+    <h2 class="max-w-27ch text-titre-section font-bold">…</h2>
+    <div class="mt-6.5 grid grid-cols-2 gap-8 text-15 leading-long text-neutral-700 max-md:grid-cols-1 max-md:gap-4">
+      <p>…</p>
+      <p>…</p>
+    </div>
+  </Section>
+
+  <Section class="px-gouttiere py-16 max-md:py-10" interieur="max-w-268 rounded-3xl border border-neutral-200 bg-ciel-gris p-encart">
+    <p class:list={[surtitre, "text-brand-blue"]}>Prendre du recul</p>
+    <h2 class="text-titre-encart font-bold">Et les autres communes ?</h2>
+    <p class="mt-4 max-w-2xl text-15 leading-texte text-neutral-700">
       La carte montre la part des habitants en îlot de chaleur dans les 28
       communes de la métropole.
     </p>
-    <a
-      href="/habitants/#carte"
-      class="method-link"
-    >
+    <a href="/habitants/#carte" class="mt-7 inline-flex items-center justify-between gap-7.5 rounded-xl bg-brand-orange px-4.5 py-3 text-13 font-bold text-brand-navy transition duration-200 survol:-translate-y-0.5 survol:shadow-encart">
       Voir la carte
     </a>
   </Section>
   </div>
 </Layout>
 
-<style is:global>
-  .commune-page { background: #fffaf1; }
-  .commune-page .content-section > div { max-width: 1200px; padding: 64px clamp(24px, 5vw, 64px); }
-  .commune-page .section-kicker { font-size: 10px; letter-spacing: .14em; }
-  .commune-page .commune-hero { position: relative; overflow: hidden; background: linear-gradient(115deg, #051c36, #0a3155); color: #fff8ed; }
-  .commune-hero > div { position: relative; }
-  .commune-hero .section-kicker { position: relative; z-index: 1; color: #f8a52c; }
-  .commune-hero h1 { position: relative; z-index: 1; max-width: 75%; font-size: clamp(2.8rem, 5.5vw, 4.8rem); letter-spacing: -.055em; }
-  .commune-page .commune-hero .text-neutral-700 { position: relative; z-index: 1; max-width: 64%; color: #d5e1eb; line-height: 1.8; font-size: 17px; margin-top: 24px; }
-  .commune-start { position: relative; z-index: 1; padding: 12px 20px; border-radius: 999px; margin-top: 28px; font-size: 14px; }
-  .commune-hero :focus-visible { outline-color: #f8a52c; }
-  .commune-orbits { position: absolute; right: 64px; top: 50%; width: 210px; height: 210px; transform: translateY(-50%); pointer-events: none; }
-  .commune-orbits span { position: absolute; inset: 0; border: 2px dashed rgb(219 55 30 / 80%); border-radius: 50%; animation: orbit-turn 60s linear infinite; }
-  .commune-orbits span + span { inset: 26px; border: 2px solid #db371e; border-bottom-color: transparent; animation-duration: 40s; animation-direction: reverse; }
-  .commune-workspace { display: grid; grid-template-columns: 280px minmax(0, 1fr); align-items: start; gap: 28px; }
-  .commune-sidebar { position: sticky; top: 112px; display: grid; gap: 20px; }
-  .commune-picker { background: white; border: 1px solid #e1eaf0; border-radius: 18px; padding: 22px; }
-  .commune-picker label { font-size: 14px; }
-  .commune-picker select { font-size: 16px; padding-block: 12px; border-color: #bdcfde; background: #f3f7fa; }
-  .commune-picker > p { font-size: 12px; line-height: 1.7; }
-  .commune-result { position: relative; isolation: isolate; overflow: hidden; padding: 26px; border-radius: 18px; background: #051c36; color: #fff8ed; }
-  .commune-result::after { content: ''; position: absolute; z-index: -1; width: 130px; height: 130px; border: 2px solid rgb(219 55 30 / 50%); outline: 1px dashed rgb(219 55 30 / 30%); outline-offset: 14px; border-radius: 50%; top: -55px; right: -65px; }
-  .commune-result #nom-commune { color: #f8a52c; font-size: 12px; font-weight: 600; }
-  .commune-result > p:nth-child(2) { font-size: 48px; margin-top: 18px; letter-spacing: -.05em; }
-  .commune-result > p:nth-child(3) { margin-top: 10px; line-height: 1.7; }
-  .commune-result #ecart { padding-top: 16px; border-top: 1px solid rgb(189 207 222 / 20%); font-size: 12px; line-height: 1.7; }
-  .commune-sidebar dl { background: white; border-color: #e1eaf0; border-radius: 18px; padding: 4px 16px; }
-  .commune-sidebar dl > div { padding: 15px 0; gap: 18px; }
-  .commune-sidebar dl dd { color: #051c36; text-align: right; white-space: nowrap; }
-  .commune-sidebar > p { font-size: 12px; line-height: 1.7; padding-inline: 6px; }
-  .commune-page .data-figure { padding: clamp(18px, 2vw, 28px); border: 1px solid #e1eaf0; border-radius: 22px; box-shadow: 0 8px 28px rgb(5 28 54 / 4%); }
-  .commune-page .data-figure figcaption { padding-bottom: 18px; border-bottom: 1px solid #eaf1f6; }
-  .commune-page .data-figure figcaption > p:first-child { font-size: 19px; line-height: 1.4; }
-  .commune-page .data-figure figcaption > p + p { font-size: 13px; margin-top: 8px; }
-  .commune-page .data-figure > p { font-size: 12px; line-height: 1.7; }
-  .commune-page .commune-next { padding: 0 clamp(24px, 5vw, 64px) 64px; }
-  .commune-page .commune-next > div { max-width: 1072px; padding: clamp(28px, 4vw, 48px); border: 1px solid #d5e1eb; border-radius: 24px; background: #edf3f8; }
-  .commune-next h2 { font-size: clamp(24px, 3vw, 34px); }
-  .commune-next .text-neutral-700 { font-size: 15px; line-height: 1.8; }
-  @media (max-width: 1000px) {
-    .commune-workspace { grid-template-columns: 1fr; }
-    .commune-sidebar { position: static; grid-template-columns: 1fr 1fr; align-items: start; }
-    .commune-result { grid-column: 2; grid-row: 1 / 3; }
-  }
-  @media (max-width: 767px) {
-    .commune-page .content-section > div { padding-block: 40px; }
-    .commune-hero h1, .commune-page .commune-hero .text-neutral-700 { max-width: 100%; }
-    .commune-orbits { position: relative; top: auto; right: auto; width: 130px; height: 130px; transform: none; margin: 32px auto 0; }
-    .commune-orbits span + span { inset: 18px; }
-    .commune-page .commune-next { padding-bottom: 40px; }
-  }
-  @media (max-width: 540px) {
-    .commune-sidebar { grid-template-columns: 1fr; }
-    .commune-result { grid-column: auto; grid-row: auto; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .commune-orbits span { animation: none; }
-  }
-</style>
 
 <script>
   import * as Plot from "@observablehq/plot";
+  import { palette } from "../data/palette";
   import {
     exposition,
     listeCommunes,
@@ -252,7 +207,7 @@ const infos = infosCommune(communeParDefaut);
           x: "part",
           y: "nom",
           sort: { y: "-x" },
-          fill: (d) => (d.nom === communeChoisie ? "#DB371E" : "#bdcfde"),
+          fill: (d) => (d.nom === communeChoisie ? palette.miseEnAvant : palette.grisClair),
           title: (d) => `${d.nom} · ${formatPart(d.part)} %`,
         }),
         Plot.text(exposition, {
@@ -263,7 +218,7 @@ const infos = infosCommune(communeParDefaut);
           textAnchor: "start",
           filter: (d) => d.nom === communeChoisie,
         }),
-        Plot.ruleX([moyenneMetropole], { stroke: "#051C36", strokeDasharray: "4,3" }),
+        Plot.ruleX([moyenneMetropole], { stroke: palette.repere, strokeDasharray: "4,3" }),
         Plot.text([moyenneMetropole], {
           x: (d) => d,
           frameAnchor: "top",
