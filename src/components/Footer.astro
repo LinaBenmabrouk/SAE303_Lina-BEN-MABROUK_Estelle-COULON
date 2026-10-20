@@ -1,39 +1,26 @@
 ---
-import Logo from "../assets/logo.svg";
-// Logos officiels (Simple Icons), en currentColor pour prendre la couleur du texte
+import Logo from "../assets/icones/logo.svg";
 import IconeGithub from "../assets/icones/github.svg";
 import IconeObservable from "../assets/icones/observable.svg";
 import { site } from "../data/site";
 import { rubriques } from "../data/navigation";
-
-// Sources courtes pour le pied de page (le détail est sur la page Méthode)
-const sources = [
-  { nom: "Météo-France", url: "https://www.data.gouv.fr/datasets/6569b3d7d193b4daf2b43edc" },
-  { nom: "Bordeaux Métropole", url: "https://www.data.gouv.fr/datasets/ilot-de-chaleur-ou-de-fraicheur-urbain-base-sur-lanalyse-des-temperatures-de-surface-de-2022-1" },
-  { nom: "INSEE Filosofi", url: "https://www.insee.fr/fr/statistiques/7655515" },
-  { nom: "BDIFF", url: "https://bdiff.agriculture.gouv.fr/" },
-];
 ---
 
 <footer class="bg-neutral-900 text-sm text-neutral-300">
-  <!-- La 1re colonne prend la place libre à gauche, les 2 autres se calent à droite -->
-  <div class="mx-auto grid max-w-5xl gap-10 px-4 py-12 md:grid-cols-[1fr_auto_auto] md:gap-x-28">
-    <!-- Colonne 1 : le site -->
+  <div class="mx-auto grid max-w-5xl gap-10 px-4 py-10 md:grid-cols-[1fr_auto] md:py-12">
     <div>
       <a href="/" class="flex items-center gap-2 text-lg font-semibold text-white">
         <Logo class="size-7" aria-hidden="true" />
         {site.nom}
       </a>
-      <!-- Une phrase de présentation du site -->
       <p class="mt-3 max-w-xs">
         Un regard sur la chaleur à Bordeaux Métropole à partir de données publiques.
       </p>
     </div>
 
-    <!-- Colonne 2 : navigation -->
     <nav aria-labelledby="footer-rubriques">
       <h2 id="footer-rubriques" class="font-semibold text-white">Navigations</h2>
-      <ul class="mt-3 space-y-2">
+      <ul class="mt-3 space-y-3 md:space-y-2">
         {
           rubriques.map(({ url, titre }) => (
             <li>
@@ -43,32 +30,17 @@ const sources = [
         }
       </ul>
     </nav>
-
-    <!-- Colonne 3 : sources -->
-    <div>
-      <h2 class="font-semibold text-white">Sources</h2>
-      <ul class="mt-3 space-y-2">
-        {
-          sources.map(({ nom, url }) => (
-            <li>
-              <a href={url} class="hover:text-white hover:underline">{nom}</a>
-            </li>
-          ))
-        }
-      </ul>
-      <a href="/methode/" class="mt-4 inline-block text-white underline">
-        Détail des sources et méthode
-      </a>
-    </div>
   </div>
 
-  <!-- Bas de page -->
   <div class="border-t border-neutral-700">
     <div
-      class="mx-auto flex max-w-5xl flex-col gap-2 px-4 py-4 md:flex-row md:items-center md:justify-between"
+      class="mx-auto flex max-w-5xl flex-col gap-3 px-4 py-5 md:flex-row md:items-center md:justify-between"
     >
-      <p>{site.auteurs} · {site.formation}</p>
-      <!-- Liens en icônes : aria-label pour les lecteurs d'écran, title pour l'infobulle -->
+      <p>
+        <span class="block md:inline">{site.auteurs}</span>
+        <span class="hidden md:inline"> · </span>
+        <span class="block md:inline">{site.formation}</span>
+      </p>
       <p class="flex items-center gap-4">
         <a href={site.notebook} aria-label="Notebook Observable" title="Notebook Observable" class="hover:text-white">
           <IconeObservable class="size-6" aria-hidden="true" />

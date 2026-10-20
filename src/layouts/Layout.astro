@@ -4,8 +4,8 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import { site } from "../data/site";
 
-// Titre affiché dans l'onglet du navigateur
-const { titre } = Astro.props;
+const { titre, description = site.description, indexer = true } = Astro.props;
+const titreComplet = titre ? `${titre} · ${site.nom}` : site.nom;
 ---
 
 <!doctype html>
@@ -15,10 +15,18 @@ const { titre } = Astro.props;
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>{titre ? `${titre} · ${site.nom}` : site.nom}</title>
+    <title>{titreComplet}</title>
+    <meta name="description" content={description} />
+    {!indexer && <meta name="robots" content="noindex" />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:site_name" content={site.nom} />
+    <meta property="og:title" content={titreComplet} />
+    <meta property="og:description" content={description} />
+    <meta name="twitter:card" content="summary" />
   </head>
   <body class="flex min-h-screen flex-col bg-white text-neutral-900">
-    <!-- Lien d'évitement pour la navigation au clavier, visible seulement au focus -->
     <a
       href="#contenu"
       class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-20 focus:rounded focus:bg-neutral-900 focus:px-3 focus:py-2 focus:text-white"
@@ -28,7 +36,6 @@ const { titre } = Astro.props;
 
     <Header />
 
-    <!-- Chaque page découpe son contenu en <Section> pleine largeur -->
     <main id="contenu" class="flex-1">
       <slot />
     </main>

@@ -1,21 +1,14 @@
 ---
-// Enveloppe accessible autour d'un graphique (TP7, <figure> et <figcaption>).
-// - titre et sousTitre : nomment la figure pour les lecteurs d'écran
-// - le graphique se met dans le slot
-// - note : remarque de lecture sous le graphique (optionnelle)
-// - source : d'où viennent les données
-// Le texte alternatif en 4 temps se met dans les options du graphique
-// (ariaLabel et ariaDescription de Plot), sur le svg lui-même.
 const { titre, sousTitre, note, source } = Astro.props;
 ---
 
-<figure class="mt-8 rounded-xl border border-neutral-200 bg-white p-4 md:p-6">
+<figure class="mt-8 rounded-xl border border-neutral-200 bg-white p-3 sm:p-4 md:p-6">
   <figcaption>
-    <p class="text-lg font-semibold">{titre}</p>
-    {sousTitre && <p class="text-neutral-700">{sousTitre}</p>}
+    <p class="text-base font-semibold sm:text-lg">{titre}</p>
+    {sousTitre && <p class="text-sm text-neutral-700 sm:text-base">{sousTitre}</p>}
   </figcaption>
 
-  <div class="mt-4 overflow-x-auto">
+  <div class="mt-4">
     <slot />
   </div>
 

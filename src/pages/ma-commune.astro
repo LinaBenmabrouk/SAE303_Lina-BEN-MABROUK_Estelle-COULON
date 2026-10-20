@@ -1,6 +1,5 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import EnTetePage from "../components/EnTetePage.astro";
 import Section from "../components/Section.astro";
 import Figure from "../components/Figure.astro";
 import {
@@ -14,26 +13,27 @@ import {
   phraseEcart,
 } from "../data/communes";
 
-// Premier affichage (avant le JavaScript) : Bordeaux
 const communeParDefaut = "Bordeaux";
 const infos = infosCommune(communeParDefaut);
 ---
 
-<Layout titre="Ma commune">
-  <!-- Chapeau de la page : la question du lecteur (consigne V4) -->
-  <EnTetePage titre="Ma commune">
-    Ma commune est-elle plus exposée à la chaleur que les autres ? Choisissez-la
-    et comparez-la aux {exposition.length - 1} autres communes de Bordeaux Métropole.
-  </EnTetePage>
+<Layout
+  titre="Ma commune"
+  description="Choisissez votre commune de Bordeaux Métropole et découvrez la part de ses habitants qui vivent dans un îlot de chaleur."
+>
+  <Section fond class="border-b border-neutral-200">
+    <h1 class="text-3xl font-bold tracking-tight md:text-5xl">Ma commune</h1>
+    <div class="mt-4 max-w-2xl text-lg text-neutral-700">
+      Ma commune est-elle plus exposée à la chaleur que les autres ? Choisissez-la
+      et comparez-la aux {exposition.length - 1} autres communes de Bordeaux Métropole.
+    </div>
+  </Section>
 
   <Section id="choix">
     <div class="grid gap-8 md:grid-cols-[18rem_1fr] md:items-start">
-      <!-- Colonne de gauche : reste visible pendant le défilement (sur ordinateur) -->
-      <div class="space-y-4 md:sticky md:top-24">
-        <!-- Choix de la commune -->
-        <div>
+      <div class="max-md:contents md:sticky md:top-24 md:space-y-4">
+        <div class="max-md:sticky max-md:top-14 max-md:z-10 max-md:-mx-4 max-md:border-b max-md:border-neutral-200 max-md:bg-white/95 max-md:px-4 max-md:py-3 max-md:backdrop-blur">
           <label for="commune" class="block font-semibold">Choisissez votre commune</label>
-          <!-- Flèche native masquée (appearance-none) et remplacée par une flèche bien placée -->
           <div class="relative mt-2">
             <select
               id="commune"
@@ -56,12 +56,11 @@ const infos = infosCommune(communeParDefaut);
               <path d="M5 8l5 5 5-5" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
           </div>
-          <p class="mt-2 text-sm text-neutral-600">
+          <p class="mt-2 text-sm text-neutral-600 max-md:hidden">
             Vous pouvez aussi cliquer sur une barre du graphique.
           </p>
         </div>
 
-        <!-- Résultat principal, annoncé par les lecteurs d'écran à chaque changement -->
         <div
           aria-live="polite"
           aria-atomic="true"
@@ -77,7 +76,6 @@ const infos = infosCommune(communeParDefaut);
           <p id="ecart" class="mt-3 text-sm text-neutral-300">{phraseEcart(infos.ecart)}</p>
         </div>
 
-        <!-- Détail de la commune -->
         <dl class="divide-y divide-neutral-200 rounded-xl border border-neutral-200 text-sm">
           <div class="flex justify-between gap-4 p-3">
             <dt class="text-neutral-600">Habitants</dt>
@@ -100,7 +98,6 @@ const infos = infosCommune(communeParDefaut);
         </p>
       </div>
 
-      <!-- Colonne de droite : V4 · graphique calculé dans le navigateur (route B, TP4) -->
       <div class="min-w-0 [&>figure]:mt-0">
         <Figure
           titre={`Selon la commune, de ${Math.round(moinsExposee.part)} % à ${Math.round(plusExposee.part)} % des habitants vivent dans un îlot de chaleur`}
@@ -108,7 +105,7 @@ const infos = infosCommune(communeParDefaut);
           note="La ligne en pointillés indique la moyenne de la métropole. Les habitants viennent des carreaux INSEE de 2019, les îlots des relevés de l'été 2022."
           source="Bordeaux Métropole 2022 et INSEE Filosofi 2019"
         >
-          <div id="graphique" class="min-h-[676px]"></div>
+          <div id="graphique" class="min-h-[620px] md:min-h-[676px]"></div>
         </Figure>
       </div>
     </div>
@@ -130,9 +127,7 @@ const infos = infosCommune(communeParDefaut);
 </Layout>
 
 <script>
-  // Importe la librairie Plot (Astro sert de « packageur », TP4)
   import * as Plot from "@observablehq/plot";
-  // Importe les données et les calculs communs
   import {
     exposition,
     listeCommunes,
@@ -145,24 +140,19 @@ const infos = infosCommune(communeParDefaut);
     phraseEcart,
   } from "../data/communes";
 
-  // Récupère les éléments de la page
   const selectCommune = document.getElementById("commune") as HTMLSelectElement;
   const divGraphique = document.getElementById("graphique") as HTMLDivElement;
   const ecrire = (id: string, texte: string) => {
     (document.getElementById(id) as HTMLElement).textContent = texte;
   };
 
-  // Si l'adresse contient une commune (ex. /ma-commune/#Talence), on la sélectionne (TP3, location.hash)
   const communeDansUrl = decodeURIComponent(location.hash.slice(1));
   if (listeCommunes.includes(communeDansUrl)) selectCommune.value = communeDansUrl;
 
-  // Fonction pour afficher la fiche et le graphique
   function renderPlot() {
-    // Récupère la commune choisie
     const communeChoisie = selectCommune.value;
     const infos = infosCommune(communeChoisie);
 
-    // Met à jour la fiche
     ecrire("nom-commune", infos.nom);
     ecrire("part", formatPart(infos.part));
     ecrire("ecart", phraseEcart(infos.ecart));
@@ -170,28 +160,24 @@ const infos = infosCommune(communeParDefaut);
     ecrire("exposes", formatNombre(infos.exposes));
     ecrire("rang", String(infos.rang));
 
-    // Vide le graphique précédent
     divGraphique.innerHTML = "";
 
-    // Crée le graphique avec Plot (code du notebook, plus la ligne de moyenne)
+    const largeur = divGraphique.clientWidth || 640;
+    const mobile = largeur < 500;
+
     const plot = Plot.plot({
-      // Texte alternatif en 4 temps (la fin est complétée avec la commune choisie)
       ariaLabel: `Diagramme en barres de la part des habitants en îlot de chaleur dans les ${exposition.length} communes de Bordeaux Métropole`,
       ariaDescription: [
-        // 1. La nature
         `Diagramme en barres horizontales, une barre par commune, de la plus exposée à la moins exposée.`,
-        // 2. Ce qui est mesuré
         `Chaque barre donne la part des habitants qui vivent dans un îlot de chaleur.`,
-        // 3. La conclusion
         `L'exposition change beaucoup d'une commune à l'autre.`,
-        // 4. Les valeurs remarquables
         `${plusExposee.nom} est la plus exposée avec ${formatPart(plusExposee.part)} %, ${moinsExposee.nom} la moins exposée avec ${formatPart(moinsExposee.part)} %. La moyenne de la métropole est de ${formatPart(moyenneMetropole)} %.`,
         `${infos.nom} est en rouge avec ${formatPart(infos.part)} %, rang ${infos.rang} sur ${exposition.length}.`,
       ].join(" "),
-      // Largeur de la colonne (le graphique s'adapte à la place disponible)
-      width: divGraphique.clientWidth || 640,
-      height: exposition.length * 22 + 60,
-      marginLeft: 180,
+      width: largeur,
+      height: exposition.length * (mobile ? 20 : 22) + 60,
+      marginLeft: mobile ? 150 : 180,
+      marginRight: 40,
       marginTop: 30,
       x: { label: "Part des habitants en îlot de chaleur (%)", domain: [0, 100], grid: true },
       y: { label: null },
@@ -201,7 +187,6 @@ const infos = infosCommune(communeParDefaut);
           y: "nom",
           sort: { y: "-x" },
           fill: (d) => (d.nom === communeChoisie ? "#b2182b" : "#d9d9d9"),
-          // Infobulle au survol
           title: (d) => `${d.nom} · ${formatPart(d.part)} %`,
         }),
         Plot.text(exposition, {
@@ -212,41 +197,34 @@ const infos = infosCommune(communeParDefaut);
           textAnchor: "start",
           filter: (d) => d.nom === communeChoisie,
         }),
-        // Moyenne de la métropole
         Plot.ruleX([moyenneMetropole], { stroke: "#404040", strokeDasharray: "4,3" }),
         Plot.text([moyenneMetropole], {
           x: (d) => d,
           frameAnchor: "top",
           dy: -12,
-          text: () => "Moyenne de la métropole",
+          text: () => (mobile ? "Moyenne" : "Moyenne de la métropole"),
         }),
         Plot.ruleX([0]),
       ],
     });
 
-    // Ajoute le graphique à la div
     divGraphique.append(plot);
 
-    // Clic sur une barre : choisit la commune (les barres sont dans l'ordre des données)
     plot.querySelectorAll('g[aria-label="bar"] rect').forEach((rect, i) => {
       (rect as SVGRectElement).style.cursor = "pointer";
       rect.addEventListener("click", () => choisirCommune(exposition[i].nom));
     });
   }
 
-  // Change la commune : met à jour le select, l'adresse et le graphique
   function choisirCommune(nom: string) {
     selectCommune.value = nom;
     history.replaceState(null, "", "#" + encodeURIComponent(nom));
     renderPlot();
   }
 
-  // À chaque changement : met la commune dans l'adresse et redessine
   selectCommune.addEventListener("change", () => choisirCommune(selectCommune.value));
 
-  // Redessine si la fenêtre change de taille (le graphique suit la largeur de la colonne)
   window.addEventListener("resize", renderPlot);
 
-  // Affiche le graphique au chargement de la page
   renderPlot();
 </script>

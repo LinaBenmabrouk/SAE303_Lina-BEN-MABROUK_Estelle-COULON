@@ -1,6 +1,5 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import EnTetePage from "../components/EnTetePage.astro";
 import Section from "../components/Section.astro";
 import Figure from "../components/Figure.astro";
 import PlotFigure from "../components/PlotFigure.astro";
@@ -17,30 +16,33 @@ import {
   formatNombre,
 } from "../data/communes";
 
-// Chiffres de la carte (V2)
 const totalExposes = exposition.reduce((total, c) => total + c.exposes, 0);
 const communesTresExposees = exposition.filter((c) => c.part > 80);
 const classement = [...exposition].sort((a, b) => b.part - a.part);
 const bordeaux = exposition.find((c) => c.nom === "Bordeaux")!;
 
-// Chiffres des revenus (V6)
 const groupeMin = expositionRevenus.reduce((a, b) => (b.partExposee < a.partExposee ? b : a));
 const groupeMax = expositionRevenus.reduce((a, b) => (b.partExposee > a.partExposee ? b : a));
 const premierGroupe = expositionRevenus[0];
 const dernierGroupe = expositionRevenus[expositionRevenus.length - 1];
 ---
 
-<Layout titre="Les habitants">
-  <EnTetePage titre="Les habitants">
-    Qui vit dans les zones les plus chaudes de la métropole ? Nous avons croisé
-    les îlots de chaleur avec la population, commune par commune, puis selon le
-    niveau de vie.
-  </EnTetePage>
+<Layout
+  titre="Les habitants"
+  description="Environ 70 % des habitants de Bordeaux Métropole vivent dans un îlot de chaleur. Carte par commune et comparaison selon le niveau de vie."
+>
+  <Section fond class="border-b border-neutral-200">
+    <h1 class="text-3xl font-bold tracking-tight md:text-5xl">Les habitants</h1>
+    <div class="mt-4 max-w-2xl text-lg text-neutral-700">
+      Qui vit dans les zones les plus chaudes de la métropole ? Nous avons croisé
+      les îlots de chaleur avec la population, commune par commune, puis selon le
+      niveau de vie.
+    </div>
+  </Section>
 
-  <!-- Chiffres clés -->
   <Section>
     <h2 class="sr-only">Chiffres clés</h2>
-    <div class="grid gap-8 md:grid-cols-3">
+    <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 sm:[&>:last-child]:col-span-2 lg:[&>:last-child]:col-span-1">
       <ChiffreCle valeur={Math.round(moyenneMetropole)} unite="%">
         des habitants de la métropole vivent dans un îlot de chaleur
       </ChiffreCle>
@@ -54,7 +56,6 @@ const dernierGroupe = expositionRevenus[expositionRevenus.length - 1];
   </Section>
 
   <Section id="carte" fond>
-    <!-- V2 · carte, part des habitants en îlot de chaleur par commune -->
     <h2 class="text-2xl font-bold">Le centre bien plus exposé que la périphérie</h2>
     <div class="mt-4 max-w-2xl space-y-4 text-neutral-700">
       <p>
@@ -80,17 +81,12 @@ const dernierGroupe = expositionRevenus[expositionRevenus.length - 1];
         options={{
           ariaLabel: `Carte des ${exposition.length} communes de Bordeaux Métropole selon la part des habitants en îlot de chaleur`,
           ariaDescription: [
-            // 1. La nature
             `Carte des ${exposition.length} communes de Bordeaux Métropole, colorées en 5 classes d'orange, du plus clair au plus foncé.`,
-            // 2. Ce qui est mesuré
             `La couleur indique la part des habitants qui vivent dans un îlot de chaleur.`,
-            // 3. La conclusion
             `Les communes du centre sont les plus exposées, celles de la périphérie beaucoup moins.`,
-            // 4. Les valeurs remarquables
             `${plusExposee.nom} est la plus exposée avec ${formatPart(plusExposee.part)} %, suivie de ${classement[1].nom} avec ${formatPart(classement[1].part)} %. ${moinsExposee.nom} est la moins exposée avec ${formatPart(moinsExposee.part)} %.`,
           ].join(" "),
           width: 800,
-          // Contours déjà remis dans le bon sens dans le notebook (fonction retourner)
           projection: { type: "mercator", domain: communesCarte },
           color: {
             type: "quantize",
@@ -104,15 +100,14 @@ const dernierGroupe = expositionRevenus[expositionRevenus.length - 1];
               fill: (d) => d.properties.part,
               stroke: "white",
               strokeWidth: 0.6,
-              // Infobulle native du navigateur au survol (pas besoin de JavaScript)
               title: (d) => `${d.properties.nom} · ${formatPart(d.properties.part)} %`,
             }),
           ],
         }}
+        optionsMobile={{ width: 340 }}
       />
     </Figure>
 
-    <!-- Les données de la carte en tableau (utile au clavier et aux lecteurs d'écran) -->
     <details class="mt-4 rounded-xl border border-neutral-200 bg-white p-4">
       <summary class="cursor-pointer font-semibold">Voir les données de la carte</summary>
       <div class="mt-4 overflow-x-auto">
@@ -146,7 +141,6 @@ const dernierGroupe = expositionRevenus[expositionRevenus.length - 1];
   </Section>
 
   <Section id="revenus">
-    <!-- V6 · exposition par groupe de niveau de vie -->
     <h2 class="text-2xl font-bold">Le niveau de vie ne change presque rien</h2>
     <div class="mt-4 max-w-2xl space-y-4 text-neutral-700">
       <p>
@@ -174,13 +168,9 @@ const dernierGroupe = expositionRevenus[expositionRevenus.length - 1];
         options={{
           ariaLabel: "Diagramme en barres de la part des habitants en îlot de chaleur selon 5 groupes de niveau de vie",
           ariaDescription: [
-            // 1. La nature
             `Diagramme en barres verticales, une barre par groupe de niveau de vie, du groupe 1 (les plus modestes) au groupe 5 (les plus aisés).`,
-            // 2. Ce qui est mesuré
             `Chaque barre donne la part des habitants du groupe qui vivent dans un îlot de chaleur.`,
-            // 3. La conclusion
             `Les cinq barres ont presque la même hauteur, le niveau de vie ne change presque rien.`,
-            // 4. Les valeurs remarquables
             `Les valeurs vont de ${formatPart(groupeMin.partExposee)} % pour le groupe ${groupeMin.groupe} à ${formatPart(groupeMax.partExposee)} % pour le groupe ${groupeMax.groupe}.`,
           ].join(" "),
           width: 800,
@@ -191,7 +181,6 @@ const dernierGroupe = expositionRevenus[expositionRevenus.length - 1];
           y: { label: "Part des habitants en îlot de chaleur (%)", domain: [0, 100], grid: true },
           marks: [
             Plot.barY(expositionRevenus, { x: "groupe", y: "partExposee", fill: "#d6604d" }),
-            // Part au-dessus de chaque barre
             Plot.text(expositionRevenus, {
               x: "groupe",
               y: "partExposee",
@@ -199,11 +188,33 @@ const dernierGroupe = expositionRevenus[expositionRevenus.length - 1];
               dy: -8,
               fontWeight: "bold",
             }),
-            // Niveau de vie moyen en bas de chaque barre
             Plot.text(expositionRevenus, {
               x: "groupe",
               y: 0,
               text: (d) => `${formatNombre(d.niveauVieMoyen)} €/an`,
+              dy: -12,
+              fill: "white",
+            }),
+            Plot.ruleY([0]),
+          ],
+        }}
+        optionsMobile={{
+          width: 340,
+          x: { label: "Groupe (1 = plus modestes, 5 = plus aisés)", tickFormat: (d) => String(d) },
+          y: { label: "Part en îlot de chaleur (%)", domain: [0, 100], grid: true },
+          marks: [
+            Plot.barY(expositionRevenus, { x: "groupe", y: "partExposee", fill: "#d6604d" }),
+            Plot.text(expositionRevenus, {
+              x: "groupe",
+              y: "partExposee",
+              text: (d) => Math.round(d.partExposee) + " %",
+              dy: -8,
+              fontWeight: "bold",
+            }),
+            Plot.text(expositionRevenus, {
+              x: "groupe",
+              y: 0,
+              text: (d) => `${Math.round(d.niveauVieMoyen / 1000)} k€`,
               dy: -12,
               fill: "white",
             }),

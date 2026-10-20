@@ -1,10 +1,8 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import EnTetePage from "../components/EnTetePage.astro";
 import Section from "../components/Section.astro";
 import { site } from "../data/site";
 
-// Fichiers du site, rendus téléchargeables (« ?url » donne l'adresse du fichier publié)
 import urlJoursChauds from "../assets/jours-chauds.json?url";
 import urlEcartsIlots from "../assets/ecarts-ilots.json?url";
 import urlExpositionCommunes from "../assets/exposition-communes.json?url";
@@ -12,7 +10,6 @@ import urlExpositionRevenus from "../assets/exposition-revenus.json?url";
 import urlFeuxParAn from "../assets/feux-par-an.json?url";
 import urlCommunesCarte from "../assets/communes-carte.json?url";
 
-// Sources (le tableau est généré par une boucle)
 const sources = [
   {
     nom: "Données climatologiques de base mensuelles, Gironde",
@@ -51,7 +48,6 @@ const sources = [
   },
 ];
 
-// Données téléchargeables (fichiers calculés dans le notebook et utilisés par le site)
 const telechargements = [
   { fichier: "jours-chauds.json", url: urlJoursChauds, contenu: "Jours à 30 °C ou plus par an, pour les 3 stations" },
   { fichier: "ecarts-ilots.json", url: urlEcartsIlots, contenu: "Nombre de zones pour chaque écart de température" },
@@ -62,11 +58,17 @@ const telechargements = [
 ];
 ---
 
-<Layout titre="Méthode">
-  <EnTetePage titre="Méthode">
-    D'où viennent les chiffres de ce site, comment nous les avons calculés et ce
-    qu'ils ne disent pas. Tout ce qui est publié ici peut être vérifié.
-  </EnTetePage>
+<Layout
+  titre="Méthode"
+  description="Sources, dates, licences, traitements et limites des données du site. Données téléchargeables et lien vers notre notebook Observable."
+>
+  <Section fond class="border-b border-neutral-200">
+    <h1 class="text-3xl font-bold tracking-tight md:text-5xl">Méthode</h1>
+    <div class="mt-4 max-w-2xl text-lg text-neutral-700">
+      D'où viennent les chiffres de ce site, comment nous les avons calculés et ce
+      qu'ils ne disent pas. Tout ce qui est publié ici peut être vérifié.
+    </div>
+  </Section>
 
   <Section id="sources">
     <h2 class="text-2xl font-bold">Sources</h2>
@@ -78,7 +80,25 @@ const telechargements = [
       </p>
     </div>
 
-    <div class="mt-8 overflow-x-auto">
+    <ul class="mt-8 space-y-3 md:hidden">
+      {
+        sources.map(({ nom, producteur, dates, licence, url }) => (
+          <li class="rounded-xl border border-neutral-200 p-4 text-sm">
+            <a href={url} class="font-semibold underline">{nom}</a>
+            <dl class="mt-2 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1">
+              <dt class="text-neutral-600">Producteur</dt>
+              <dd>{producteur}</dd>
+              <dt class="text-neutral-600">Dates</dt>
+              <dd>{dates}</dd>
+              <dt class="text-neutral-600">Licence</dt>
+              <dd>{licence}</dd>
+            </dl>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="mt-8 hidden overflow-x-auto md:block">
       <table class="w-full text-left text-sm">
         <caption class="sr-only">Sources des données, dates et licences</caption>
         <thead class="border-b border-neutral-300">

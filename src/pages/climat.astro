@@ -1,6 +1,5 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import EnTetePage from "../components/EnTetePage.astro";
 import Section from "../components/Section.astro";
 import Figure from "../components/Figure.astro";
 import PlotFigure from "../components/PlotFigure.astro";
@@ -13,7 +12,6 @@ import { formatNombre } from "../data/communes";
 
 const formatDecimal = (x: number) => x.toFixed(1).replace(".", ",");
 
-// ---- Feux (V5) ----
 const feux2022 = feuxParAn.find((d) => d.annee === 2022)!;
 const autresAnnees = feuxParAn.filter((d) => d.annee !== 2022);
 const hectaresAutres = autresAnnees.reduce((total, d) => total + d.hectaresGironde, 0);
@@ -23,8 +21,6 @@ const plusDeFeux = feuxParAn.reduce((a, b) => (b.feuxGironde > a.feuxGironde ? b
 const premiereAnnee = feuxParAn[0].annee;
 const derniereAnnee = feuxParAn[feuxParAn.length - 1].annee;
 
-// ---- Jours de forte chaleur (V3) ----
-// Moyenne des jours à 30 °C ou plus sur une période, pour une station
 const moyenne = (station: string, debut: number, fin: number) => {
   const annees = joursChauds.filter((d: (typeof joursChauds)[number]) => d.station === station && d.annee >= debut && d.annee <= fin);
   return annees.reduce((total, d) => total + d.jours30, 0) / annees.length;
@@ -44,16 +40,21 @@ const merignac = stations.find((s) => s.station.startsWith("Mérignac"))!;
 const centreVille = stations.find((s) => s.station.includes("Paulin"))!;
 ---
 
-<Layout titre="Le climat">
-  <EnTetePage titre="Le climat">
-    L'été 2022 a marqué la Gironde. Derrière les incendies, une tendance de fond
-    se dessine, les jours de forte chaleur sont de plus en plus nombreux depuis 1950.
-  </EnTetePage>
+<Layout
+  titre="Le climat"
+  description="Incendies de 2022 en Gironde et jours à 30 °C ou plus depuis 1950 à Mérignac, Villenave-d'Ornon et Bordeaux-Paulin."
+>
+  <Section fond class="border-b border-neutral-200">
+    <h1 class="text-3xl font-bold tracking-tight md:text-5xl">Le climat</h1>
+    <div class="mt-4 max-w-2xl text-lg text-neutral-700">
+      L'été 2022 a marqué la Gironde. Derrière les incendies, une tendance de fond
+      se dessine, les jours de forte chaleur sont de plus en plus nombreux depuis 1950.
+    </div>
+  </Section>
 
-  <!-- Chiffres clés -->
   <Section>
     <h2 class="sr-only">Chiffres clés</h2>
-    <div class="grid gap-8 md:grid-cols-3">
+    <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 sm:[&>:last-child]:col-span-2 lg:[&>:last-child]:col-span-1">
       <ChiffreCle valeur={formatNombre(feux2022.hectaresGironde)} unite="hectares">
         brûlés par les incendies de forêt en Gironde en 2022
       </ChiffreCle>
@@ -67,7 +68,6 @@ const centreVille = stations.find((s) => s.station.includes("Paulin"))!;
   </Section>
 
   <Section id="feux" fond>
-    <!-- V5 · surfaces brûlées en Gironde, pic de 2022 -->
     <h2 class="text-2xl font-bold">2022, un été hors norme</h2>
     <div class="mt-4 max-w-2xl space-y-4 text-neutral-700">
       <p>
@@ -92,13 +92,9 @@ const centreVille = stations.find((s) => s.station.includes("Paulin"))!;
         options={{
           ariaLabel: `Diagramme en barres de la surface brûlée en Gironde chaque année, de ${premiereAnnee} à ${derniereAnnee}`,
           ariaDescription: [
-            // 1. La nature
             `Diagramme en barres verticales, une barre par année de ${premiereAnnee} à ${derniereAnnee}, l'année 2022 en rouge.`,
-            // 2. Ce qui est mesuré
             `Chaque barre donne la surface brûlée par les incendies de forêt en Gironde, en hectares.`,
-            // 3. La conclusion
             `L'année 2022 écrase toutes les autres.`,
-            // 4. Les valeurs remarquables
             `${formatNombre(feux2022.hectaresGironde)} hectares en 2022, contre ${formatNombre(hectaresAutres)} pour les ${autresAnnees.length} autres années réunies. Avant 2022, le maximum est ${formatNombre(pireAvant2022.hectaresGironde)} hectares en ${pireAvant2022.annee}.`,
           ].join(" "),
           width: 800,
@@ -109,10 +105,8 @@ const centreVille = stations.find((s) => s.station.includes("Paulin"))!;
               x: "annee",
               y: "hectaresGironde",
               fill: (d) => (d.annee === 2022 ? "#b2182b" : "#bdbdbd"),
-              // Infobulle native au survol
               title: (d) => `${d.annee} · ${formatNombre(d.hectaresGironde)} hectares · ${d.feuxGironde} feux`,
             }),
-            // Valeur de 2022 au-dessus de sa barre
             Plot.text([feux2022], {
               x: "annee",
               y: "hectaresGironde",
@@ -123,12 +117,16 @@ const centreVille = stations.find((s) => s.station.includes("Paulin"))!;
             Plot.ruleY([0]),
           ],
         }}
+        optionsMobile={{
+          width: 340,
+          x: { label: null, tickFormat: (d) => String(d), ticks: [2006, 2010, 2014, 2018, 2022] },
+          y: { label: "Hectares brûlés", grid: true, tickFormat: (d) => formatNombre(d) },
+        }}
       />
     </Figure>
   </Section>
 
   <Section id="jours-chauds">
-    <!-- V3 · jours à 30 °C ou plus depuis 1950, 3 stations -->
     <h2 class="text-2xl font-bold">De plus en plus de jours à 30 °C</h2>
     <div class="mt-4 max-w-2xl space-y-4 text-neutral-700">
       <p>
@@ -144,7 +142,6 @@ const centreVille = stations.find((s) => s.station.includes("Paulin"))!;
       </p>
     </div>
 
-    <!-- Comparaison des deux périodes, station par station -->
     <div class="mt-8 overflow-x-auto">
       <table class="w-full max-w-3xl text-left text-sm">
         <caption class="mb-2 text-left font-semibold">
@@ -190,16 +187,17 @@ const centreVille = stations.find((s) => s.station.includes("Paulin"))!;
           }),
           ariaLabel: "Nuage de points et courbes du nombre de jours à 30 °C ou plus par an dans trois stations, depuis 1950",
           ariaDescription: [
-            // 1. La nature
             `Nuage de points avec une courbe par station, pour Mérignac, Villenave-d'Ornon et Bordeaux-Paulin, de 1950 à 2025.`,
-            // 2. Ce qui est mesuré
             `Chaque point donne le nombre de jours de l'année où la température maximale atteint 30 °C ou plus. Les courbes montrent la moyenne des 10 dernières années.`,
-            // 3. La conclusion
             `Les trois courbes montent nettement sur la période.`,
-            // 4. Les valeurs remarquables
             `À Mérignac, la moyenne passe de ${formatDecimal(merignac.avant)} jours par an entre 1950 et 1979 à ${formatDecimal(merignac.apres)} entre 1996 et 2025. Le record est ${merignac.record.annee}, avec ${merignac.record.jours30} jours à Mérignac et ${centreVille.record.jours30} au centre-ville.`,
           ].join(" "),
         }}
+        optionsMobile={optionsJoursChauds(joursChauds, {
+          largeur: 340,
+          anneeAnnotee: merignac.record.annee,
+          texteAnnotation: `Record ${merignac.record.annee}`,
+        })}
       />
     </Figure>
   </Section>

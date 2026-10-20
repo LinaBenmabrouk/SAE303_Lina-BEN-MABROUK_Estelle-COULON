@@ -1,9 +1,22 @@
 ---
 import * as Plot from "@observablehq/plot";
 import { JSDOM } from "jsdom";
-const { options } = Astro.props;
+
+const { options, optionsMobile } = Astro.props;
 
 const plot = Plot.plot({ ...options, document: new JSDOM("").window.document });
+const plotMobile = optionsMobile
+  ? Plot.plot({ ...options, ...optionsMobile, document: new JSDOM("").window.document })
+  : null;
 ---
 
-<div set:html={plot.outerHTML} />
+{
+  plotMobile ? (
+    <>
+      <div class="hidden sm:block" set:html={plot.outerHTML} />
+      <div class="sm:hidden" set:html={plotMobile.outerHTML} />
+    </>
+  ) : (
+    <div set:html={plot.outerHTML} />
+  )
+}

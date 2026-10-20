@@ -1,0 +1,45 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Section from "../components/Section.astro";
+import { rubriques } from "../data/navigation";
+---
+
+<Layout
+  titre="Page introuvable"
+  description="Cette page n'existe pas ou a été déplacée."
+  indexer={false}
+>
+  <Section>
+    <div class="py-12 md:py-20">
+      <p class="text-8xl font-bold tracking-tight text-neutral-300 md:text-9xl" aria-hidden="true">
+        404
+      </p>
+      <h1 class="mt-4 text-3xl font-bold md:text-4xl">Cette page est introuvable</h1>
+      <p class="mt-4 max-w-xl text-lg text-neutral-700">
+        L'adresse est peut-être mal écrite, ou la page a été déplacée. Vous pouvez
+        revenir à l'accueil ou choisir une rubrique.
+      </p>
+      <a
+        href="/"
+        class="mt-8 inline-block rounded-full bg-neutral-900 px-5 py-3 font-medium text-white hover:bg-neutral-700"
+      >
+        Revenir à l'accueil
+      </a>
+    </div>
+
+    <nav aria-labelledby="titre-rubriques-404">
+      <h2 id="titre-rubriques-404" class="font-semibold">Rubriques</h2>
+      <ul class="mt-4 flex flex-wrap gap-2">
+        {
+          rubriques.map(({ url, titre }) => (
+            <li>
+              <a href={url} class="block rounded-full border border-neutral-300 px-4 py-2 hover:border-neutral-900">
+                {titre}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </Section>
+</Layout>
