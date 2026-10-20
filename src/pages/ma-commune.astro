@@ -3,9 +3,13 @@ import Layout from "../layouts/Layout.astro";
 import Section from "../components/Section.astro";
 import { etapeDe } from "../data/navigation";
 import Figure from "../components/Figure.astro";
+import joursChauds from "../assets/jours-chauds.json";
+import ecartsIlots from "../assets/ecarts-ilots.json";
+import expositionRevenus from "../assets/exposition-revenus.json";
 import {
   exposition,
   listeCommunes,
+  moyenneMetropole,
   plusExposee,
   moinsExposee,
   infosCommune,
@@ -16,6 +20,51 @@ import {
 
 const communeParDefaut = "Bordeaux";
 const infos = infosCommune(communeParDefaut);
+
+const merignac = joursChauds.filter((d) => d.station.startsWith("Mérignac"));
+const moyenneJours = (debut: number, fin: number) => {
+  const annees = merignac.filter((d) => d.annee >= debut && d.annee <= fin);
+  return annees.reduce((total, d) => total + d.jours30, 0) / annees.length;
+};
+const parts = expositionRevenus.map((d) => d.partExposee);
+const virgule = (x: number) => x.toFixed(1).replace(".", ",");
+
+const bilan = [
+  {
+    url: "/climat/",
+    etape: etapeDe("/climat/"),
+    valeur: virgule(moyenneJours(1996, 2025) / moyenneJours(1950, 1979)),
+    unite: "fois plus",
+    texte: "de jours à 30 °C à Mérignac qu'entre 1950 et 1979",
+  },
+  {
+    url: "/ilots/",
+    etape: etapeDe("/ilots/"),
+    valeur: formatNombre(ecartsIlots.filter((d) => d.delta > 0).reduce((total, d) => total + d.zones, 0)),
+    unite: "îlots",
+    texte: "de chaleur relevés dans la métropole en 2022",
+  },
+  {
+    url: "/habitants/",
+    etape: etapeDe("/habitants/"),
+    valeur: Math.round(moyenneMetropole),
+    unite: "%",
+    texte: "des habitants vivent dans un îlot de chaleur",
+  },
+  {
+    url: "/habitants/#revenus",
+    etape: etapeDe("/habitants/"),
+    valeur: virgule(Math.max(...parts) - Math.min(...parts)),
+    unite: "points",
+    texte: "d'écart seulement entre les plus modestes et les plus aisés",
+  },
+];
+const couleursBilan = [
+  "bg-brand-orange text-brand-navy",
+  "bg-brand-red text-white",
+  "bg-brand-blue text-white",
+  "bg-brand-navy text-papier",
+];
 
 const surtitre = "mb-4 text-10 font-bold tracking-surtitre uppercase";
 const orbite = "absolute rounded-full border-2";
@@ -121,12 +170,61 @@ const orbite = "absolute rounded-full border-2";
     </div>
   </Section>
 
-  <Section id="conclusion" class="border-y border-ligne bg-brume">
-    <p class:list={[surtitre, "text-brand-blue"]}>Conclusion</p>
-    <h2 class="max-w-27ch text-titre-section font-bold">…</h2>
-    <div class="mt-6.5 grid grid-cols-2 gap-8 text-15 leading-long text-neutral-700 max-md:grid-cols-1 max-md:gap-4">
-      <p>…</p>
-      <p>…</p>
+  <Section id="conclusion" class="relative overflow-hidden border-y border-brand-orange/25 bg-linear-115 from-jaune-pale to-creme text-brand-navy" interieur="relative max-w-290 px-gouttiere py-20 max-md:py-12">
+    <p class:list={[surtitre, "text-brique"]}>Conclusion</p>
+    <h2 class="max-w-24ch text-titre-section font-bold">Sept habitants sur dix vivent déjà dans la chaleur</h2>
+
+    <div class="mt-10 grid gap-10 lg:grid-cols-5 lg:gap-14">
+      <div class="space-y-8 text-16 leading-texte text-neutral-700 lg:col-span-3">
+        <div>
+          <h3 class="mb-2 text-17 font-semibold text-brique">Ce que montrent les données</h3>
+          <p>
+            Depuis 1950, les jours à 30 °C ou plus ont plus que doublé à Mérignac, et l'été 2022 a établi un
+            record avec 54 jours. En ville, cette chaleur se concentre dans des îlots de chaleur, où vivent
+            environ 7 habitants sur 10. Le centre de la métropole est le plus touché, de Talence à Bordeaux.
+          </p>
+        </div>
+        <div>
+          <h3 class="mb-2 text-17 font-semibold text-brand-blue">Ce que nous n'attendions pas</h3>
+          <p>
+            On pouvait penser que les quartiers modestes étaient les plus exposés. Les données disent autre
+            chose. Entre les habitants les plus modestes et les plus aisés, l'écart ne dépasse pas 3 points.
+            La chaleur en ville concerne presque tout le monde.
+          </p>
+        </div>
+        <div>
+          <h3 class="mb-2 text-17 font-semibold text-brand-red-fonce">Ce que ça change pour vous</h3>
+          <p>
+            Connaître la situation de sa commune aide à anticiper les fortes chaleurs et à adapter son
+            quotidien pendant les canicules. Nos données ont pourtant leurs limites. Elles mesurent la
+            température du sol sur deux journées de 2022 et ne comptent pas les personnes en maison de
+            retraite, parmi les plus fragiles. Croiser ces îlots avec l'âge des habitants ou l'état des
+            logements permettrait de savoir qui souffre vraiment de la chaleur.
+          </p>
+        </div>
+      </div>
+
+      <div class="lg:col-span-2">
+        <h3 class="mb-4 text-12 font-bold tracking-label text-neutral-700 uppercase">Le récit en quatre chiffres</h3>
+        <ul class="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+          {
+            bilan.map(({ url, etape, valeur, unite, texte }, i) => (
+              <li>
+                <a href={url} class:list={[couleursBilan[i], "group block h-full rounded-bloc p-5 shadow-stat transition duration-200 survol:-translate-y-1 survol:shadow-sujet"]}>
+                  <span class="text-10 font-bold tracking-surtitre uppercase opacity-80">{etape}</span>
+                  <span class="mt-2 flex flex-wrap items-baseline gap-x-2 font-bold">
+                    <span class="text-chiffre-compact leading-chiffre tracking-chiffre">{valeur}</span>
+                    <span class="text-17">{unite}</span>
+                  </span>
+                  <span class="mt-1 block text-13 leading-note">
+                    {texte} <span class="inline-block transition duration-200 group-survol:translate-x-1" aria-hidden="true">→</span>
+                  </span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
     </div>
   </Section>
 
