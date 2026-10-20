@@ -1,6 +1,8 @@
 ---
 import "../styles/global.css";
 import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { site } from "../data/site";
 
 // Titre affiché dans l'onglet du navigateur
 const { titre } = Astro.props;
@@ -13,7 +15,7 @@ const { titre } = Astro.props;
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>{titre ? `${titre} · SAÉ 303 Gr 15` : "SAÉ 303 Gr 15"}</title>
+    <title>{titre ? `${titre} · ${site.nom}` : site.nom}</title>
   </head>
   <body class="flex min-h-screen flex-col bg-white text-neutral-900">
     <!-- Lien d'évitement pour la navigation au clavier, visible seulement au focus -->
@@ -31,18 +33,6 @@ const { titre } = Astro.props;
       <slot />
     </main>
 
-    <footer class="border-t border-neutral-200 bg-neutral-50 text-sm">
-      <div class="mx-auto max-w-5xl px-4 py-6">
-        <h2 class="font-semibold">Sources</h2>
-        <ul class="mt-2 space-y-1 text-neutral-700">
-          <li><a class="underline" href="https://www.data.gouv.fr/datasets/6569b3d7d193b4daf2b43edc">Météo-France</a></li>
-          <li><a class="underline" href="https://www.data.gouv.fr/datasets/ilot-de-chaleur-ou-de-fraicheur-urbain-base-sur-lanalyse-des-temperatures-de-surface-de-2022-1">Bordeaux Métropole, îlots de chaleur et de fraîcheur 2022</a></li>
-          <li><a class="underline" href="https://www.data.gouv.fr/datasets/limites-des-communes-de-bordeaux-metropole-1">Bordeaux Métropole, limites des communes</a></li>
-          <li><a class="underline" href="https://www.insee.fr/fr/statistiques/7655515">INSEE, Filosofi 2019</a></li>
-          <li><a class="underline" href="https://bdiff.agriculture.gouv.fr/">BDIFF, incendies de forêt</a></li>
-        </ul>
-        <p class="mt-4 text-neutral-600">Lina Ben Mabrouk et Estelle Coulon · BUT MMI Montbéliard</p>
-      </div>
-    </footer>
+    <Footer />
   </body>
 </html>

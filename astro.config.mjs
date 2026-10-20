@@ -8,7 +8,9 @@ import netlify from '@astrojs/netlify';
 // https://astro.build/config
 export default defineConfig({
   vite: {
-    plugins: [tailwindcss()]
+    plugins: [tailwindcss()],
+    // Garde chaque fichier (JSON téléchargeables) en vrai fichier, même petit
+    build: { assetsInlineLimit: 0 }
   },
 
   adapter: netlify()

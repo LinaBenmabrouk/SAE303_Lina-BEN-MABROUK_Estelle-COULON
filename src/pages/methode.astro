@@ -2,72 +2,103 @@
 import Layout from "../layouts/Layout.astro";
 import EnTetePage from "../components/EnTetePage.astro";
 import Section from "../components/Section.astro";
+import { site } from "../data/site";
 
-// Jeux de données utilisés dans le notebook (le tableau est généré par une boucle)
-const jeuxDeDonnees = [
+// Fichiers du site, rendus téléchargeables (« ?url » donne l'adresse du fichier publié)
+import urlJoursChauds from "../assets/jours-chauds.json?url";
+import urlEcartsIlots from "../assets/ecarts-ilots.json?url";
+import urlExpositionCommunes from "../assets/exposition-communes.json?url";
+import urlExpositionRevenus from "../assets/exposition-revenus.json?url";
+import urlFeuxParAn from "../assets/feux-par-an.json?url";
+import urlCommunesCarte from "../assets/communes-carte.json?url";
+
+// Sources (le tableau est généré par une boucle)
+const sources = [
   {
-    nom: "Données climatologiques mensuelles, Gironde",
+    nom: "Données climatologiques de base mensuelles, Gironde",
     producteur: "Météo-France",
-    periode: "1950-2026",
+    dates: "1950 à 2026",
+    licence: "Licence Ouverte 2.0",
     url: "https://www.data.gouv.fr/datasets/6569b3d7d193b4daf2b43edc",
   },
   {
     nom: "Îlots de chaleur et de fraîcheur urbains",
     producteur: "Bordeaux Métropole",
-    periode: "2022",
+    dates: "17 juin et 11 juillet 2022",
+    licence: "Licence Ouverte",
     url: "https://www.data.gouv.fr/datasets/ilot-de-chaleur-ou-de-fraicheur-urbain-base-sur-lanalyse-des-temperatures-de-surface-de-2022-1",
   },
   {
-    nom: "Limites des communes",
+    nom: "Limites des communes de Bordeaux Métropole",
     producteur: "Bordeaux Métropole",
-    periode: "28 communes",
+    dates: "Version 2026",
+    licence: "Licence Ouverte",
     url: "https://www.data.gouv.fr/datasets/limites-des-communes-de-bordeaux-metropole-1",
   },
   {
     nom: "Population carroyée Filosofi",
     producteur: "INSEE",
-    periode: "2019",
+    dates: "2019",
+    licence: "Licence Ouverte 2.0",
     url: "https://www.insee.fr/fr/statistiques/7655515",
   },
   {
     nom: "Base de données sur les incendies de forêt (BDIFF)",
     producteur: "Ministère de l'Agriculture",
-    periode: "2006-2025",
+    dates: "2006 à 2025",
+    licence: "Licence Ouverte 2.0",
     url: "https://bdiff.agriculture.gouv.fr/",
   },
 ];
 
-const urlNotebook = "https://observablehq.com/@mmi-montbeliard/sae-303-gr-15";
+// Données téléchargeables (fichiers calculés dans le notebook et utilisés par le site)
+const telechargements = [
+  { fichier: "jours-chauds.json", url: urlJoursChauds, contenu: "Jours à 30 °C ou plus par an, pour les 3 stations" },
+  { fichier: "ecarts-ilots.json", url: urlEcartsIlots, contenu: "Nombre de zones pour chaque écart de température" },
+  { fichier: "exposition-communes.json", url: urlExpositionCommunes, contenu: "Habitants et part en îlot de chaleur, par commune" },
+  { fichier: "exposition-revenus.json", url: urlExpositionRevenus, contenu: "Part en îlot de chaleur, par groupe de niveau de vie" },
+  { fichier: "feux-par-an.json", url: urlFeuxParAn, contenu: "Feux et surfaces brûlées en Gironde, par an" },
+  { fichier: "communes-carte.json", url: urlCommunesCarte, contenu: "Contours des 28 communes avec la part en îlot de chaleur" },
+];
 ---
 
 <Layout titre="Méthode">
-  <!-- Chapeau de la page -->
-  <EnTetePage titre="Méthode">…</EnTetePage>
+  <EnTetePage titre="Méthode">
+    D'où viennent les chiffres de ce site, comment nous les avons calculés et ce
+    qu'ils ne disent pas. Tout ce qui est publié ici peut être vérifié.
+  </EnTetePage>
 
-  <Section id="donnees">
-    <!-- Les données utilisées (préciser que la météo porte sur 3 stations) -->
-    <h2 class="text-2xl font-bold">…</h2>
-    <p class="mt-4 max-w-2xl text-neutral-700">…</p>
+  <Section id="sources">
+    <h2 class="text-2xl font-bold">Sources</h2>
+    <div class="mt-4 max-w-2xl space-y-4 text-neutral-700">
+      <p>
+        Le site croise cinq jeux de données publics. Pour la météo, nous suivons
+        trois stations de Météo-France, Mérignac (aéroport), Villenave-d'Ornon et
+        Bordeaux-Paulin (centre-ville).
+      </p>
+    </div>
 
     <div class="mt-8 overflow-x-auto">
       <table class="w-full text-left text-sm">
-        <caption class="sr-only">Jeux de données utilisés</caption>
+        <caption class="sr-only">Sources des données, dates et licences</caption>
         <thead class="border-b border-neutral-300">
           <tr>
             <th scope="col" class="py-2 pr-4">Jeu de données</th>
             <th scope="col" class="py-2 pr-4">Producteur</th>
-            <th scope="col" class="py-2">Période</th>
+            <th scope="col" class="py-2 pr-4">Dates</th>
+            <th scope="col" class="py-2">Licence</th>
           </tr>
         </thead>
         <tbody>
           {
-            jeuxDeDonnees.map(({ nom, producteur, periode, url }) => (
+            sources.map(({ nom, producteur, dates, licence, url }) => (
               <tr class="border-b border-neutral-200">
                 <td class="py-2 pr-4">
                   <a href={url} class="underline">{nom}</a>
                 </td>
                 <td class="py-2 pr-4">{producteur}</td>
-                <td class="py-2">{periode}</td>
+                <td class="py-2 pr-4">{dates}</td>
+                <td class="py-2">{licence}</td>
               </tr>
             ))
           }
@@ -76,30 +107,135 @@ const urlNotebook = "https://observablehq.com/@mmi-montbeliard/sae-303-gr-15";
     </div>
   </Section>
 
-  <Section id="nettoyage" fond>
-    <!-- Nettoyage et jointures (reprendre rNettoyage et rJointure du notebook) -->
-    <h2 class="text-2xl font-bold">…</h2>
-    <p class="mt-4 max-w-2xl text-neutral-700">…</p>
+  <Section id="traitements" fond>
+    <h2 class="text-2xl font-bold">Traitements appliqués</h2>
+    <ul class="mt-4 max-w-2xl list-disc space-y-3 pl-6 text-neutral-700">
+      <li>
+        <strong>Météo.</strong> Nous gardons seulement les années complètes, avec
+        12 mois mesurés. Pour chaque année, nous comptons les jours où la
+        température maximale atteint 30 °C ou plus. La courbe montre la moyenne
+        des 10 dernières années.
+      </li>
+      <li>
+        <strong>Îlots de chaleur.</strong> Les zones n'ont pas de code commune.
+        Nous plaçons chaque zone dans sa commune à partir de son point central.
+      </li>
+      <li>
+        <strong>Population.</strong> Les carreaux INSEE utilisent un autre système
+        de coordonnées. Nous les convertissons en longitude et latitude, puis nous
+        découpons chaque carreau en points tous les 200 m et répartissons ses
+        habitants entre ces points. Le centre seul ne suffisait pas, il donnait
+        0 habitant à Martignas-sur-Jalle.
+      </li>
+      <li>
+        <strong>Exposition.</strong> Un habitant est compté en îlot de chaleur si
+        son point tombe dans une zone au moins 3 °C plus chaude que la moyenne de
+        la métropole.
+      </li>
+      <li>
+        <strong>Revenus.</strong> Nous classons les carreaux selon le niveau de
+        vie moyen de leurs habitants, puis nous formons 5 groupes qui comptent
+        chacun le même nombre d'habitants.
+      </li>
+      <li>
+        <strong>Incendies.</strong> Nous additionnons les surfaces brûlées en
+        Gironde pour chaque année, de 2006 à 2025.
+      </li>
+    </ul>
+
+    <h3 class="mt-8 text-lg font-semibold">Contrôles</h3>
+    <ul class="mt-2 max-w-2xl list-disc space-y-2 pl-6 text-neutral-700">
+      <li>52 zones d'îlots ne tombent dans aucune commune et sont écartées.</li>
+      <li>Les 28 communes ont toutes des habitants après la jointure.</li>
+      <li>Nous comptons environ 759 000 habitants dans la métropole.</li>
+    </ul>
   </Section>
 
   <Section id="limites">
-    <!-- Limites et choix de méthode -->
-    <h2 class="text-2xl font-bold">…</h2>
-    <p class="mt-4 max-w-2xl text-neutral-700">…</p>
+    <h2 class="text-2xl font-bold">Limites et biais</h2>
+
+    <h3 class="mt-6 text-lg font-semibold">Limites</h3>
+    <ul class="mt-2 max-w-2xl list-disc space-y-3 pl-6 text-neutral-700">
+      <li>
+        Les îlots mesurent la température de surface du sol, pas celle de l'air.
+      </li>
+      <li>
+        Le fichier des îlots ne contient que les écarts marqués, de 3 °C ou plus.
+        Les zones proches de la moyenne n'y figurent pas.
+      </li>
+      <li>
+        Les habitants sont supposés répartis de façon égale dans chaque carreau.
+      </li>
+      <li>
+        Les données de population datent de 2019 et celles des îlots de 2022.
+      </li>
+      <li>
+        Le total d'habitants est plus bas que la population officielle, car
+        Filosofi ne compte que les ménages fiscaux ordinaires.
+      </li>
+    </ul>
+
+    <h3 class="mt-8 text-lg font-semibold">Biais identifiés</h3>
+    <ul class="mt-2 max-w-2xl list-disc space-y-3 pl-6 text-neutral-700">
+      <li>
+        Les îlots reposent sur deux journées d'été. Une autre journée aurait pu
+        donner une autre carte.
+      </li>
+      <li>
+        Les personnes qui vivent en collectivité, comme les résidents des maisons
+        de retraite, ne sont pas comptées. Ce sont pourtant parmi les plus
+        fragiles face à la chaleur.
+      </li>
+      <li>
+        Le niveau de vie est une moyenne par carreau. Elle lisse les écarts entre
+        voisins et peut cacher un lien entre revenus et chaleur.
+      </li>
+      <li>
+        Les trois stations ne sont pas placées au même endroit. La station du
+        centre-ville subit elle-même l'effet d'îlot de chaleur, celle de
+        l'aéroport est en périphérie. Les relevés sont bruts et non
+        homogénéisés.
+      </li>
+      <li>
+        La BDIFF ne recense que les feux déclarés. L'année 2022 domine la série
+        et écrase les autres années sur le graphique.
+      </li>
+    </ul>
   </Section>
 
-  <Section id="journal-ia" fond>
-    <!-- Journal IA (vrais prompts uniquement) -->
-    <h2 class="text-2xl font-bold">…</h2>
-    <p class="mt-4 max-w-2xl text-neutral-700">…</p>
+  <Section id="telechargements" fond>
+    <h2 class="text-2xl font-bold">Données téléchargeables</h2>
+    <p class="mt-4 max-w-2xl text-neutral-700">
+      Les fichiers utilisés par le site, au format JSON, tels qu'exportés depuis
+      notre notebook.
+    </p>
+    <ul class="mt-6 grid gap-3 md:grid-cols-2">
+      {
+        telechargements.map(({ fichier, url, contenu }) => (
+          <li>
+            <a
+              href={url}
+              download={fichier}
+              class="block h-full rounded-xl border border-neutral-200 bg-white p-4 hover:border-neutral-900"
+            >
+              <span class="font-mono text-sm font-semibold">⬇ {fichier}</span>
+              <span class="mt-1 block text-sm text-neutral-700">{contenu}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
   </Section>
 
-  <Section id="equipe">
-    <!-- L'équipe et le lien vers le notebook -->
-    <h2 class="text-2xl font-bold">…</h2>
-    <p class="mt-4 max-w-2xl text-neutral-700">…</p>
+  <Section id="notebook">
+    <h2 class="text-2xl font-bold">Le notebook</h2>
+    <p class="mt-4 max-w-2xl text-neutral-700">
+      Tous les calculs sont faits dans notre notebook Observable. On y trouve le
+      chargement des données, les contrôles, les jointures et le code de chaque
+      graphique.
+    </p>
     <a
-      href={urlNotebook}
+      href={site.notebook}
       class="mt-6 inline-block rounded-full bg-neutral-900 px-5 py-3 font-medium text-white hover:bg-neutral-700"
     >
       Voir le notebook Observable

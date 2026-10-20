@@ -1,5 +1,8 @@
 ---
 import Menu from "./Menu.astro";
+// Le SVG est importé comme un composant (il suffira de remplacer le fichier)
+import Logo from "../assets/logo.svg";
+import { site } from "../data/site";
 ---
 
 <!-- En-tête collé en haut de l'écran pendant le défilement -->
@@ -9,8 +12,10 @@ import Menu from "./Menu.astro";
   <div
     class="mx-auto flex max-w-5xl flex-col gap-2 px-4 py-3 md:flex-row md:items-center md:justify-between"
   >
-    <a href="/" class="text-lg font-semibold tracking-tight">
-      SAÉ 303 <span class="text-neutral-600">Gr 15</span>
+    <a href="/" class="flex items-center gap-2 text-lg font-semibold tracking-tight">
+      <!-- Décoratif : le nom du site suffit aux lecteurs d'écran -->
+      <Logo class="size-7" aria-hidden="true" />
+      {site.nom}
     </a>
     <Menu />
   </div>
