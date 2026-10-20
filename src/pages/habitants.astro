@@ -41,13 +41,13 @@ const dernierGroupe = expositionRevenus[expositionRevenus.length - 1];
   <Section>
     <h2 class="sr-only">Chiffres clés</h2>
     <div class="grid gap-8 md:grid-cols-3">
-      <ChiffreCle valeur={`${Math.round(moyenneMetropole)} %`}>
+      <ChiffreCle valeur={Math.round(moyenneMetropole)} unite="%">
         des habitants de la métropole vivent dans un îlot de chaleur
       </ChiffreCle>
-      <ChiffreCle valeur={formatNombre(Math.round(totalExposes / 1000) * 1000)}>
-        personnes environ sont concernées
+      <ChiffreCle valeur={formatNombre(Math.round(totalExposes / 1000) * 1000)} unite="personnes">
+        environ vivent dans un îlot de chaleur
       </ChiffreCle>
-      <ChiffreCle valeur={`${communesTresExposees.length} communes`}>
+      <ChiffreCle valeur={communesTresExposees.length} unite="communes">
         sur {exposition.length} dépassent 80 % d'habitants en îlot de chaleur
       </ChiffreCle>
     </div>

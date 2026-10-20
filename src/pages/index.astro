@@ -46,9 +46,9 @@ const cartes = rubriques.filter(({ url }) => url !== "/methode/");
   <Section>
     <h2 class="sr-only">Chiffres clés</h2>
     <div class="grid gap-8 md:grid-cols-3">
-      <ChiffreCle valeur={`${partExposee} %`}>…</ChiffreCle>
-      <ChiffreCle valeur={`${recordMerignac} jours`}>…</ChiffreCle>
-      <ChiffreCle valeur={`${hectares2022.toLocaleString("fr-FR")} ha`}>…</ChiffreCle>
+      <ChiffreCle valeur={partExposee} unite="%">…</ChiffreCle>
+      <ChiffreCle valeur={recordMerignac} unite="jours">…</ChiffreCle>
+      <ChiffreCle valeur={hectares2022.toLocaleString("fr-FR")} unite="hectares">…</ChiffreCle>
     </div>
   </Section>
 

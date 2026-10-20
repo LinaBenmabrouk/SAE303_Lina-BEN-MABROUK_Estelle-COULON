@@ -55,9 +55,9 @@ const formatEcart = (x: number) => (x > 0 ? `+${x}` : `−${Math.abs(x)}`);
     <!-- Chiffres clés -->
     <h3 class="sr-only">Chiffres clés</h3>
     <div class="mt-12 grid gap-8 md:grid-cols-3">
-      <ChiffreCle valeur={formatNombre(totalZones)}>zones relevées dans la métropole</ChiffreCle>
-      <ChiffreCle valeur={formatNombre(totalChaudes)}>sont des îlots de chaleur</ChiffreCle>
-      <ChiffreCle valeur={`${formatEcart(ecartMax)} °C`}>l'écart le plus fort au-dessus de la moyenne</ChiffreCle>
+      <ChiffreCle valeur={formatNombre(totalZones)} unite="zones">relevées dans la métropole</ChiffreCle>
+      <ChiffreCle valeur={formatNombre(totalChaudes)} unite="zones">sont des îlots de chaleur</ChiffreCle>
+      <ChiffreCle valeur={formatEcart(ecartMax)} unite="°C">l'écart le plus fort au-dessus de la moyenne</ChiffreCle>
     </div>
   </Section>
 
@@ -99,7 +99,7 @@ const formatEcart = (x: number) => (x > 0 ? `+${x}` : `−${Math.abs(x)}`);
           ].join(" "),
           width: 800,
           x: { label: "Écart à la moyenne de la métropole (°C)" },
-          y: { label: "Nombre de zones", grid: true },
+          y: { label: "Nombre de zones", grid: true, tickFormat: (d) => formatNombre(d) },
           color: {
             legend: true,
             domain: ["Îlot de fraîcheur", "Îlot de chaleur"],
