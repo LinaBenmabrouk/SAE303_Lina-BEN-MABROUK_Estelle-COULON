@@ -10,7 +10,9 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
     // Garde chaque fichier (JSON téléchargeables) en vrai fichier, même petit
-    build: { assetsInlineLimit: 0 }
+    build: { assetsInlineLimit: 0 },
+    // Prépare Plot dès le démarrage de « npm run dev » (évite l'erreur 504 « Outdated Optimize Dep »)
+    optimizeDeps: { include: ["@observablehq/plot"] }
   },
 
   adapter: netlify()
