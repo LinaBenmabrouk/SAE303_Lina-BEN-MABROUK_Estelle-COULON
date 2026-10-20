@@ -1,0 +1,22 @@
+---
+import Layout from "../layouts/Layout.astro";
+import EnTetePage from "../components/EnTetePage.astro";
+import Section from "../components/Section.astro";
+---
+
+<Layout titre="Le climat">
+  <!-- Chapeau de la page -->
+  <EnTetePage titre="Le climat">…</EnTetePage>
+
+  <Section id="feux">
+    <!-- V5 · surfaces brûlées en Gironde, pic de 2022 -->
+    <h2 class="text-2xl font-bold">…</h2>
+    <p class="mt-4 max-w-2xl text-neutral-700">…</p>
+  </Section>
+
+  <Section id="jours-chauds" fond>
+    <!-- V3 · jours à 30 °C ou plus depuis 1950, 3 stations -->
+    <h2 class="text-2xl font-bold">…</h2>
+    <p class="mt-4 max-w-2xl text-neutral-700">…</p>
+  </Section>
+</Layout>

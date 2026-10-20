@@ -1,0 +1,11 @@
+---
+// Bande pleine largeur avec un contenu centré.
+// « fond » donne un fond gris clair pour alterner les sections.
+const { id, fond = false, class: classe = "" } = Astro.props;
+---
+
+<section id={id} class:list={[fond && "bg-neutral-50", classe]}>
+  <div class="mx-auto max-w-5xl px-4 py-12 md:py-16">
+    <slot />
+  </div>
+</section>

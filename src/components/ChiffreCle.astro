@@ -1,0 +1,9 @@
+---
+// Un grand chiffre suivi de son explication (slot)
+const { valeur } = Astro.props;
+---
+
+<div class="border-l-4 border-neutral-900 pl-4">
+  <p class="text-4xl font-bold md:text-5xl">{valeur}</p>
+  <p class="mt-2 text-neutral-700"><slot /></p>
+</div>

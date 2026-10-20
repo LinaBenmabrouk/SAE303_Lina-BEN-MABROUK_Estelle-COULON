@@ -1,0 +1,40 @@
+---
+import Layout from "../layouts/Layout.astro";
+import EnTetePage from "../components/EnTetePage.astro";
+import Section from "../components/Section.astro";
+---
+
+<Layout titre="Méthode">
+  <!-- Chapeau de la page -->
+  <EnTetePage titre="Méthode">…</EnTetePage>
+
+  <Section id="donnees">
+    <!-- Les données utilisées (6 fichiers, sources, 3 stations météo) -->
+    <h2 class="text-2xl font-bold">…</h2>
+    <p class="mt-4 max-w-2xl text-neutral-700">…</p>
+  </Section>
+
+  <Section id="nettoyage" fond>
+    <!-- Nettoyage et jointures -->
+    <h2 class="text-2xl font-bold">…</h2>
+    <p class="mt-4 max-w-2xl text-neutral-700">…</p>
+  </Section>
+
+  <Section id="limites">
+    <!-- Limites et choix de méthode -->
+    <h2 class="text-2xl font-bold">…</h2>
+    <p class="mt-4 max-w-2xl text-neutral-700">…</p>
+  </Section>
+
+  <Section id="journal-ia" fond>
+    <!-- Journal IA (vrais prompts uniquement) -->
+    <h2 class="text-2xl font-bold">…</h2>
+    <p class="mt-4 max-w-2xl text-neutral-700">…</p>
+  </Section>
+
+  <Section id="equipe">
+    <!-- L'équipe et le lien vers le notebook -->
+    <h2 class="text-2xl font-bold">…</h2>
+    <p class="mt-4 max-w-2xl text-neutral-700">…</p>
+  </Section>
+</Layout>

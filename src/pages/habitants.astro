@@ -1,0 +1,22 @@
+---
+import Layout from "../layouts/Layout.astro";
+import EnTetePage from "../components/EnTetePage.astro";
+import Section from "../components/Section.astro";
+---
+
+<Layout titre="Les habitants">
+  <!-- Chapeau de la page -->
+  <EnTetePage titre="Les habitants">…</EnTetePage>
+
+  <Section id="carte">
+    <!-- V2 · carte, part des habitants en îlot de chaleur par commune -->
+    <h2 class="text-2xl font-bold">…</h2>
+    <p class="mt-4 max-w-2xl text-neutral-700">…</p>
+  </Section>
+
+  <Section id="revenus" fond>
+    <!-- V6 · exposition par groupe de niveau de vie -->
+    <h2 class="text-2xl font-bold">…</h2>
+    <p class="mt-4 max-w-2xl text-neutral-700">…</p>
+  </Section>
+</Layout>
