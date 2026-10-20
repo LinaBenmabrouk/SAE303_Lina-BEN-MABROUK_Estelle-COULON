@@ -31,31 +31,39 @@ const dernierGroupe = expositionRevenus[expositionRevenus.length - 1];
   titre="Les habitants"
   description="Environ 70 % des habitants de Bordeaux Métropole vivent dans un îlot de chaleur. Carte par commune et comparaison selon le niveau de vie."
 >
-  <Section fond class="border-b border-neutral-200">
+  <div class="habitants-page">
+  <Section class="habitants-hero">
+    <p class="section-kicker">Population &amp; exposition · Bordeaux Métropole</p>
     <h1 class="text-3xl font-bold tracking-tight md:text-5xl">Les habitants</h1>
     <div class="mt-4 max-w-2xl text-lg text-neutral-700">
       Qui vit dans les zones les plus chaudes de la métropole ? Nous avons croisé
       les îlots de chaleur avec la population, commune par commune, puis selon le
       niveau de vie.
     </div>
+    <nav class="habitants-jump" aria-label="Dans cette page">
+      <a href="#carte" class="button-primary">Explorer les communes <span aria-hidden="true">↗</span></a>
+      <a href="#revenus" class="button-secondary">Comparer les niveaux de vie <span aria-hidden="true">→</span></a>
+    </nav>
+    <div class="habitants-orbits" aria-hidden="true"><span></span><span></span></div>
   </Section>
 
-  <Section>
+  <Section class="habitants-summary">
     <h2 class="sr-only">Chiffres clés</h2>
     <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 sm:[&>:last-child]:col-span-2 lg:[&>:last-child]:col-span-1">
-      <ChiffreCle valeur={Math.round(moyenneMetropole)} unite="%">
+      <ChiffreCle valeur={Math.round(moyenneMetropole)} unite="%" titre="Une exposition très répandue">
         des habitants de la métropole vivent dans un îlot de chaleur
       </ChiffreCle>
-      <ChiffreCle valeur={formatNombre(Math.round(totalExposes / 1000) * 1000)} unite="personnes">
+      <ChiffreCle valeur={formatNombre(Math.round(totalExposes / 1000) * 1000)} unite="personnes" titre="Des habitants concernés">
         environ vivent dans un îlot de chaleur
       </ChiffreCle>
-      <ChiffreCle valeur={communesTresExposees.length} unite="communes">
+      <ChiffreCle valeur={communesTresExposees.length} unite="communes" titre="Des territoires plus exposés">
         sur {exposition.length} dépassent 80 % d'habitants en îlot de chaleur
       </ChiffreCle>
     </div>
   </Section>
 
   <Section id="carte" fond>
+    <p class="section-kicker">L'exposition près de chez vous</p>
     <h2 class="text-2xl font-bold">Le centre bien plus exposé que la périphérie</h2>
     <div class="mt-4 max-w-2xl space-y-4 text-neutral-700">
       <p>
@@ -91,7 +99,7 @@ const dernierGroupe = expositionRevenus[expositionRevenus.length - 1];
           color: {
             type: "quantize",
             n: 5,
-            scheme: "oranges",
+            range: ["#fff0d9", "#fbd099", "#F8A52C", "#eb701f", "#DB371E"],
             label: "Part des habitants en îlot de chaleur (%)",
             legend: true,
           },
@@ -141,6 +149,7 @@ const dernierGroupe = expositionRevenus[expositionRevenus.length - 1];
   </Section>
 
   <Section id="revenus">
+    <p class="section-kicker">La chaleur au-delà des revenus</p>
     <h2 class="text-2xl font-bold">Le niveau de vie ne change presque rien</h2>
     <div class="mt-4 max-w-2xl space-y-4 text-neutral-700">
       <p>
@@ -180,7 +189,7 @@ const dernierGroupe = expositionRevenus[expositionRevenus.length - 1];
           },
           y: { label: "Part des habitants en îlot de chaleur (%)", domain: [0, 100], grid: true },
           marks: [
-            Plot.barY(expositionRevenus, { x: "groupe", y: "partExposee", fill: "#d6604d" }),
+            Plot.barY(expositionRevenus, { x: "groupe", y: "partExposee", fill: "#DB371E" }),
             Plot.text(expositionRevenus, {
               x: "groupe",
               y: "partExposee",
@@ -203,7 +212,7 @@ const dernierGroupe = expositionRevenus[expositionRevenus.length - 1];
           x: { label: "Groupe (1 = plus modestes, 5 = plus aisés)", tickFormat: (d) => String(d) },
           y: { label: "Part en îlot de chaleur (%)", domain: [0, 100], grid: true },
           marks: [
-            Plot.barY(expositionRevenus, { x: "groupe", y: "partExposee", fill: "#d6604d" }),
+            Plot.barY(expositionRevenus, { x: "groupe", y: "partExposee", fill: "#DB371E" }),
             Plot.text(expositionRevenus, {
               x: "groupe",
               y: "partExposee",
@@ -225,7 +234,8 @@ const dernierGroupe = expositionRevenus[expositionRevenus.length - 1];
     </Figure>
   </Section>
 
-  <Section fond>
+  <Section class="habitants-next">
+    <p class="section-kicker">Passer à l'échelle de votre commune</p>
     <h2 class="text-2xl font-bold">Et dans ma commune ?</h2>
     <p class="mt-4 max-w-2xl text-neutral-700">
       Retrouvez la part des habitants en îlot de chaleur dans votre commune et
@@ -233,9 +243,71 @@ const dernierGroupe = expositionRevenus[expositionRevenus.length - 1];
     </p>
     <a
       href="/ma-commune/"
-      class="mt-6 inline-block rounded-full bg-neutral-900 px-5 py-3 font-medium text-white hover:bg-neutral-700"
+      class="method-link"
     >
       Voir ma commune
     </a>
   </Section>
+  </div>
 </Layout>
+
+<style is:global>
+  .habitants-page { background: #fffaf1; }
+  .habitants-page .content-section > div { max-width: 1160px; padding: 64px clamp(24px, 5vw, 64px); }
+  .habitants-page .section-kicker { font-size: 10px; letter-spacing: .14em; }
+  .habitants-page .habitants-hero { position: relative; overflow: hidden; background: linear-gradient(115deg, #db371e, #ab2818); color: #fff8ed; }
+  .habitants-hero > div { position: relative; }
+  .habitants-hero .section-kicker { position: relative; z-index: 1; color: #fff0c2; }
+  .habitants-hero h1 { position: relative; z-index: 1; max-width: 75%; font-size: clamp(2.8rem, 5.5vw, 4.8rem); letter-spacing: -.055em; }
+  .habitants-page .habitants-hero .text-neutral-700 { position: relative; z-index: 1; max-width: 64%; color: #fff8ed; line-height: 1.8; font-size: 17px; margin-top: 24px; }
+  .habitants-jump { display: flex; position: relative; z-index: 1; flex-wrap: wrap; gap: 14px; margin-top: 28px; max-width: 70%; }
+  .habitants-jump a { padding: 12px 20px; border-radius: 999px; font-size: 14px; }
+  .habitants-hero .button-primary:is(:hover, :focus-visible) { box-shadow: 5px 5px 0 #051c36, 0 8px 22px rgb(5 28 54 / 20%); }
+  .habitants-hero :focus-visible { outline-color: #fff0c2; }
+  .habitants-orbits { position: absolute; right: 64px; top: 50%; width: 210px; height: 210px; transform: translateY(-50%); pointer-events: none; }
+  .habitants-orbits span { position: absolute; inset: 0; border: 2px dashed rgb(255 224 163 / 60%); border-radius: 50%; animation: orbit-turn 60s linear infinite; }
+  .habitants-orbits span + span { inset: 26px; border: 2px solid rgb(255 224 163 / 60%); border-bottom-color: transparent; animation-duration: 40s; animation-direction: reverse; }
+  .habitants-page h2 { font-size: clamp(1.9rem, 3.2vw, 2.65rem); max-width: 27ch; }
+  .habitants-page .habitants-summary > div { padding-block: 40px 56px; }
+  .habitants-summary .grid { gap: 18px; }
+  .habitants-summary .key-stat { padding: 26px 24px 34px; }
+  .habitants-summary .stat-title { font-size: 13px; margin-bottom: 18px; }
+  .habitants-summary .stat-value > span:first-child { font-size: clamp(2.4rem, 3.3vw, 3rem); }
+  .habitants-summary .stat-value > span + span { font-size: 17px; }
+  .habitants-summary .key-stat > p:last-child { font-size: 13px; }
+  .habitants-page #carte { background: #f0f5f8; border-block: 1px solid #e1eaf0; }
+  .habitants-page :is(#carte, #revenus) h2 + div { max-width: none; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 26px; font-size: 15px; line-height: 1.85; }
+  .habitants-page :is(#carte, #revenus) h2 + div p { margin: 0; }
+  .habitants-page .data-figure { padding: clamp(18px, 3vw, 32px); border: 1px solid #e1eaf0; border-radius: 22px; box-shadow: 0 8px 28px rgb(5 28 54 / 4%); }
+  .habitants-page .data-figure figcaption { padding-bottom: 18px; border-bottom: 1px solid #eaf1f6; }
+  .habitants-page .data-figure figcaption > p:first-child { font-size: clamp(17px, 2vw, 21px); }
+  .habitants-page .data-figure figcaption > p + p { font-size: 13px; margin-top: 8px; }
+  .habitants-page .data-figure > p { font-size: 12px; line-height: 1.7; }
+  .habitants-page .data-figure svg { margin-inline: auto; }
+  .habitants-page details { border: 1px solid #e1eaf0; border-radius: 18px; padding: 24px; }
+  .habitants-page summary { font-size: 14px; color: #0e68a4; }
+  .habitants-page table { min-width: 540px; font-size: 13px; font-variant-numeric: tabular-nums; }
+  .habitants-page thead { background: #f3f7fa; border: 0; }
+  .habitants-page :is(th, td) { padding: 13px 12px; }
+  .habitants-page tbody tr:last-child { border-bottom: 0; }
+  .habitants-page tbody tr:hover { background: #f3f7fa; }
+  .habitants-page .habitants-next { padding: 0 clamp(24px, 5vw, 64px) 64px; }
+  .habitants-page .habitants-next > div { max-width: 1032px; padding: clamp(28px, 4vw, 48px); border-radius: 24px; background: #051c36; color: #fff8ed; }
+  .habitants-next .section-kicker { color: #f8a52c; }
+  .habitants-next .text-neutral-700 { color: #bdcfde; font-size: 15px; line-height: 1.8; }
+  .habitants-next :focus-visible { outline-color: #f8a52c; }
+  @media (max-width: 767px) {
+    .habitants-page .content-section > div { padding-block: 40px; }
+    .habitants-hero h1, .habitants-page .habitants-hero .text-neutral-700, .habitants-jump { max-width: 100%; }
+    .habitants-jump a { font-size: 13px; padding: 12px 16px; }
+    .habitants-orbits { position: relative; top: auto; right: auto; width: 130px; height: 130px; transform: none; margin: 32px auto 0; }
+    .habitants-orbits span + span { inset: 18px; }
+    .habitants-page .habitants-summary > div { padding-block: 28px 40px; }
+    .habitants-page :is(#carte, #revenus) h2 + div { grid-template-columns: 1fr; gap: 16px; }
+    .habitants-page details { padding: 18px; }
+    .habitants-page .habitants-next { padding-bottom: 40px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .habitants-orbits span { animation: none; }
+  }
+</style>

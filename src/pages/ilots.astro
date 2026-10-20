@@ -24,19 +24,28 @@ const formatEcart = (x: number) => (x > 0 ? `+${x}` : `−${Math.abs(x)}`);
   titre="Îlots de chaleur"
   description="Les îlots de chaleur et de fraîcheur de Bordeaux Métropole en 2022, d'après les températures de surface. Jusqu'à 16 °C au-dessus de la moyenne."
 >
-  <Section fond class="border-b border-neutral-200">
+  <div class="ilots-page">
+  <Section class="ilots-hero">
+    <p class="section-kicker">Chaleur &amp; fraîcheur · Bordeaux Métropole</p>
     <h1 class="text-3xl font-bold tracking-tight md:text-5xl">Îlots de chaleur</h1>
     <div class="mt-4 max-w-2xl text-lg text-neutral-700">
       En ville, certaines zones chauffent bien plus que d'autres. En 2022, Bordeaux
       Métropole a mesuré la température de surface sur tout son territoire pour
       repérer les îlots de chaleur et de fraîcheur.
     </div>
+    <nav class="ilots-jump" aria-label="Dans cette page">
+      <a href="#definition" class="button-primary">Comprendre les îlots <span aria-hidden="true">↗</span></a>
+      <a href="#ecarts" class="button-secondary">Explorer les écarts <span aria-hidden="true">→</span></a>
+    </nav>
+    <div class="ilots-orbits" aria-hidden="true"><span></span><span></span></div>
   </Section>
 
   <Section id="definition">
+    <p class="section-kicker">Comprendre les contrastes</p>
     <h2 class="text-2xl font-bold">De quoi parle-t-on ?</h2>
-    <div class="mt-6 grid gap-4 md:grid-cols-2">
-      <div class="rounded-xl border-l-4 border-[#d6604d] bg-neutral-50 p-6">
+    <div class="ilots-definitions mt-6 grid gap-4 md:grid-cols-2">
+      <div class="ilots-definition ilots-warm">
+        <span class="ilots-threshold">+3 °C <span>ou plus</span></span>
         <h3 class="text-lg font-semibold">Îlot de chaleur</h3>
         <p class="mt-2 text-neutral-700">
           Une zone dont la surface est au moins 3 °C plus chaude que la moyenne de
@@ -44,7 +53,8 @@ const formatEcart = (x: number) => (x > 0 ? `+${x}` : `−${Math.abs(x)}`);
           chaleur du soleil et la relâchent lentement.
         </p>
       </div>
-      <div class="rounded-xl border-l-4 border-[#4393c3] bg-neutral-50 p-6">
+      <div class="ilots-definition ilots-cool">
+        <span class="ilots-threshold">−3 °C <span>ou moins</span></span>
         <h3 class="text-lg font-semibold">Îlot de fraîcheur</h3>
         <p class="mt-2 text-neutral-700">
           Une zone dont la surface est au moins 3 °C plus fraîche que la moyenne.
@@ -55,13 +65,14 @@ const formatEcart = (x: number) => (x > 0 ? `+${x}` : `−${Math.abs(x)}`);
 
     <h3 class="sr-only">Chiffres clés</h3>
     <div class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3 sm:[&>:last-child]:col-span-2 lg:[&>:last-child]:col-span-1">
-      <ChiffreCle valeur={formatNombre(totalZones)} unite="zones">relevées dans la métropole</ChiffreCle>
-      <ChiffreCle valeur={formatNombre(totalChaudes)} unite="zones">sont des îlots de chaleur</ChiffreCle>
-      <ChiffreCle valeur={formatEcart(ecartMax)} unite="°C">l'écart le plus fort au-dessus de la moyenne</ChiffreCle>
+      <ChiffreCle valeur={formatNombre(totalZones)} unite="zones" titre="Un territoire observé">relevées dans la métropole</ChiffreCle>
+      <ChiffreCle valeur={formatNombre(totalChaudes)} unite="zones" titre="La chaleur en ville">sont des îlots de chaleur</ChiffreCle>
+      <ChiffreCle valeur={formatEcart(ecartMax)} unite="°C" titre="Des contrastes marqués">l'écart le plus fort au-dessus de la moyenne</ChiffreCle>
     </div>
   </Section>
 
   <Section id="ecarts" fond>
+    <p class="section-kicker">Lire les données</p>
     <h2 class="text-2xl font-bold">Plus de zones chaudes que de zones fraîches</h2>
     <div class="mt-4 max-w-2xl space-y-4 text-neutral-700">
       <p>
@@ -98,7 +109,7 @@ const formatEcart = (x: number) => (x > 0 ? `+${x}` : `−${Math.abs(x)}`);
           color: {
             legend: true,
             domain: ["Îlot de fraîcheur", "Îlot de chaleur"],
-            range: ["#4393c3", "#d6604d"],
+            range: ["#0E68A4", "#DB371E"],
           },
           marks: [
             Plot.rectY(ecartsIlots, {
@@ -123,6 +134,7 @@ const formatEcart = (x: number) => (x > 0 ? `+${x}` : `−${Math.abs(x)}`);
   </Section>
 
   <Section id="a-savoir">
+    <p class="section-kicker">Garder les bons repères</p>
     <h2 class="text-2xl font-bold">Ce que mesure ce relevé</h2>
     <ul class="mt-6 grid gap-4 md:grid-cols-3">
       <li class="rounded-xl border border-neutral-200 p-5">
@@ -149,7 +161,8 @@ const formatEcart = (x: number) => (x > 0 ? `+${x}` : `−${Math.abs(x)}`);
     </ul>
   </Section>
 
-  <Section fond>
+  <Section class="ilots-next">
+    <p class="section-kicker">Et les habitants ?</p>
     <h2 class="text-2xl font-bold">Qui vit dans ces îlots ?</h2>
     <p class="mt-4 max-w-2xl text-neutral-700">
       Nous avons croisé ces zones avec la population pour savoir combien
@@ -157,9 +170,71 @@ const formatEcart = (x: number) => (x > 0 ? `+${x}` : `−${Math.abs(x)}`);
     </p>
     <a
       href="/habitants/"
-      class="mt-6 inline-block rounded-full bg-neutral-900 px-5 py-3 font-medium text-white hover:bg-neutral-700"
+      class="method-link"
     >
       Voir les habitants
     </a>
   </Section>
+  </div>
 </Layout>
+
+<style is:global>
+  .ilots-page { background: #fffaf1; }
+  .ilots-page .content-section > div { max-width: 1160px; padding: 64px clamp(24px, 5vw, 64px); }
+  .ilots-page .section-kicker { font-size: 10px; letter-spacing: .14em; }
+  .ilots-page .ilots-hero { position: relative; overflow: hidden; background: linear-gradient(115deg, #0e68a4, #083b66); color: #fff8ed; }
+  .ilots-hero > div { position: relative; }
+  .ilots-hero .section-kicker { position: relative; z-index: 1; color: #ffe0a3; }
+  .ilots-hero h1 { position: relative; z-index: 1; max-width: 75%; font-size: clamp(2.8rem, 5.5vw, 4.8rem); letter-spacing: -.055em; }
+  .ilots-page .ilots-hero .text-neutral-700 { position: relative; z-index: 1; max-width: 64%; color: #e0edf6; line-height: 1.8; font-size: 17px; margin-top: 24px; }
+  .ilots-jump { display: flex; position: relative; z-index: 1; flex-wrap: wrap; gap: 14px; margin-top: 28px; max-width: 70%; }
+  .ilots-jump a { padding: 12px 20px; border-radius: 999px; font-size: 14px; }
+  .ilots-hero :focus-visible { outline-color: #f8a52c; }
+  .ilots-orbits { position: absolute; right: 64px; top: 50%; width: 210px; height: 210px; transform: translateY(-50%); pointer-events: none; }
+  .ilots-orbits span { position: absolute; inset: 0; border: 2px dashed rgb(255 224 163 / 55%); border-radius: 50%; animation: orbit-turn 60s linear infinite; }
+  .ilots-orbits span + span { inset: 26px; border: 2px solid rgb(255 224 163 / 55%); border-bottom-color: transparent; animation-duration: 40s; animation-direction: reverse; }
+  .ilots-page h2 { font-size: clamp(1.9rem, 3.2vw, 2.65rem); max-width: 27ch; }
+  .ilots-definitions { gap: 24px; margin-top: 30px; }
+  .ilots-definition { padding: clamp(24px, 3vw, 34px); border: 1px solid rgb(219 55 30 / 15%); background: #fff0e9; border-radius: 22px; }
+  .ilots-cool { background: #eaf4fa; border-color: rgb(14 104 164 / 15%); }
+  .ilots-threshold { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; margin-bottom: 24px; color: #bd301b; font-size: 34px; font-weight: 700; letter-spacing: -.04em; }
+  .ilots-threshold > span { font-size: 12px; font-weight: 500; letter-spacing: 0; }
+  .ilots-cool .ilots-threshold { color: #0e68a4; }
+  .ilots-definition h3 { font-size: 23px; }
+  .ilots-definition p { font-size: 15px; line-height: 1.85; margin-top: 16px; }
+  .ilots-page .key-stat { padding: 26px 24px 34px; }
+  .ilots-page .stat-title { font-size: 13px; margin-bottom: 18px; }
+  .ilots-page .stat-value > span:first-child { font-size: clamp(2.5rem, 3.5vw, 3.2rem); }
+  .ilots-page .stat-value > span + span { font-size: 17px; }
+  .ilots-page .key-stat > p:last-child { font-size: 13px; }
+  .ilots-page #ecarts { background: #f0f5f8; border-block: 1px solid #e1eaf0; }
+  .ilots-page #ecarts h2 + div { max-width: none; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 26px; font-size: 15px; line-height: 1.85; }
+  .ilots-page #ecarts h2 + div p { margin: 0; }
+  .ilots-page .data-figure { padding: clamp(18px, 3vw, 32px); border: 1px solid #e1eaf0; border-radius: 22px; box-shadow: 0 8px 28px rgb(5 28 54 / 4%); }
+  .ilots-page .data-figure figcaption { padding-bottom: 18px; border-bottom: 1px solid #eaf1f6; }
+  .ilots-page .data-figure figcaption > p:first-child { font-size: clamp(17px, 2vw, 21px); }
+  .ilots-page .data-figure figcaption > p + p { font-size: 13px; margin-top: 8px; }
+  .ilots-page .data-figure > p { font-size: 12px; line-height: 1.7; }
+  .ilots-page .data-figure svg { margin-inline: auto; }
+  .ilots-page #a-savoir ul { gap: 24px; margin-top: 30px; }
+  .ilots-page #a-savoir li { padding: 26px; border-color: #e1eaf0; border-radius: 18px; background: white; border-top: 3px solid #0e68a4; }
+  .ilots-page #a-savoir h3 { font-size: 17px; line-height: 1.4; }
+  .ilots-page #a-savoir li p { margin-top: 14px; line-height: 1.8; }
+  .ilots-page .ilots-next { padding: 0 clamp(24px, 5vw, 64px) 64px; }
+  .ilots-page .ilots-next > div { max-width: 1032px; padding: clamp(28px, 4vw, 48px); border-radius: 24px; background: #051c36; color: #fff8ed; }
+  .ilots-next .section-kicker { color: #f8a52c; }
+  .ilots-next .text-neutral-700 { color: #bdcfde; font-size: 15px; line-height: 1.8; }
+  .ilots-next :focus-visible { outline-color: #f8a52c; }
+  @media (max-width: 767px) {
+    .ilots-page .content-section > div { padding-block: 40px; }
+    .ilots-hero h1, .ilots-page .ilots-hero .text-neutral-700, .ilots-jump { max-width: 100%; }
+    .ilots-jump a { font-size: 13px; padding: 12px 16px; }
+    .ilots-orbits { position: relative; top: auto; right: auto; width: 130px; height: 130px; transform: none; margin: 32px auto 0; }
+    .ilots-orbits span + span { inset: 18px; }
+    .ilots-page #ecarts h2 + div { grid-template-columns: 1fr; gap: 16px; }
+    .ilots-page .ilots-next { padding-bottom: 40px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ilots-orbits span { animation: none; }
+  }
+</style>

@@ -62,15 +62,22 @@ const telechargements = [
   titre="Méthode"
   description="Sources, dates, licences, traitements et limites des données du site. Données téléchargeables et lien vers notre notebook Observable."
 >
-  <Section fond class="border-b border-neutral-200">
+  <div class="methode-page">
+  <Section class="methode-hero">
+    <p class="section-kicker">Des données aux explications</p>
     <h1 class="text-3xl font-bold tracking-tight md:text-5xl">Méthode</h1>
     <div class="mt-4 max-w-2xl text-lg text-neutral-700">
       D'où viennent les chiffres de ce site, comment nous les avons calculés et ce
       qu'ils ne disent pas. Tout ce qui est publié ici peut être vérifié.
     </div>
+    <nav class="methode-jump" aria-label="Dans cette page">
+      <a href="#sources">Les sources</a><a href="#traitements">Les calculs</a><a href="#limites">Les limites</a><a href="#telechargements">Les fichiers</a>
+    </nav>
+    <div class="methode-orbits" aria-hidden="true"><span></span><span></span><span></span></div>
   </Section>
 
   <Section id="sources">
+    <p class="section-kicker">L'origine des chiffres</p>
     <h2 class="text-2xl font-bold">Sources</h2>
     <div class="mt-4 max-w-2xl space-y-4 text-neutral-700">
       <p>
@@ -128,6 +135,7 @@ const telechargements = [
   </Section>
 
   <Section id="traitements" fond>
+    <p class="section-kicker">Comment les données sont croisées</p>
     <h2 class="text-2xl font-bold">Traitements appliqués</h2>
     <ul class="mt-4 max-w-2xl list-disc space-y-3 pl-6 text-neutral-700">
       <li>
@@ -172,6 +180,7 @@ const telechargements = [
   </Section>
 
   <Section id="limites">
+    <p class="section-kicker">Ce que les chiffres ne disent pas</p>
     <h2 class="text-2xl font-bold">Limites et biais</h2>
 
     <h3 class="mt-6 text-lg font-semibold">Limites</h3>
@@ -224,6 +233,7 @@ const telechargements = [
   </Section>
 
   <Section id="telechargements" fond>
+    <p class="section-kicker">Explorer et réutiliser</p>
     <h2 class="text-2xl font-bold">Données téléchargeables</h2>
     <p class="mt-4 max-w-2xl text-neutral-700">
       Les fichiers utilisés par le site, au format JSON, tels qu'exportés depuis
@@ -236,7 +246,7 @@ const telechargements = [
             <a
               href={url}
               download={fichier}
-              class="block h-full rounded-xl border border-neutral-200 bg-white p-4 hover:border-neutral-900"
+              class="methode-download block h-full"
             >
               <span class="font-mono text-sm font-semibold">⬇ {fichier}</span>
               <span class="mt-1 block text-sm text-neutral-700">{contenu}</span>
@@ -256,9 +266,77 @@ const telechargements = [
     </p>
     <a
       href={site.notebook}
-      class="mt-6 inline-block rounded-full bg-neutral-900 px-5 py-3 font-medium text-white hover:bg-neutral-700"
+      class="method-link"
     >
       Voir le notebook Observable
     </a>
   </Section>
+  </div>
 </Layout>
+
+<style is:global>
+  .methode-page { background: #fffaf1; }
+  .methode-page .content-section > div { max-width: 1160px; padding: 64px clamp(24px, 5vw, 64px); }
+  .methode-page .section-kicker { font-size: 10px; letter-spacing: .14em; }
+  .methode-page h2 { font-size: clamp(1.9rem, 3.2vw, 2.65rem); }
+  .methode-page .methode-hero { position: relative; overflow: hidden; background: #051c36; color: #fff8ed; }
+  .methode-hero::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, #f8a52c 0% 33%, #db371e 33% 66%, #0e68a4 66%); }
+  .methode-hero > div { position: relative; }
+  .methode-hero .section-kicker { position: relative; z-index: 1; color: #f8a52c; }
+  .methode-hero h1 { position: relative; z-index: 1; font-size: clamp(2.8rem, 5.5vw, 4.8rem); letter-spacing: -.055em; }
+  .methode-hero .text-neutral-700 { position: relative; z-index: 1; max-width: 63%; color: #d5e1eb; line-height: 1.8; font-size: 17px; margin-top: 24px; }
+  .methode-jump { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; max-width: 68%; }
+  .methode-jump a { padding: 11px 18px; border: 1px solid rgb(255 255 255 / 20%); border-radius: 999px; font-size: 13px; font-weight: 600; transition: transform 200ms, box-shadow 200ms; }
+  .methode-jump a:nth-child(1) { background: #f8a52c; color: #051c36; border-color: #f8a52c; }
+  .methode-jump a:nth-child(2) { background: #0e68a4; color: white; border-color: #0e68a4; }
+  .methode-jump a:nth-child(3) { background: #db371e; color: white; border-color: #db371e; }
+  .methode-jump a:is(:hover, :focus-visible) { transform: translateY(-3px); box-shadow: 0 6px 18px rgb(0 0 0 / 25%); }
+  .methode-hero :focus-visible { outline-color: #f8a52c; }
+  .methode-orbits { position: absolute; right: 64px; top: 50%; width: 210px; height: 210px; transform: translateY(-50%); pointer-events: none; }
+  .methode-orbits span { position: absolute; inset: 0; border: 2px dashed #f8a52c; border-radius: 50%; animation: orbit-turn 60s linear infinite; }
+  .methode-orbits span:nth-child(2) { inset: 24px; border: 3px solid #db371e; border-left-color: transparent; animation-duration: 40s; animation-direction: reverse; }
+  .methode-orbits span:nth-child(3) { inset: 48px; border: 3px solid #0e68a4; border-right-color: transparent; animation-duration: 30s; }
+  .methode-page #sources .section-kicker { color: #986015; }
+  .methode-page #sources > div > .overflow-x-auto { border: 1px solid #eee3d1; border-radius: 18px; background: white; }
+  .methode-page table { font-size: 13px; line-height: 1.7; }
+  .methode-page thead { background: #fff0cc; border: 0; color: #051c36; }
+  .methode-page th, .methode-page td { padding: 18px 16px; }
+  .methode-page tbody tr:last-child { border: 0; }
+  .methode-page tbody tr:hover { background: #fffaf1; }
+  .methode-page #sources ul li { border-color: #eee3d1; background: white; padding: 22px; line-height: 1.8; }
+  .methode-page #traitements { background: #eef5fa; border-block: 1px solid #e1eaf0; }
+  .methode-page #traitements > div > ul:first-of-type { max-width: none; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 0; list-style: none; margin-top: 30px; }
+  .methode-page #traitements > div > ul:first-of-type li { padding: 26px; background: white; border: 1px solid #dce7ef; border-radius: 18px; margin: 0; font-size: 14px; line-height: 1.85; }
+  .methode-page #traitements strong { display: block; font-size: 17px; color: #0e68a4; margin-bottom: 12px; }
+  .methode-page #traitements > div > ul:last-child { max-width: none; padding: 24px 24px 24px 44px; background: #e0edf6; border-radius: 18px; font-size: 14px; line-height: 1.85; }
+  .methode-page #limites .section-kicker { color: #bd301b; }
+  .methode-page #limites h3 { font-size: 20px; color: #bd301b; }
+  .methode-page #limites ul { max-width: none; padding: 24px 28px 24px 44px; background: #fff0eb; border: 1px solid rgb(219 55 30 / 12%); border-radius: 18px; font-size: 14px; line-height: 1.85; }
+  .methode-page #limites li::marker { color: #db371e; }
+  .methode-page #telechargements { background: #edf3f8; border-block: 1px solid #e1eaf0; }
+  .methode-download { padding: 24px; border: 1px solid #d5e1eb; border-left: 3px solid #0e68a4; border-radius: 16px; background: white; transition: transform 200ms, box-shadow 200ms; }
+  .methode-page #telechargements li:nth-child(3n + 1) .methode-download { border-left-color: #f8a52c; }
+  .methode-page #telechargements li:nth-child(3n + 2) .methode-download { border-left-color: #db371e; }
+  .methode-download > span:first-child { font-size: 13px; overflow-wrap: anywhere; }
+  .methode-download > span + span { margin-top: 12px; line-height: 1.7; font-size: 13px; }
+  .methode-download:is(:hover, :focus-visible) { transform: translateY(-3px); box-shadow: 0 8px 20px rgb(5 28 54 / 8%); }
+  .methode-page #notebook { padding: 56px clamp(24px, 5vw, 64px); }
+  .methode-page #notebook > div { max-width: 1032px; padding: clamp(28px, 4vw, 48px); border-radius: 24px; background: #051c36; color: #fff8ed; border-top: 4px solid #f8a52c; }
+  .methode-page #notebook h2 { font-size: clamp(24px, 3vw, 34px); }
+  .methode-page #notebook .text-neutral-700 { color: #bdcfde; font-size: 15px; line-height: 1.8; }
+  .methode-page #notebook :focus-visible { outline-color: #f8a52c; }
+  @media (max-width: 767px) {
+    .methode-page .content-section > div { padding-block: 40px; }
+    .methode-hero .text-neutral-700, .methode-jump { max-width: 100%; }
+    .methode-jump { gap: 10px; }
+    .methode-orbits { position: relative; top: auto; right: auto; width: 130px; height: 130px; transform: none; margin: 32px auto 0; }
+    .methode-orbits span:nth-child(2) { inset: 16px; }
+    .methode-orbits span:nth-child(3) { inset: 32px; }
+    .methode-page #traitements > div > ul:first-of-type { grid-template-columns: 1fr; }
+    .methode-page #notebook { padding-block: 36px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .methode-orbits span { animation: none; }
+    .methode-jump a:is(:hover, :focus-visible), .methode-download:is(:hover, :focus-visible) { transform: none; }
+  }
+</style>

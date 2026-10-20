@@ -1,5 +1,5 @@
 export const site = {
-  nom: "Bordeaux sous chaleur",
+  nom: "Bordeaux Surchauffe",
   description:
     "Jours de forte chaleur, îlots de chaleur et habitants exposés dans les 28 communes de Bordeaux Métropole, à partir de données publiques.",
   auteurs: "Lina Ben Mabrouk et Estelle Coulon",

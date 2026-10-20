@@ -10,7 +10,7 @@ export function optionsJoursChauds(
     width: largeur,
     x: { label: null, tickFormat: (d: number) => String(d) },
     y: { label: "Jours à 30 °C ou plus par an", grid: true },
-    color: { legend: true },
+    color: { legend: true, range: ["#DB371E", "#0E68A4", "#F8A52C", "#051C36"] },
     marks: [
       Plot.dot(donnees, { x: "annee", y: "jours30", fill: "station", r: 2, fillOpacity: 0.35 }),
       Plot.lineY(

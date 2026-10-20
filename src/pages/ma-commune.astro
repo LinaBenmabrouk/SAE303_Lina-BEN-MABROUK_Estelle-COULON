@@ -21,18 +21,22 @@ const infos = infosCommune(communeParDefaut);
   titre="Ma commune"
   description="Choisissez votre commune de Bordeaux Métropole et découvrez la part de ses habitants qui vivent dans un îlot de chaleur."
 >
-  <Section fond class="border-b border-neutral-200">
+  <div class="commune-page">
+  <Section class="commune-hero">
+    <p class="section-kicker">Votre territoire · Bordeaux Métropole</p>
     <h1 class="text-3xl font-bold tracking-tight md:text-5xl">Ma commune</h1>
     <div class="mt-4 max-w-2xl text-lg text-neutral-700">
       Ma commune est-elle plus exposée à la chaleur que les autres ? Choisissez-la
       et comparez-la aux {exposition.length - 1} autres communes de Bordeaux Métropole.
     </div>
+    <a href="#choix" class="button-primary commune-start">Explorer ma commune <span aria-hidden="true">↗</span></a>
+    <div class="commune-orbits" aria-hidden="true"><span></span><span></span></div>
   </Section>
 
   <Section id="choix">
-    <div class="grid gap-8 md:grid-cols-[18rem_1fr] md:items-start">
-      <div class="max-md:contents md:sticky md:top-24 md:space-y-4">
-        <div class="max-md:sticky max-md:top-14 max-md:z-10 max-md:-mx-4 max-md:border-b max-md:border-neutral-200 max-md:bg-white/95 max-md:px-4 max-md:py-3 max-md:backdrop-blur">
+    <div class="commune-workspace">
+      <div class="commune-sidebar">
+        <div class="commune-picker">
           <label for="commune" class="block font-semibold">Choisissez votre commune</label>
           <div class="relative mt-2">
             <select
@@ -64,7 +68,7 @@ const infos = infosCommune(communeParDefaut);
         <div
           aria-live="polite"
           aria-atomic="true"
-          class="rounded-xl bg-neutral-900 p-5 text-white"
+          class="commune-result"
         >
           <p id="nom-commune" class="text-sm tracking-widest text-neutral-300 uppercase">
             {infos.nom}
@@ -111,7 +115,8 @@ const infos = infosCommune(communeParDefaut);
     </div>
   </Section>
 
-  <Section fond>
+  <Section class="commune-next">
+    <p class="section-kicker">Prendre du recul</p>
     <h2 class="text-2xl font-bold">Et les autres communes ?</h2>
     <p class="mt-4 max-w-2xl text-neutral-700">
       La carte montre la part des habitants en îlot de chaleur dans les 28
@@ -119,12 +124,73 @@ const infos = infosCommune(communeParDefaut);
     </p>
     <a
       href="/habitants/#carte"
-      class="mt-6 inline-block rounded-full bg-neutral-900 px-5 py-3 font-medium text-white hover:bg-neutral-700"
+      class="method-link"
     >
       Voir la carte
     </a>
   </Section>
+  </div>
 </Layout>
+
+<style is:global>
+  .commune-page { background: #fffaf1; }
+  .commune-page .content-section > div { max-width: 1200px; padding: 64px clamp(24px, 5vw, 64px); }
+  .commune-page .section-kicker { font-size: 10px; letter-spacing: .14em; }
+  .commune-page .commune-hero { position: relative; overflow: hidden; background: linear-gradient(115deg, #051c36, #0a3155); color: #fff8ed; }
+  .commune-hero > div { position: relative; }
+  .commune-hero .section-kicker { position: relative; z-index: 1; color: #f8a52c; }
+  .commune-hero h1 { position: relative; z-index: 1; max-width: 75%; font-size: clamp(2.8rem, 5.5vw, 4.8rem); letter-spacing: -.055em; }
+  .commune-page .commune-hero .text-neutral-700 { position: relative; z-index: 1; max-width: 64%; color: #d5e1eb; line-height: 1.8; font-size: 17px; margin-top: 24px; }
+  .commune-start { position: relative; z-index: 1; padding: 12px 20px; border-radius: 999px; margin-top: 28px; font-size: 14px; }
+  .commune-hero :focus-visible { outline-color: #f8a52c; }
+  .commune-orbits { position: absolute; right: 64px; top: 50%; width: 210px; height: 210px; transform: translateY(-50%); pointer-events: none; }
+  .commune-orbits span { position: absolute; inset: 0; border: 2px dashed rgb(219 55 30 / 80%); border-radius: 50%; animation: orbit-turn 60s linear infinite; }
+  .commune-orbits span + span { inset: 26px; border: 2px solid #db371e; border-bottom-color: transparent; animation-duration: 40s; animation-direction: reverse; }
+  .commune-workspace { display: grid; grid-template-columns: 280px minmax(0, 1fr); align-items: start; gap: 28px; }
+  .commune-sidebar { position: sticky; top: 112px; display: grid; gap: 20px; }
+  .commune-picker { background: white; border: 1px solid #e1eaf0; border-radius: 18px; padding: 22px; }
+  .commune-picker label { font-size: 14px; }
+  .commune-picker select { font-size: 16px; padding-block: 12px; border-color: #bdcfde; background: #f3f7fa; }
+  .commune-picker > p { font-size: 12px; line-height: 1.7; }
+  .commune-result { position: relative; isolation: isolate; overflow: hidden; padding: 26px; border-radius: 18px; background: #051c36; color: #fff8ed; }
+  .commune-result::after { content: ''; position: absolute; z-index: -1; width: 130px; height: 130px; border: 2px solid rgb(219 55 30 / 50%); outline: 1px dashed rgb(219 55 30 / 30%); outline-offset: 14px; border-radius: 50%; top: -55px; right: -65px; }
+  .commune-result #nom-commune { color: #f8a52c; font-size: 12px; font-weight: 600; }
+  .commune-result > p:nth-child(2) { font-size: 48px; margin-top: 18px; letter-spacing: -.05em; }
+  .commune-result > p:nth-child(3) { margin-top: 10px; line-height: 1.7; }
+  .commune-result #ecart { padding-top: 16px; border-top: 1px solid rgb(189 207 222 / 20%); font-size: 12px; line-height: 1.7; }
+  .commune-sidebar dl { background: white; border-color: #e1eaf0; border-radius: 18px; padding: 4px 16px; }
+  .commune-sidebar dl > div { padding: 15px 0; gap: 18px; }
+  .commune-sidebar dl dd { color: #051c36; text-align: right; white-space: nowrap; }
+  .commune-sidebar > p { font-size: 12px; line-height: 1.7; padding-inline: 6px; }
+  .commune-page .data-figure { padding: clamp(18px, 2vw, 28px); border: 1px solid #e1eaf0; border-radius: 22px; box-shadow: 0 8px 28px rgb(5 28 54 / 4%); }
+  .commune-page .data-figure figcaption { padding-bottom: 18px; border-bottom: 1px solid #eaf1f6; }
+  .commune-page .data-figure figcaption > p:first-child { font-size: 19px; line-height: 1.4; }
+  .commune-page .data-figure figcaption > p + p { font-size: 13px; margin-top: 8px; }
+  .commune-page .data-figure > p { font-size: 12px; line-height: 1.7; }
+  .commune-page .commune-next { padding: 0 clamp(24px, 5vw, 64px) 64px; }
+  .commune-page .commune-next > div { max-width: 1072px; padding: clamp(28px, 4vw, 48px); border: 1px solid #d5e1eb; border-radius: 24px; background: #edf3f8; }
+  .commune-next h2 { font-size: clamp(24px, 3vw, 34px); }
+  .commune-next .text-neutral-700 { font-size: 15px; line-height: 1.8; }
+  @media (max-width: 1000px) {
+    .commune-workspace { grid-template-columns: 1fr; }
+    .commune-sidebar { position: static; grid-template-columns: 1fr 1fr; align-items: start; }
+    .commune-result { grid-column: 2; grid-row: 1 / 3; }
+  }
+  @media (max-width: 767px) {
+    .commune-page .content-section > div { padding-block: 40px; }
+    .commune-hero h1, .commune-page .commune-hero .text-neutral-700 { max-width: 100%; }
+    .commune-orbits { position: relative; top: auto; right: auto; width: 130px; height: 130px; transform: none; margin: 32px auto 0; }
+    .commune-orbits span + span { inset: 18px; }
+    .commune-page .commune-next { padding-bottom: 40px; }
+  }
+  @media (max-width: 540px) {
+    .commune-sidebar { grid-template-columns: 1fr; }
+    .commune-result { grid-column: auto; grid-row: auto; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .commune-orbits span { animation: none; }
+  }
+</style>
 
 <script>
   import * as Plot from "@observablehq/plot";
@@ -186,7 +252,7 @@ const infos = infosCommune(communeParDefaut);
           x: "part",
           y: "nom",
           sort: { y: "-x" },
-          fill: (d) => (d.nom === communeChoisie ? "#b2182b" : "#d9d9d9"),
+          fill: (d) => (d.nom === communeChoisie ? "#DB371E" : "#bdcfde"),
           title: (d) => `${d.nom} · ${formatPart(d.part)} %`,
         }),
         Plot.text(exposition, {
@@ -197,7 +263,7 @@ const infos = infosCommune(communeParDefaut);
           textAnchor: "start",
           filter: (d) => d.nom === communeChoisie,
         }),
-        Plot.ruleX([moyenneMetropole], { stroke: "#404040", strokeDasharray: "4,3" }),
+        Plot.ruleX([moyenneMetropole], { stroke: "#051C36", strokeDasharray: "4,3" }),
         Plot.text([moyenneMetropole], {
           x: (d) => d,
           frameAnchor: "top",

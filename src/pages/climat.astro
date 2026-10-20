@@ -44,30 +44,42 @@ const centreVille = stations.find((s) => s.station.includes("Paulin"))!;
   titre="Le climat"
   description="Incendies de 2022 en Gironde et jours à 30 °C ou plus depuis 1950 à Mérignac, Villenave-d'Ornon et Bordeaux-Paulin."
 >
-  <Section fond class="border-b border-neutral-200">
+  <div class="climate-page">
+  <Section class="climate-hero">
+    <p class="climate-eyebrow">Chaleur &amp; incendies · Bordeaux Métropole</p>
     <h1 class="text-3xl font-bold tracking-tight md:text-5xl">Le climat</h1>
     <div class="mt-4 max-w-2xl text-lg text-neutral-700">
       L'été 2022 a marqué la Gironde. Derrière les incendies, une tendance de fond
       se dessine, les jours de forte chaleur sont de plus en plus nombreux depuis 1950.
     </div>
+    <nav class="climate-jump" aria-label="Dans cette page">
+      <a href="#feux" class="button-primary">Les incendies de 2022 <span aria-hidden="true">↗</span></a>
+      <a href="#jours-chauds" class="button-secondary">L'évolution des températures <span aria-hidden="true">→</span></a>
+    </nav>
+    <div class="climate-orbits" aria-hidden="true">
+      <span class="climate-ring climate-ring-outer"></span>
+      <span class="climate-ring climate-ring-middle"></span>
+      <span class="climate-ring climate-ring-inner"></span>
+    </div>
   </Section>
 
-  <Section>
+  <Section class="climate-summary">
     <h2 class="sr-only">Chiffres clés</h2>
     <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 sm:[&>:last-child]:col-span-2 lg:[&>:last-child]:col-span-1">
-      <ChiffreCle valeur={formatNombre(feux2022.hectaresGironde)} unite="hectares">
+      <ChiffreCle valeur={formatNombre(feux2022.hectaresGironde)} unite="hectares" titre="Des forêts sous pression">
         brûlés par les incendies de forêt en Gironde en 2022
       </ChiffreCle>
-      <ChiffreCle valeur={merignac.record.jours30} unite="jours">
+      <ChiffreCle valeur={merignac.record.jours30} unite="jours" titre="Un été qui a marqué la Gironde">
         à 30 °C ou plus à Mérignac en {merignac.record.annee}, un record
       </ChiffreCle>
-      <ChiffreCle valeur={formatDecimal(merignac.apres / merignac.avant)} unite="fois plus">
+      <ChiffreCle valeur={formatDecimal(merignac.apres / merignac.avant)} unite="fois plus" titre="Une tendance qui s'installe">
         de jours à 30 °C à Mérignac entre 1996 et 2025 qu'entre 1950 et 1979
       </ChiffreCle>
     </div>
   </Section>
 
-  <Section id="feux" fond>
+  <Section id="feux" class="climate-chapter climate-fires">
+    <p class="section-kicker">Les incendies · Un territoire vulnérable</p>
     <h2 class="text-2xl font-bold">2022, un été hors norme</h2>
     <div class="mt-4 max-w-2xl space-y-4 text-neutral-700">
       <p>
@@ -104,7 +116,7 @@ const centreVille = stations.find((s) => s.station.includes("Paulin"))!;
             Plot.barY(feuxParAn, {
               x: "annee",
               y: "hectaresGironde",
-              fill: (d) => (d.annee === 2022 ? "#b2182b" : "#bdbdbd"),
+              fill: (d) => (d.annee === 2022 ? "#DB371E" : "#F8A52C"),
               title: (d) => `${d.annee} · ${formatNombre(d.hectaresGironde)} hectares · ${d.feuxGironde} feux`,
             }),
             Plot.text([feux2022], {
@@ -126,7 +138,8 @@ const centreVille = stations.find((s) => s.station.includes("Paulin"))!;
     </Figure>
   </Section>
 
-  <Section id="jours-chauds">
+  <Section id="jours-chauds" class="climate-chapter climate-temperatures">
+    <p class="section-kicker">Les températures · Une hausse durable</p>
     <h2 class="text-2xl font-bold">De plus en plus de jours à 30 °C</h2>
     <div class="mt-4 max-w-2xl space-y-4 text-neutral-700">
       <p>
@@ -142,7 +155,7 @@ const centreVille = stations.find((s) => s.station.includes("Paulin"))!;
       </p>
     </div>
 
-    <div class="mt-8 overflow-x-auto">
+    <div class="climate-table mt-8 overflow-x-auto" tabindex="0" role="region" aria-label="Comparaison des stations météo">
       <table class="w-full max-w-3xl text-left text-sm">
         <caption class="mb-2 text-left font-semibold">
           Jours à 30 °C ou plus par an, en moyenne
@@ -202,7 +215,8 @@ const centreVille = stations.find((s) => s.station.includes("Paulin"))!;
     </Figure>
   </Section>
 
-  <Section fond>
+  <Section class="climate-next">
+    <p class="section-kicker">Comprendre l'exposition près de chez vous</p>
     <h2 class="text-2xl font-bold">Où fait-il le plus chaud en ville ?</h2>
     <p class="mt-4 max-w-2xl text-neutral-700">
       Toutes les rues ne chauffent pas de la même façon. Découvrez les îlots de
@@ -210,9 +224,70 @@ const centreVille = stations.find((s) => s.station.includes("Paulin"))!;
     </p>
     <a
       href="/ilots/"
-      class="mt-6 inline-block rounded-full bg-neutral-900 px-5 py-3 font-medium text-white hover:bg-neutral-700"
+      class="method-link"
     >
       Voir les îlots de chaleur
     </a>
   </Section>
+  </div>
 </Layout>
+
+<style is:global>
+.climate-page { background: #fffaf1; }
+.climate-page .content-section > div { max-width: 1160px; padding-inline: clamp(24px, 5vw, 64px); }
+.climate-page > .climate-hero { position: relative; overflow: hidden; background: linear-gradient(115deg, #fff0c2, #f9d98c); color: #051c36; border-bottom: 1px solid rgb(248 165 44 / 25%); }
+.climate-page .climate-hero > div { padding-top: 64px; padding-bottom: 64px; }
+.climate-page .climate-hero h1 { font-size: clamp(3.2rem, 6vw, 5rem); line-height: 1; font-weight: 700; letter-spacing: -.055em; }
+.climate-page .climate-hero .text-neutral-700 { position: relative; z-index: 1; max-width: 62%; color: #304c65; line-height: 1.8; font-size: 17px; }
+.climate-jump { display: flex; flex-wrap: wrap; gap: 14px; position: relative; z-index: 1; margin-top: 28px; max-width: 65%; }
+.climate-jump a { padding: 12px 20px; font-size: 14px; border-radius: 999px; }
+.climate-jump .button-secondary { color: #051c36; border-color: #051c36; }
+.climate-jump .button-secondary:is(:hover, :focus-visible) { background: #fff8ed; }
+.climate-page .climate-summary > div { padding-block: 40px 56px; }
+.climate-summary .grid { gap: 18px; }
+.climate-summary .key-stat { padding: 26px 24px 34px; border-radius: 18px; box-shadow: 0 6px 16px rgb(5 28 54 / 6%); }
+.climate-summary .stat-title { font-size: 13px; margin-bottom: 18px; color: #fff8ed; }
+.climate-summary .stat-value > span:first-child { font-size: clamp(2.5rem, 3.5vw, 3.2rem); }
+.climate-summary .stat-value > span + span { font-size: 17px; }
+.climate-summary .key-stat > p:last-child { font-size: 13px; line-height: 1.7; }
+.climate-page .climate-chapter > div { padding-block: 64px; }
+.climate-chapter .section-kicker { font-size: 10px; letter-spacing: .14em; }
+.climate-chapter h2 { font-size: clamp(1.9rem, 3.2vw, 2.65rem); max-width: 24ch; }
+.climate-chapter h2 + div { max-width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 26px; font-size: 15px; line-height: 1.85; }
+.climate-chapter h2 + div > p { margin: 0; }
+.climate-fires { border-top: 1px solid #eee3d1; }
+.climate-fires .section-kicker { color: #b72e19; }
+.climate-temperatures { background: #f0f5f8; border-top: 1px solid #e1eaf0; }
+.climate-page .data-figure { margin-top: 32px; border: 1px solid #e4e9ed; border-radius: 22px; padding: clamp(18px, 3vw, 32px); box-shadow: 0 8px 28px rgb(5 28 54 / 4%); }
+.climate-page .data-figure figcaption { padding-bottom: 18px; border-bottom: 1px solid #eaf1f6; }
+.climate-page .data-figure figcaption > p:first-child { font-size: clamp(17px, 2vw, 21px); font-weight: 600; max-width: 55ch; }
+.climate-page .data-figure figcaption > p + p { font-size: 13px; margin-top: 8px; }
+.climate-page .data-figure > p { font-size: 12px; line-height: 1.7; max-width: 95ch; }
+.climate-page .data-figure > div > div > svg { margin-inline: auto; }
+.climate-table { background: white; border: 1px solid #e1eaf0; border-radius: 18px; padding: 24px; }
+.climate-table table { max-width: none; min-width: 540px; font-size: 13px; font-variant-numeric: tabular-nums; }
+.climate-table caption { padding-bottom: 16px; color: #051c36; font-size: 15px; }
+.climate-table thead { background: #f3f7fa; border: 0; }
+.climate-table th, .climate-table td { padding: 14px 12px; }
+.climate-table tbody tr:last-child { border-bottom: 0; }
+.climate-table td.font-bold { color: #0e68a4; }
+.climate-page .climate-next { padding: 56px clamp(24px, 5vw, 64px); }
+.climate-page .climate-next > div { position: relative; overflow: hidden; max-width: 1032px; background: #051c36; color: #fff8ed; border-radius: 24px; padding: clamp(28px, 4vw, 48px); }
+.climate-next .section-kicker { color: #f8a52c; font-size: 10px; }
+.climate-next h2 { font-size: clamp(24px, 3vw, 34px); }
+.climate-next .text-neutral-700 { color: #bdcfde; font-size: 15px; max-width: 55ch; }
+.climate-next :focus-visible { outline-color: #f8a52c; }
+@media (max-width: 767px) {
+  .climate-page .climate-hero > div { padding-block: 40px; }
+  .climate-page .climate-hero .text-neutral-700, .climate-jump { max-width: 100%; }
+  .climate-jump { gap: 12px; }
+  .climate-jump a { font-size: 13px; padding: 12px 16px; }
+  .climate-page .climate-orbits { width: 125px; height: 125px; margin-top: 30px; }
+  .climate-page .climate-summary > div { padding-block: 28px 40px; }
+  .climate-page .climate-chapter > div { padding-block: 40px; }
+  .climate-chapter h2 + div { grid-template-columns: 1fr; gap: 16px; }
+  .climate-table { padding: 16px; }
+  .climate-page .climate-next { padding-block: 36px; }
+}
+
+</style>
