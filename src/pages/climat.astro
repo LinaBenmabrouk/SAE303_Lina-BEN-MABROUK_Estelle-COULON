@@ -58,8 +58,9 @@ const anneau = "absolute rounded-full border-2 border-brand-red";
     <p class="relative z-1 mb-5 max-w-13/20 text-11 font-semibold tracking-label text-brand-blue uppercase max-md:max-w-full max-md:text-10">Chaleur &amp; incendies · Bordeaux Métropole</p>
     <h1 class="text-titre-climat leading-none font-bold tracking-titre">Le climat</h1>
     <div class="relative z-1 mt-4 max-w-31/50 text-17 leading-texte text-neutral-700 max-md:max-w-full">
-      L'été 2022 a marqué la Gironde. Derrière les incendies, une tendance de fond
-      se dessine, les jours de forte chaleur sont de plus en plus nombreux depuis 1950.
+      Depuis 1950, les journées à 30 °C ou plus ont fortement augmenté à Bordeaux.
+      Sans oublier les énormes incendies de 2022 dans toute la Gironde, qui ont été particulièrement violents.
+      C'est pourquoi nous devons nous y intéresser.
     </div>
     <nav class="relative z-1 mt-7 flex max-w-13/20 flex-wrap gap-3.5 max-md:max-w-full max-md:gap-3" aria-label="Dans cette page">
       <a href="#feux" class:list={[bouton, "border-brand-orange bg-brand-orange text-brand-navy survol:bg-brand-orange-clair survol:shadow-rouge"]}>Les incendies de 2022 <span aria-hidden="true">↗</span></a>
@@ -92,14 +93,15 @@ const anneau = "absolute rounded-full border-2 border-brand-red";
     <h2 class={titre2}>2022, un été hors norme</h2>
     <div class={texte2Colonnes}>
       <p>
-        En 2022, les incendies ont brûlé {formatNombre(feux2022.hectaresGironde)} hectares en Gironde. C'est plus
-        de {ratio2022} fois la surface brûlée pendant les {autresAnnees.length} autres années réunies
-        ({formatNombre(hectaresAutres)} hectares).
+        En 2022, environ {formatNombre(feux2022.hectaresGironde)} hectares ont brûlé en Gironde à cause des incendies.
+        C'est plus de {ratio2022} fois la surface cumulée des {autresAnnees.length} autres années étudiées, de 2006 à 2025.
+        Cela montre un énorme écart qui suscite des inquiétudes.
       </p>
       <p>
-        Il n'y a pas eu plus de départs de feu que d'habitude, {feux2022.feuxGironde} en 2022 contre
-        {" "}{plusDeFeux.feuxGironde} en {plusDeFeux.annee}. Mais ces feux ont pris une ampleur inédite, pendant
-        l'été qui a compté le plus de jours à 30 °C depuis 1950.
+        Il y a eu {feux2022.feuxGironde} incendies recensés en 2022, mais ce n'est pas le record : {" "}
+        {plusDeFeux.feuxGironde} incendies ont été recensés en {plusDeFeux.annee}.
+        En revanche, les surfaces brûlées en 2022 battent tous les records de la période étudiée en Gironde.
+        Malgré les fortes chaleurs, aucune de ces données ne prouve qu'elles sont la cause de ces grands incendies.
       </p>
     </div>
 
@@ -153,10 +155,10 @@ const anneau = "absolute rounded-full border-2 border-brand-red";
     <h2 class={titre2}>De plus en plus de jours à 30 °C</h2>
     <div class={texte2Colonnes}>
       <p>
-        À Mérignac, on comptait en moyenne {formatDecimal(merignac.avant)} jours à 30 °C ou plus par an
-        entre 1950 et 1979. Entre 1996 et 2025, on en compte {formatDecimal(merignac.apres)}, soit
-        {" "}{formatDecimal(merignac.apres / merignac.avant)} fois plus. Les deux autres stations suivent
-        la même hausse.
+        D'après Météo-France, deux périodes se distinguent fortement : 1950-1979 et 1996-2025.
+        Entre 1950 et 1979, on comptait en moyenne {formatDecimal(merignac.avant)} jours à 30 °C ou plus par an à Mérignac.
+        Entre 1996 et 2025, cette moyenne atteint {formatDecimal(merignac.apres)} jours.
+        Les trois stations étudiées montrent une augmentation des journées très chaudes.
       </p>
       <p>
         La station de Bordeaux-Paulin, en centre-ville, reste la plus chaude, avec

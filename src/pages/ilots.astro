@@ -45,9 +45,10 @@ const reperes = [
     <p class:list={[surtitre, "relative z-1 text-peche"]}>Chaleur &amp; fraîcheur · Bordeaux Métropole</p>
     <h1 class="relative z-1 max-w-3/4 text-titre-page leading-titre font-bold tracking-titre max-md:max-w-full md:leading-none">Îlots de chaleur</h1>
     <div class="relative z-1 mt-6 max-w-16/25 text-17 leading-texte text-glace max-md:max-w-full">
-      En ville, certaines zones chauffent bien plus que d'autres. En 2022, Bordeaux
-      Métropole a mesuré la température de surface sur tout son territoire pour
-      repérer les îlots de chaleur et de fraîcheur.
+      Les températures varient selon les endroits de Bordeaux : certaines zones sont
+      plus chaudes que d'autres. D'après les relevés de Bordeaux Métropole, réalisés
+      les 17 juin et 11 juillet 2022, il existe des différences de chaleur et de
+      fraîcheur au sein de la métropole.
     </div>
     <nav class="relative z-1 mt-7 flex max-w-7/10 flex-wrap gap-3.5 max-md:max-w-full" aria-label="Dans cette page">
       <a href="#definition" class:list={[bouton, "border-brand-orange bg-brand-orange text-brand-navy survol:bg-brand-orange-clair survol:shadow-rouge"]}>Comprendre les îlots <span aria-hidden="true">↗</span></a>
@@ -95,10 +96,11 @@ const reperes = [
     <h2 class={titre2}>Plus de zones chaudes que de zones fraîches</h2>
     <div class="mt-6.5 grid grid-cols-2 gap-8 text-15 leading-long text-neutral-700 max-md:grid-cols-1 max-md:gap-4">
       <p>
-        Sur les {formatNombre(totalZones)} zones relevées, {formatNombre(totalChaudes)} sont des îlots de chaleur
-        et {formatNombre(totalFraiches)} des îlots de fraîcheur. La plupart des îlots de chaleur restent
-        modérés, {partModerees} sur 10 sont entre 3 et 5 °C au-dessus de la moyenne. Mais les écarts montent bien plus
-        haut du côté chaud, jusqu'à {formatEcart(ecartMax)} °C, contre {formatEcart(ecartMin)} °C du côté frais.
+        {formatNombre(totalZones)} zones ont été relevées dans cette étude, dont {formatNombre(totalChaudes)} zones
+        chaudes et {formatNombre(totalFraiches)} zones fraîches. On parle bien de zones et non de superficies.
+        La plupart des îlots de chaleur se situent entre +3 et +5 °C au-dessus de la température moyenne
+        de Bordeaux Métropole. Mais certains écarts sont plus importants : jusqu'à {formatEcart(ecartMax)} °C
+        du côté chaud, contre {formatEcart(ecartMin)} °C du côté frais.
       </p>
       <p>
         Le vide au milieu du graphique n'est pas une erreur. Le fichier ne garde
