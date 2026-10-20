@@ -6,6 +6,8 @@ import Figure from "../components/Figure.astro";
 import PlotFigure from "../components/PlotFigure.astro";
 import * as Plot from "@observablehq/plot";
 import feuxParAn from "../assets/feux-par-an.json";
+import joursChauds from "../assets/jours-chauds.json";
+import { optionsJoursChauds } from "../graphiques/joursChauds";
 ---
 
 <Layout titre="Le climat">
@@ -43,5 +45,16 @@ import feuxParAn from "../assets/feux-par-an.json";
     <!-- V3 · jours à 30 °C ou plus depuis 1950, 3 stations -->
     <h2 class="text-2xl font-bold">…</h2>
     <p class="mt-4 max-w-2xl text-neutral-700">…</p>
+
+    <Figure titre="…" sousTitre="…" note="…" source="Météo-France, 1950-2025">
+      <PlotFigure
+        options={{
+          ...optionsJoursChauds(joursChauds, { anneeAnnotee: 2022, texteAnnotation: "…" }),
+          // Texte alternatif en 4 temps
+          ariaLabel: "…",
+          ariaDescription: "…",
+        }}
+      />
+    </Figure>
   </Section>
 </Layout>
