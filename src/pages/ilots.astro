@@ -2,6 +2,10 @@
 import Layout from "../layouts/Layout.astro";
 import EnTetePage from "../components/EnTetePage.astro";
 import Section from "../components/Section.astro";
+import Figure from "../components/Figure.astro";
+import PlotFigure from "../components/PlotFigure.astro";
+import * as Plot from "@observablehq/plot";
+import ecartsIlots from "../assets/ecarts-ilots.json";
 ---
 
 <Layout titre="Îlots de chaleur">
@@ -12,5 +16,36 @@ import Section from "../components/Section.astro";
     <!-- V1 · distribution des écarts de température des îlots 2022 -->
     <h2 class="text-2xl font-bold">…</h2>
     <p class="mt-4 max-w-2xl text-neutral-700">…</p>
+
+    <Figure titre="…" sousTitre="…" note="…" source="Bordeaux Métropole, 2022">
+      <PlotFigure
+        options={{
+          // Texte alternatif en 4 temps
+          ariaLabel: "…",
+          ariaDescription: "…",
+          width: 800,
+          x: { label: "Écart à la moyenne de la métropole (°C)" },
+          y: { label: "Nombre de zones", grid: true },
+          color: {
+            legend: true,
+            domain: ["Îlot de fraîcheur", "Îlot de chaleur"],
+            range: ["#4393c3", "#d6604d"],
+          },
+          marks: [
+            // Le JSON est déjà compté par écart : un rectangle de 1 °C par valeur
+            // (même rendu que Plot.binX avec interval: 1 dans le notebook)
+            Plot.rectY(ecartsIlots, {
+              x1: "delta",
+              x2: (d) => d.delta + 1,
+              y: "zones",
+              insetLeft: 0.5,
+              insetRight: 0.5,
+              fill: (d) => (d.delta > 0 ? "Îlot de chaleur" : "Îlot de fraîcheur"),
+            }),
+            Plot.ruleY([0]),
+          ],
+        }}
+      />
+    </Figure>
   </Section>
 </Layout>

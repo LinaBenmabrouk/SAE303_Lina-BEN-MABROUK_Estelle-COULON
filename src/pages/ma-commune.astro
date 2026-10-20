@@ -2,15 +2,96 @@
 import Layout from "../layouts/Layout.astro";
 import EnTetePage from "../components/EnTetePage.astro";
 import Section from "../components/Section.astro";
+import Figure from "../components/Figure.astro";
+import exposition from "../assets/exposition-communes.json";
+
+// Liste des communes pour le select, par ordre alphabétique (côté serveur, TP7)
+const listeCommunes = exposition.map((c) => c.nom).sort((a, b) => a.localeCompare(b, "fr"));
+const communeParDefaut = "Bordeaux";
 ---
 
 <Layout titre="Ma commune">
-  <!-- Chapeau de la page -->
+  <!-- Chapeau de la page : la question du lecteur (consigne V4) -->
   <EnTetePage titre="Ma commune">…</EnTetePage>
 
   <Section id="choix">
-    <!-- V4 · select de la commune + graphique (calcul dans le navigateur) -->
-    <h2 class="text-2xl font-bold">…</h2>
-    <p class="mt-4 max-w-2xl text-neutral-700">…</p>
+    <!-- V4 · choix de la commune, graphique calculé dans le navigateur (route B, TP4) -->
+    <label for="commune" class="block font-semibold">Ma commune</label>
+    <select
+      id="commune"
+      class="mt-2 w-full max-w-sm rounded-lg border border-neutral-300 bg-white px-3 py-2"
+    >
+      {listeCommunes.map((nom) => <option selected={nom === communeParDefaut}>{nom}</option>)}
+    </select>
+
+    <!-- Résultat de la commune choisie, annoncé par les lecteurs d'écran à chaque changement -->
+    <p id="resultat" aria-live="polite" class="mt-6 text-2xl font-bold"></p>
+
+    <Figure titre="…" sousTitre="…" note="…" source="Bordeaux Métropole 2022 et INSEE Filosofi 2019">
+      <div id="graphique"></div>
+    </Figure>
   </Section>
 </Layout>
+
+<script>
+  // Importe la librairie Plot (Astro sert de « packageur », TP4)
+  import * as Plot from "@observablehq/plot";
+  // Importe les données d'exposition par commune
+  import exposition from "../assets/exposition-communes.json";
+
+  // Récupère les éléments de la page
+  const selectCommune = document.getElementById("commune") as HTMLSelectElement;
+  const divGraphique = document.getElementById("graphique") as HTMLDivElement;
+  const resultat = document.getElementById("resultat") as HTMLParagraphElement;
+
+  // Fonction pour afficher le graphique
+  function renderPlot() {
+    // Récupère la commune choisie
+    const communeChoisie = selectCommune.value;
+    const commune = exposition.find((c) => c.nom === communeChoisie);
+
+    // Met à jour le résultat écrit (valeur brute, phrase à écrire par vous si besoin)
+    resultat.innerText = commune ? `${commune.nom} · ${commune.part.toFixed(0)} %` : "";
+
+    // Vide le graphique précédent
+    divGraphique.innerHTML = "";
+
+    // Crée le graphique avec Plot (même code que dans le notebook)
+    const plot = Plot.plot({
+      // Texte alternatif en 4 temps
+      ariaLabel: "…",
+      ariaDescription: "…",
+      width: 800,
+      height: exposition.length * 22 + 60,
+      marginLeft: 180,
+      x: { label: "Part des habitants en îlot de chaleur (%)", domain: [0, 100], grid: true },
+      y: { label: null },
+      marks: [
+        Plot.barX(exposition, {
+          x: "part",
+          y: "nom",
+          sort: { y: "-x" },
+          fill: (d) => (d.nom === communeChoisie ? "#b2182b" : "#d9d9d9"),
+        }),
+        Plot.text(exposition, {
+          x: "part",
+          y: "nom",
+          text: (d) => d.part.toFixed(0) + " %",
+          dx: 4,
+          textAnchor: "start",
+          filter: (d) => d.nom === communeChoisie,
+        }),
+        Plot.ruleX([0]),
+      ],
+    });
+
+    // Ajoute le graphique à la div
+    divGraphique.append(plot);
+  }
+
+  // Redessine à chaque changement de commune
+  selectCommune.addEventListener("change", renderPlot);
+
+  // Affiche le graphique au chargement de la page
+  renderPlot();
+</script>

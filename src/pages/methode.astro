@@ -2,6 +2,42 @@
 import Layout from "../layouts/Layout.astro";
 import EnTetePage from "../components/EnTetePage.astro";
 import Section from "../components/Section.astro";
+
+// Jeux de données utilisés dans le notebook (le tableau est généré par une boucle)
+const jeuxDeDonnees = [
+  {
+    nom: "Données climatologiques mensuelles, Gironde",
+    producteur: "Météo-France",
+    periode: "1950-2026",
+    url: "https://www.data.gouv.fr/datasets/6569b3d7d193b4daf2b43edc",
+  },
+  {
+    nom: "Îlots de chaleur et de fraîcheur urbains",
+    producteur: "Bordeaux Métropole",
+    periode: "2022",
+    url: "https://www.data.gouv.fr/datasets/ilot-de-chaleur-ou-de-fraicheur-urbain-base-sur-lanalyse-des-temperatures-de-surface-de-2022-1",
+  },
+  {
+    nom: "Limites des communes",
+    producteur: "Bordeaux Métropole",
+    periode: "28 communes",
+    url: "https://www.data.gouv.fr/datasets/limites-des-communes-de-bordeaux-metropole-1",
+  },
+  {
+    nom: "Population carroyée Filosofi",
+    producteur: "INSEE",
+    periode: "2019",
+    url: "https://www.insee.fr/fr/statistiques/7655515",
+  },
+  {
+    nom: "Base de données sur les incendies de forêt (BDIFF)",
+    producteur: "Ministère de l'Agriculture",
+    periode: "2006-2025",
+    url: "https://bdiff.agriculture.gouv.fr/",
+  },
+];
+
+const urlNotebook = "https://observablehq.com/@mmi-montbeliard/sae-303-gr-15";
 ---
 
 <Layout titre="Méthode">
@@ -9,13 +45,39 @@ import Section from "../components/Section.astro";
   <EnTetePage titre="Méthode">…</EnTetePage>
 
   <Section id="donnees">
-    <!-- Les données utilisées (6 fichiers, sources, 3 stations météo) -->
+    <!-- Les données utilisées (préciser que la météo porte sur 3 stations) -->
     <h2 class="text-2xl font-bold">…</h2>
     <p class="mt-4 max-w-2xl text-neutral-700">…</p>
+
+    <div class="mt-8 overflow-x-auto">
+      <table class="w-full text-left text-sm">
+        <caption class="sr-only">Jeux de données utilisés</caption>
+        <thead class="border-b border-neutral-300">
+          <tr>
+            <th scope="col" class="py-2 pr-4">Jeu de données</th>
+            <th scope="col" class="py-2 pr-4">Producteur</th>
+            <th scope="col" class="py-2">Période</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            jeuxDeDonnees.map(({ nom, producteur, periode, url }) => (
+              <tr class="border-b border-neutral-200">
+                <td class="py-2 pr-4">
+                  <a href={url} class="underline">{nom}</a>
+                </td>
+                <td class="py-2 pr-4">{producteur}</td>
+                <td class="py-2">{periode}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
   </Section>
 
   <Section id="nettoyage" fond>
-    <!-- Nettoyage et jointures -->
+    <!-- Nettoyage et jointures (reprendre rNettoyage et rJointure du notebook) -->
     <h2 class="text-2xl font-bold">…</h2>
     <p class="mt-4 max-w-2xl text-neutral-700">…</p>
   </Section>
@@ -36,5 +98,11 @@ import Section from "../components/Section.astro";
     <!-- L'équipe et le lien vers le notebook -->
     <h2 class="text-2xl font-bold">…</h2>
     <p class="mt-4 max-w-2xl text-neutral-700">…</p>
+    <a
+      href={urlNotebook}
+      class="mt-6 inline-block rounded-full bg-neutral-900 px-5 py-3 font-medium text-white hover:bg-neutral-700"
+    >
+      Voir le notebook Observable
+    </a>
   </Section>
 </Layout>

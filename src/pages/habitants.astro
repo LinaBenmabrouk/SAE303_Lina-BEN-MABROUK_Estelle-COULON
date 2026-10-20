@@ -2,6 +2,11 @@
 import Layout from "../layouts/Layout.astro";
 import EnTetePage from "../components/EnTetePage.astro";
 import Section from "../components/Section.astro";
+import Figure from "../components/Figure.astro";
+import PlotFigure from "../components/PlotFigure.astro";
+import * as Plot from "@observablehq/plot";
+import communesCarte from "../assets/communes-carte.json";
+import expositionRevenus from "../assets/exposition-revenus.json";
 ---
 
 <Layout titre="Les habitants">
@@ -12,11 +17,66 @@ import Section from "../components/Section.astro";
     <!-- V2 · carte, part des habitants en îlot de chaleur par commune -->
     <h2 class="text-2xl font-bold">…</h2>
     <p class="mt-4 max-w-2xl text-neutral-700">…</p>
+
+    <Figure titre="…" sousTitre="…" note="…" source="Bordeaux Métropole 2022 et INSEE Filosofi 2019">
+      <PlotFigure
+        options={{
+          // Texte alternatif en 4 temps
+          ariaLabel: "…",
+          ariaDescription: "…",
+          width: 800,
+          // Contours déjà remis dans le bon sens dans le notebook (fonction retourner)
+          projection: { type: "mercator", domain: communesCarte },
+          color: {
+            type: "quantize",
+            n: 5,
+            scheme: "oranges",
+            label: "Part des habitants en îlot de chaleur (%)",
+            legend: true,
+          },
+          marks: [
+            Plot.geo(communesCarte, {
+              fill: (d) => d.properties.part,
+              stroke: "white",
+              strokeWidth: 0.6,
+              // Infobulle native du navigateur au survol (pas besoin de JavaScript)
+              title: (d) => `${d.properties.nom} · ${d.properties.part.toFixed(1).replace(".", ",")} %`,
+            }),
+          ],
+        }}
+      />
+    </Figure>
   </Section>
 
   <Section id="revenus" fond>
     <!-- V6 · exposition par groupe de niveau de vie -->
     <h2 class="text-2xl font-bold">…</h2>
     <p class="mt-4 max-w-2xl text-neutral-700">…</p>
+
+    <Figure titre="…" sousTitre="…" note="…" source="INSEE Filosofi 2019 et Bordeaux Métropole 2022">
+      <PlotFigure
+        options={{
+          // Texte alternatif en 4 temps
+          ariaLabel: "…",
+          ariaDescription: "…",
+          width: 800,
+          x: {
+            label: "Groupe de niveau de vie (1 = les plus modestes, 5 = les plus aisés)",
+            tickFormat: (d) => String(d),
+          },
+          y: { label: "Part des habitants en îlot de chaleur (%)", domain: [0, 100], grid: true },
+          marks: [
+            Plot.barY(expositionRevenus, { x: "groupe", y: "partExposee", fill: "#d6604d" }),
+            Plot.text(expositionRevenus, {
+              x: "groupe",
+              y: "partExposee",
+              text: (d) => d.partExposee.toFixed(0) + " %",
+              dy: -8,
+            }),
+            Plot.ruleY([0]),
+          ],
+        }}
+      />
+    </Figure>
   </Section>
 </Layout>
