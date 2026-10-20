@@ -2,6 +2,10 @@
 import Layout from "../layouts/Layout.astro";
 import EnTetePage from "../components/EnTetePage.astro";
 import Section from "../components/Section.astro";
+import Figure from "../components/Figure.astro";
+import PlotFigure from "../components/PlotFigure.astro";
+import * as Plot from "@observablehq/plot";
+import feuxParAn from "../assets/feux-par-an.json";
 ---
 
 <Layout titre="Le climat">
@@ -12,6 +16,27 @@ import Section from "../components/Section.astro";
     <!-- V5 · surfaces brûlées en Gironde, pic de 2022 -->
     <h2 class="text-2xl font-bold">…</h2>
     <p class="mt-4 max-w-2xl text-neutral-700">…</p>
+
+    <Figure titre="…" sousTitre="…" note="…" source="BDIFF, 2006-2025">
+      <PlotFigure
+        options={{
+          // Texte alternatif en 4 temps (nature, mesure, conclusion, valeurs remarquables)
+          ariaLabel: "…",
+          ariaDescription: "…",
+          width: 800,
+          x: { label: null, tickFormat: (d) => String(d) },
+          y: { label: "Surface brûlée en Gironde (ha)", grid: true },
+          marks: [
+            Plot.barY(feuxParAn, {
+              x: "annee",
+              y: "hectaresGironde",
+              fill: (d) => (d.annee === 2022 ? "#b2182b" : "#bdbdbd"),
+            }),
+            Plot.ruleY([0]),
+          ],
+        }}
+      />
+    </Figure>
   </Section>
 
   <Section id="jours-chauds" fond>
