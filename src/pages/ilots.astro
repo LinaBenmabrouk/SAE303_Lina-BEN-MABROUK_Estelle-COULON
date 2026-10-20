@@ -4,25 +4,99 @@ import EnTetePage from "../components/EnTetePage.astro";
 import Section from "../components/Section.astro";
 import Figure from "../components/Figure.astro";
 import PlotFigure from "../components/PlotFigure.astro";
+import ChiffreCle from "../components/ChiffreCle.astro";
 import * as Plot from "@observablehq/plot";
 import ecartsIlots from "../assets/ecarts-ilots.json";
+import { formatNombre } from "../data/communes";
+
+// Chiffres calculés à partir du JSON (nombre de zones par écart)
+const somme = (lignes: typeof ecartsIlots) => lignes.reduce((total, d) => total + d.zones, 0);
+const chaudes = ecartsIlots.filter((d) => d.delta > 0);
+const fraiches = ecartsIlots.filter((d) => d.delta < 0);
+const totalZones = somme(ecartsIlots);
+const totalChaudes = somme(chaudes);
+const totalFraiches = somme(fraiches);
+const ecartMax = Math.max(...ecartsIlots.map((d) => d.delta));
+const ecartMin = Math.min(...ecartsIlots.map((d) => d.delta));
+// Part des îlots de chaleur modérés (de +3 à +5 °C)
+const partModerees = Math.round((somme(chaudes.filter((d) => d.delta <= 5)) / totalChaudes) * 10);
+// Signe moins typographique pour les écarts négatifs
+const formatEcart = (x: number) => (x > 0 ? `+${x}` : `−${Math.abs(x)}`);
 ---
 
 <Layout titre="Îlots de chaleur">
-  <!-- Chapeau de la page -->
-  <EnTetePage titre="Îlots de chaleur">…</EnTetePage>
+  <EnTetePage titre="Îlots de chaleur">
+    En ville, certaines zones chauffent bien plus que d'autres. En 2022, Bordeaux
+    Métropole a mesuré la température de surface sur tout son territoire pour
+    repérer les îlots de chaleur et de fraîcheur.
+  </EnTetePage>
 
-  <Section id="ecarts">
+  <!-- Définitions -->
+  <Section id="definition">
+    <h2 class="text-2xl font-bold">De quoi parle-t-on ?</h2>
+    <div class="mt-6 grid gap-4 md:grid-cols-2">
+      <div class="rounded-xl border-l-4 border-[#d6604d] bg-neutral-50 p-6">
+        <h3 class="text-lg font-semibold">Îlot de chaleur</h3>
+        <p class="mt-2 text-neutral-700">
+          Une zone dont la surface est au moins 3 °C plus chaude que la moyenne de
+          la métropole. Bitume, toits, parkings et bâtiments serrés stockent la
+          chaleur du soleil et la relâchent lentement.
+        </p>
+      </div>
+      <div class="rounded-xl border-l-4 border-[#4393c3] bg-neutral-50 p-6">
+        <h3 class="text-lg font-semibold">Îlot de fraîcheur</h3>
+        <p class="mt-2 text-neutral-700">
+          Une zone dont la surface est au moins 3 °C plus fraîche que la moyenne.
+          Parcs, bois, cours d'eau et sols végétalisés restent plus frais.
+        </p>
+      </div>
+    </div>
+
+    <!-- Chiffres clés -->
+    <h3 class="sr-only">Chiffres clés</h3>
+    <div class="mt-12 grid gap-8 md:grid-cols-3">
+      <ChiffreCle valeur={formatNombre(totalZones)}>zones relevées dans la métropole</ChiffreCle>
+      <ChiffreCle valeur={formatNombre(totalChaudes)}>sont des îlots de chaleur</ChiffreCle>
+      <ChiffreCle valeur={`${formatEcart(ecartMax)} °C`}>l'écart le plus fort au-dessus de la moyenne</ChiffreCle>
+    </div>
+  </Section>
+
+  <Section id="ecarts" fond>
     <!-- V1 · distribution des écarts de température des îlots 2022 -->
-    <h2 class="text-2xl font-bold">…</h2>
-    <p class="mt-4 max-w-2xl text-neutral-700">…</p>
+    <h2 class="text-2xl font-bold">Plus de zones chaudes que de zones fraîches</h2>
+    <div class="mt-4 max-w-2xl space-y-4 text-neutral-700">
+      <p>
+        Sur les {formatNombre(totalZones)} zones relevées, {formatNombre(totalChaudes)} sont des îlots de chaleur
+        et {formatNombre(totalFraiches)} des îlots de fraîcheur. La plupart des îlots de chaleur restent
+        modérés, {partModerees} sur 10 sont entre 3 et 5 °C au-dessus de la moyenne. Mais les écarts montent bien plus
+        haut du côté chaud, jusqu'à {formatEcart(ecartMax)} °C, contre {formatEcart(ecartMin)} °C du côté frais.
+      </p>
+      <p>
+        Le vide au milieu du graphique n'est pas une erreur. Le fichier ne garde
+        que les zones dont l'écart atteint au moins 3 °C. Les zones proches de la
+        moyenne n'y figurent pas.
+      </p>
+    </div>
 
-    <Figure titre="…" sousTitre="…" note="…" source="Bordeaux Métropole, 2022">
+    <Figure
+      titre={`Les écarts vont jusqu'à ${formatEcart(ecartMax)} °C du côté chaud, contre ${formatEcart(ecartMin)} °C du côté frais`}
+      sousTitre="Nombre de zones selon l'écart de leur température de surface à la moyenne de la métropole, en 2022"
+      note="Chaque barre compte des zones, quelle que soit leur taille. Aucune zone entre −2 et +2 °C, le fichier ne contient que les écarts marqués."
+      source="Bordeaux Métropole, îlots de chaleur et de fraîcheur 2022"
+    >
       <PlotFigure
         options={{
-          // Texte alternatif en 4 temps
-          ariaLabel: "…",
-          ariaDescription: "…",
+          ariaLabel: "Histogramme du nombre de zones selon leur écart de température à la moyenne de la métropole",
+          ariaDescription: [
+            // 1. La nature
+            `Histogramme, une barre par degré d'écart, en bleu pour les îlots de fraîcheur et en rouge pour les îlots de chaleur.`,
+            // 2. Ce qui est mesuré
+            `Chaque barre compte le nombre de zones qui ont cet écart de température de surface par rapport à la moyenne de la métropole, en 2022.`,
+            // 3. La conclusion
+            `Il y a plus d'îlots de chaleur que de fraîcheur, et les écarts vont plus loin du côté chaud.`,
+            // 4. Les valeurs remarquables
+            `${formatNombre(totalChaudes)} îlots de chaleur et ${formatNombre(totalFraiches)} îlots de fraîcheur. Les écarts vont de ${formatEcart(ecartMin)} à ${formatEcart(ecartMax)} °C. Aucune zone entre −2 et +2 °C.`,
+          ].join(" "),
           width: 800,
           x: { label: "Écart à la moyenne de la métropole (°C)" },
           y: { label: "Nombre de zones", grid: true },
@@ -41,11 +115,55 @@ import ecartsIlots from "../assets/ecarts-ilots.json";
               insetLeft: 0.5,
               insetRight: 0.5,
               fill: (d) => (d.delta > 0 ? "Îlot de chaleur" : "Îlot de fraîcheur"),
+              // Infobulle native au survol
+              title: (d) => `${formatEcart(d.delta)} °C · ${formatNombre(d.zones)} zone${d.zones > 1 ? "s" : ""}`,
             }),
             Plot.ruleY([0]),
           ],
         }}
       />
     </Figure>
+  </Section>
+
+  <!-- Ce que mesure ce relevé -->
+  <Section id="a-savoir">
+    <h2 class="text-2xl font-bold">Ce que mesure ce relevé</h2>
+    <ul class="mt-6 grid gap-4 md:grid-cols-3">
+      <li class="rounded-xl border border-neutral-200 p-5">
+        <h3 class="font-semibold">La surface, pas l'air</h3>
+        <p class="mt-2 text-sm text-neutral-700">
+          C'est la température du sol et des toits qui est mesurée. L'air que l'on
+          respire peut être moins chaud que la surface.
+        </p>
+      </li>
+      <li class="rounded-xl border border-neutral-200 p-5">
+        <h3 class="font-semibold">Deux journées d'été</h3>
+        <p class="mt-2 text-sm text-neutral-700">
+          Les relevés datent du 17 juin et du 11 juillet 2022. Un autre jour aurait
+          pu donner des écarts un peu différents.
+        </p>
+      </li>
+      <li class="rounded-xl border border-neutral-200 p-5">
+        <h3 class="font-semibold">Des zones, pas des surfaces</h3>
+        <p class="mt-2 text-sm text-neutral-700">
+          Le graphique compte des zones. Une petite cour et un grand parking comptent
+          chacun pour une.
+        </p>
+      </li>
+    </ul>
+  </Section>
+
+  <Section fond>
+    <h2 class="text-2xl font-bold">Qui vit dans ces îlots ?</h2>
+    <p class="mt-4 max-w-2xl text-neutral-700">
+      Nous avons croisé ces zones avec la population pour savoir combien
+      d'habitants vivent dans un îlot de chaleur, commune par commune.
+    </p>
+    <a
+      href="/habitants/"
+      class="mt-6 inline-block rounded-full bg-neutral-900 px-5 py-3 font-medium text-white hover:bg-neutral-700"
+    >
+      Voir les habitants
+    </a>
   </Section>
 </Layout>
