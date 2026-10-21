@@ -220,7 +220,7 @@ const orbite = "absolute rounded-full border-2";
               bilan.map(({ url, etape, valeur, unite, texte }, i) => (
                 <li>
                   <a href={url} class:list={[couleursBilan[i], "group block h-full rounded-bloc p-5 shadow-stat transition duration-200 survol:-translate-y-1 survol:shadow-sujet"]}>
-                    <span class="text-10 font-bold tracking-surtitre uppercase opacity-80">{etape}</span>
+                    <span class="text-10 font-bold tracking-surtitre uppercase">{etape}</span>
                     <span class="mt-2 flex flex-wrap items-baseline gap-x-2 font-bold">
                       <span class="text-chiffre-compact leading-chiffre tracking-chiffre">{valeur}</span>
                       <span class="text-17">{unite}</span>
@@ -340,6 +340,7 @@ const orbite = "absolute rounded-full border-2";
       (rect as SVGRectElement).style.cursor = "pointer";
       rect.addEventListener("click", () => choisirCommune(exposition[i].nom));
     });
+    plot.querySelectorAll("g[aria-label]").forEach((groupe) => groupe.removeAttribute("aria-label"));
   }
 
   function choisirCommune(nom: string) {

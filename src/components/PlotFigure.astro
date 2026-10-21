@@ -4,9 +4,14 @@ import { JSDOM } from "jsdom";
 
 const { options, optionsMobile } = Astro.props;
 
-const plot = Plot.plot({ ...options, document: new JSDOM("").window.document });
+const sansEtiquettesInternes = (graphique: Element) => {
+  graphique.querySelectorAll("g[aria-label]").forEach((groupe) => groupe.removeAttribute("aria-label"));
+  return graphique;
+};
+
+const plot = sansEtiquettesInternes(Plot.plot({ ...options, document: new JSDOM("").window.document }));
 const plotMobile = optionsMobile
-  ? Plot.plot({ ...options, ...optionsMobile, document: new JSDOM("").window.document })
+  ? sansEtiquettesInternes(Plot.plot({ ...options, ...optionsMobile, document: new JSDOM("").window.document }))
   : null;
 ---
 
