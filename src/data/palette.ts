@@ -8,6 +8,6 @@ export const palette = {
   carte: "oranges",
   stations: {
     domaine: ["Bordeaux-Paulin (centre-ville)", "Mérignac (aéroport)", "Villenave-d'Ornon"],
-    couleurs: ["#d55e00", "#0072b2", "#cc79a7"],
+    couleurs: ["#4269d0", "#efb118", "#ff725c"],
   },
 };

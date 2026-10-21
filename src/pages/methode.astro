@@ -63,6 +63,7 @@ const traitements = [
   ["Exposition.", "Un habitant est compté en îlot de chaleur si son point tombe dans une zone au moins 3 °C plus chaude que la moyenne de la métropole."],
   ["Revenus.", "Nous classons les carreaux selon le niveau de vie moyen de leurs habitants, puis nous formons 5 groupes qui comptent chacun le même nombre d'habitants."],
   ["Incendies.", "Nous additionnons les surfaces brûlées en Gironde pour chaque année, de 2006 à 2025."],
+  ["Couleurs.", "Les couleurs des graphiques sont distinctes de celles du site. Elles ont été testées pour les trois formes de daltonisme (protanopie, deutéranopie, tritanopie)."],
 ];
 
 const controles = [
@@ -87,6 +88,23 @@ const biais = [
   "La BDIFF ne recense que les feux déclarés. L'année 2022 domine la série et écrase les autres années sur le graphique.",
 ];
 
+const prompts = [
+  "Aide-moi à améliorer le responsive pour une meilleure UX.",
+  "Vérifie si le site est bien conforme aux consignes.",
+];
+
+const apports = [
+  "La mise en page de départ pour qu'on ait une idée de quoi partir.",
+  "Aider à améliorer le responsive et à restructurer les pages du site afin d’offrir une meilleure expérience utilisateur sur tous les types d’écrans.",
+  "La vérification du site par rapport aux consignes, le test de la palette pour le daltonisme et la fonction qui allège la carte.",
+];
+
+const corrections = [
+  "La première structure ressemblait trop au notebook, avec un sommaire. Nous l'avons modifiée pour qu'elle ressemble davantage à un site vitrine.",
+  "Le premier responsive était mal fait : le header et le footer n'étaient pas pensés pour le mobile.",
+  "Nous avons réécrit tous les textes du site pour qu'ils aient un lien avec notre notebook.",
+];
+
 const raccourcis = [
   ["#sources", "Les sources", "border-brand-orange bg-brand-orange text-brand-navy"],
   ["#traitements", "Les calculs", "border-brand-blue bg-brand-blue text-white"],
@@ -94,12 +112,12 @@ const raccourcis = [
   ["#telechargements", "Les fichiers", "border-white/20"],
 ];
 const routes = [
-  ["V1", "Distribution des écarts de température", "Îlots de chaleur", "A", "…"],
-  ["V2", "Carte de la part des habitants en îlot de chaleur", "Les habitants", "A", "…"],
-  ["V3", "Jours à 30 °C ou plus depuis 1950", "Le climat", "A", "…"],
-  ["V4", "Comparaison de ma commune", "Ma commune", "B", "…"],
-  ["V5", "Surfaces brûlées en Gironde", "Le climat", "A", "…"],
-  ["V6", "Exposition selon le niveau de vie", "Les habitants", "A", "…"],
+  ["V1", "Distribution des écarts de température", "Îlots de chaleur", "A", "L'histogramme est dessiné une fois au moment de la construction du site. Il n'a pas besoin de bouger chez le lecteur, puisqu'il montre toujours la même chose et ne dépend d'aucun choix de sa part."],
+  ["V2", "Carte de la part des habitants en îlot de chaleur", "Les habitants", "A", "La carte est fixe et ne dépend d'aucun choix du lecteur. Sur le site, la carte est dessinée une seule fois au moment de la construction. Le survol d'une commune affiche quand même son nom et sa part, grâce à l'infobulle du navigateur, qui ne demande aucun JavaScript."],
+  ["V3", "Jours à 30 °C ou plus depuis 1950", "Le climat", "A", "L'évolution des jours chauds ne change pas selon le lecteur. On réutilise la fonction graphiqueJoursChauds au moment de la construction du site, avec le fichier jours-chauds.json."],
+  ["V4", "Comparaison de ma commune", "Ma commune", "B", "Nous utilisons les données JSON des communes pour permettre aux visiteurs de sélectionner leur commune et de voir son classement concernant l'exposition à la chaleur."],
+  ["V5", "Surfaces brûlées en Gironde", "Le climat", "A", "Les surfaces brûlées par année sont un graphique fixe, rien n'y bouge selon le lecteur."],
+  ["V6", "Exposition selon le niveau de vie", "Les habitants", "A", "La comparaison entre les cinq groupes de niveau de vie est fixe et ne dépend d'aucun choix du lecteur."],
 ];
 const cellule = "px-4 py-4.5";
 const bordures = ["border-l-brand-orange", "border-l-brand-red", "border-l-brand-blue"];
@@ -289,6 +307,39 @@ const orbite = "absolute rounded-full";
         </tbody>
       </table>
     </div>
+  </Section>
+
+  <Section id="journal-ia" class="border-y border-ligne bg-ciel-bleu">
+    <p class:list={[surtitre, "text-brand-blue"]}>Ce que l'IA a fait, et ce que nous avons fait</p>
+    <h2 class={titre2}>Journal IA du site</h2>
+    <p class="mt-4 max-w-2xl text-neutral-700">
+      Le site a été construit avec Claude (Claude Code dans VS Code). Le journal du
+      notebook détaille l'usage de l'IA pour l'analyse des données.
+    </p>
+
+    <div class="mt-8 grid gap-6 md:grid-cols-2">
+      <div class="rounded-bloc border border-bord-bleu bg-white p-6.5">
+        <h3 class="text-17 font-semibold text-brand-blue">Ce que Claude a fait</h3>
+        <ul class="mt-3 list-disc space-y-2 pl-5 text-sm leading-long text-neutral-700">
+          {apports.map((texte) => <li>{texte}</li>)}
+        </ul>
+      </div>
+      <div class="rounded-bloc border border-bord-bleu bg-white p-6.5">
+        <h3 class="text-17 font-semibold text-brand-red-fonce">Ce que nous avons dû corriger</h3>
+        <ul class="mt-3 list-disc space-y-2 pl-5 text-sm leading-long text-neutral-700">
+          {corrections.map((texte) => <li>{texte}</li>)}
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="mt-10 text-lg font-semibold">Exemples de prompts</h3>
+    <ul class="mt-3 grid gap-3 md:grid-cols-2">
+      {
+        prompts.map((texte) => (
+          <li class="rounded-bloc border-l-4 border-brand-blue bg-white p-4.5 text-13 leading-note text-neutral-700">« {texte} »</li>
+        ))
+      }
+    </ul>
   </Section>
 
   <Section id="notebook" class="px-gouttiere py-14 max-md:py-9" interieur="max-w-258 rounded-3xl border-t-4 border-brand-orange bg-brand-navy p-encart text-papier contour-orange">

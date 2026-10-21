@@ -19,7 +19,7 @@ const totalFraiches = somme(fraiches);
 const ecartMax = Math.max(...ecartsIlots.map((d) => d.delta));
 const ecartMin = Math.min(...ecartsIlots.map((d) => d.delta));
 const partModerees = Math.round((somme(chaudes.filter((d) => d.delta <= 5)) / totalChaudes) * 10);
-const annotationV1 = "…";
+const annotationV1 = "Écarts faibles non relevés";
 const formatEcart = (x: number) => (x > 0 ? `+${x}` : `−${Math.abs(x)}`);
 
 const surtitre = "mb-4 text-10 font-bold tracking-surtitre uppercase";
@@ -43,7 +43,7 @@ const reperes = [
   <Section class="relative overflow-hidden bg-linear-115 from-brand-blue to-bleu-sombre text-papier contour-orange" interieur="relative max-w-290 px-gouttiere py-16 max-md:py-10">
     <p class="relative z-1 mb-3 text-12 font-bold tracking-label uppercase opacity-80">{etapeDe("/ilots/")}</p>
     <p class:list={[surtitre, "relative z-1 text-peche"]}>Chaleur &amp; fraîcheur · Bordeaux Métropole</p>
-    <h1 class="relative z-1 max-w-3/4 text-titre-page leading-titre font-bold tracking-titre max-md:max-w-full md:leading-none">Îlots de chaleur</h1>
+    <h1 class="relative z-1 max-w-3/4 text-titre-page leading-titre font-bold tracking-titre max-md:max-w-full md:leading-none">Des zones jusqu'à 16 °C plus chaudes</h1>
     <div class="relative z-1 mt-6 max-w-16/25 text-17 leading-texte text-glace max-md:max-w-full">
       Les températures varient selon les endroits de Bordeaux : certaines zones sont
       plus chaudes que d'autres. D'après les relevés de Bordeaux Métropole, réalisés
@@ -142,7 +142,7 @@ const reperes = [
               fill: (d) => (d.delta > 0 ? "Îlot de chaleur" : "Îlot de fraîcheur"),
               title: (d) => `${formatEcart(d.delta)} °C · ${formatNombre(d.zones)} zone${d.zones > 1 ? "s" : ""}`,
             }),
-            Plot.text([annotationV1], { x: 0.5, frameAnchor: "middle", text: (d) => d, lineWidth: 8, fill: palette.repere }),
+            Plot.text([annotationV1], { x: 0.5, frameAnchor: "middle", text: (d) => d, lineWidth: 4, fill: palette.repere }),
             Plot.ruleY([0]),
           ],
         }}
