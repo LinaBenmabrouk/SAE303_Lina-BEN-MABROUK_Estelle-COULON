@@ -28,6 +28,7 @@ const moyenneJours = (debut: number, fin: number) => {
 };
 const parts = expositionRevenus.map((d) => d.partExposee);
 const virgule = (x: number) => x.toFixed(1).replace(".", ",");
+const totalHabitantsEstimes = exposition.reduce((total, c) => total + c.habitants, 0);
 
 const bilan = [
   {
@@ -59,6 +60,7 @@ const bilan = [
     texte: "d'écart seulement entre les plus modestes et les plus aisés",
   },
 ];
+
 const couleursBilan = [
   "bg-brand-orange text-brand-navy",
   "bg-brand-red text-white",
@@ -75,173 +77,179 @@ const orbite = "absolute rounded-full border-2";
   description="Choisissez votre commune de Bordeaux Métropole et découvrez la part de ses habitants qui vivent dans un îlot de chaleur."
 >
   <div class="bg-creme">
-  <Section class="relative overflow-hidden bg-linear-115 from-brand-navy to-marine-clair text-papier contour-orange" interieur="relative max-w-300 px-gouttiere py-16 max-md:py-10">
-    <p class="relative z-1 mb-3 text-12 font-bold tracking-label uppercase opacity-80">{etapeDe("/ma-commune/")}</p>
-    <p class:list={[surtitre, "relative z-1 text-brand-orange"]}>Votre territoire · Bordeaux Métropole</p>
-    <h1 class="relative z-1 max-w-3/4 text-titre-page leading-titre font-bold tracking-titre max-md:max-w-full md:leading-none">Votre commune face à la chaleur</h1>
-    <div class="relative z-1 mt-6 max-w-16/25 text-17 leading-texte text-neutral-200 max-md:max-w-full">
-      Et ma commune dans tout ça ? A-t-elle une exposition plus forte à la chaleur que les autres ? On peu la comparer aux {exposition.length - 1} autres communes de Bordeaux Métropole.
-    </div>
-    <a href="#choix" class="relative z-1 mt-7 inline-flex items-center justify-between gap-5 rounded-full border-2 border-brand-orange bg-brand-orange px-5 py-3 text-14 font-bold text-brand-navy transition duration-180 survol:-translate-y-0.5 survol:bg-brand-orange-clair survol:shadow-rouge">Explorer ma commune <span aria-hidden="true">↗</span></a>
-    <div class="pointer-events-none absolute top-1/2 right-16 size-52.5 -translate-y-1/2 max-md:relative max-md:top-auto max-md:right-auto max-md:mx-auto max-md:mt-8 max-md:size-32.5 max-md:translate-y-0" aria-hidden="true">
-      <span class:list={[orbite, "inset-0 animate-orbite-60 border-dashed border-brand-red/80"]}></span>
-      <span class:list={[orbite, "inset-6.5 animate-orbite-40-inverse border-brand-red border-b-transparent max-md:inset-4.5"]}></span>
-    </div>
-  </Section>
-
-  <Section id="choix" interieur="max-w-300 px-gouttiere py-16 max-md:py-10">
-    <div class="grid grid-cols-commune items-start gap-7 max-ml:grid-cols-1">
-      <div class="sticky top-28 grid gap-5 max-ml:static max-ml:grid-cols-2 max-ml:items-start max-xs:grid-cols-1">
-        <div class="rounded-bloc border border-ligne bg-white p-5.5">
-          <label for="commune" class="block text-14 font-semibold">Choisissez votre commune</label>
-          <div class="relative mt-2">
-            <select
-              id="commune"
-              class="w-full appearance-none rounded-lg border border-neutral-300 bg-neutral-50 py-3 pr-10 pl-3 text-16 leading-select"
-            >
-              {
-                listeCommunes.map((nom) => (
-                  <option selected={nom === communeParDefaut}>{nom}</option>
-                ))
-              }
-            </select>
-            <svg
-              class="pointer-events-none absolute top-1/2 right-3 size-5 -translate-y-1/2 text-neutral-600"
-              viewBox="0 0 20 20"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              aria-hidden="true"
-            >
-              <path d="M5 8l5 5 5-5" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-          </div>
-          <p class="mt-2 text-12 leading-note text-neutral-600 max-md:hidden">
-            Vous pouvez aussi cliquer sur une barre du graphique.
-          </p>
-        </div>
-
-        <div
-          aria-live="polite"
-          aria-atomic="true"
-          class="relative isolate overflow-hidden rounded-bloc bg-brand-navy p-6.5 text-papier max-ml:col-start-2 max-ml:row-span-2 max-ml:row-start-1 max-xs:col-auto max-xs:row-auto after:absolute after:-top-13.75 after:-right-16.25 after:-z-1 after:size-32.5 after:rounded-full after:border-2 after:border-brand-red/50 after:outline after:outline-offset-14 after:outline-brand-red/30 after:outline-dashed"
-        >
-          <p id="nom-commune" class="text-12 leading-nom font-semibold tracking-widest text-brand-orange uppercase">
-            {infos.nom}
-          </p>
-          <p class="mt-4.5 text-48 leading-chiffre font-bold tracking-tighter">
-            <span id="part">{formatPart(infos.part)}</span> %
-          </p>
-          <p class="mt-2.5 text-sm leading-note text-neutral-300">des habitants vivent dans un îlot de chaleur</p>
-          <p id="ecart" class="mt-3 border-t border-neutral-300/20 pt-4 text-12 leading-note text-neutral-300">{phraseEcart(infos.ecart)}</p>
-        </div>
-
-        <dl class="divide-y divide-neutral-200 rounded-bloc border border-ligne bg-white px-4 py-1 text-sm">
-          <div class="flex justify-between gap-4.5 py-3.75">
-            <dt class="text-neutral-600">Habitants</dt>
-            <dd id="habitants" class="text-right font-bold whitespace-nowrap text-brand-navy">{formatNombre(infos.habitants)}</dd>
-          </div>
-          <div class="flex justify-between gap-4.5 py-3.75">
-            <dt class="text-neutral-600">En îlot de chaleur</dt>
-            <dd id="exposes" class="text-right font-bold whitespace-nowrap text-brand-navy">{formatNombre(infos.exposes)}</dd>
-          </div>
-          <div class="flex justify-between gap-4.5 py-3.75">
-            <dt class="text-neutral-600">Rang (1 = la plus exposée)</dt>
-            <dd class="text-right font-bold whitespace-nowrap text-brand-navy"><span id="rang">{infos.rang}</span> sur {exposition.length}</dd>
-          </div>
-        </dl>
-
-        <p class="px-1.5 text-12 leading-note text-neutral-600">
-          L'adresse de la page change avec la commune, vous pouvez la partager.
-        </p>
+    <Section class="relative overflow-hidden bg-linear-115 from-brand-navy to-marine-clair text-papier contour-orange" interieur="relative max-w-300 px-gouttiere py-16 max-md:py-10">
+      <p class="relative z-1 mb-3 text-12 font-bold tracking-label uppercase opacity-80">{etapeDe("/ma-commune/")}</p>
+      <p class:list={[surtitre, "relative z-1 text-brand-orange"]}>Votre territoire · Bordeaux Métropole</p>
+      <h1 class="relative z-1 max-w-3/4 text-titre-page leading-titre font-bold tracking-titre max-md:max-w-full md:leading-none">Les différente communes de Bordeaux Métropole</h1>
+      <div class="relative z-1 mt-6 max-w-16/25 text-17 leading-texte text-neutral-200 max-md:max-w-full">
+        Et ma commune dans tout ça ? A-t-elle une exposition plus forte à la chaleur que les autres ? On peut la comparer aux {exposition.length - 1} autres communes de Bordeaux Métropole.
       </div>
-
-      <div class="min-w-0 *:mt-0">
-        <Figure
-          compact
-          titre={`Selon la commune, de ${Math.round(moinsExposee.part)} % à ${Math.round(plusExposee.part)} % des habitants vivent dans un îlot de chaleur`}
-          sousTitre="Part des habitants vivant dans une zone au moins 3 °C plus chaude que la moyenne de la métropole, par commune"
-          note="La ligne en pointillés indique la moyenne de la métropole. Les habitants viennent des carreaux INSEE de 2019, les îlots des relevés de l'été 2022."
-          source="Bordeaux Métropole 2022 et INSEE Filosofi 2019"
-        >
-          <div id="graphique" class="min-h-155 md:min-h-169"></div>
-        </Figure>
+      <a href="#choix" class="relative z-1 mt-7 inline-flex items-center justify-between gap-5 rounded-full border-2 border-brand-orange bg-brand-orange px-5 py-3 text-14 font-bold text-brand-navy transition duration-180 survol:-translate-y-0.5 survol:bg-brand-orange-clair survol:shadow-rouge">Explorer ma commune <span aria-hidden="true">↗</span></a>
+      <div class="pointer-events-none absolute top-1/2 right-16 size-52.5 -translate-y-1/2 max-md:relative max-md:top-auto max-md:right-auto max-md:mx-auto max-md:mt-8 max-md:size-32.5 max-md:translate-y-0" aria-hidden="true">
+        <span class:list={[orbite, "inset-0 animate-orbite-60 border-dashed border-brand-red/80"]}></span>
+        <span class:list={[orbite, "inset-6.5 animate-orbite-40-inverse border-brand-red border-b-transparent max-md:inset-4.5"]}></span>
       </div>
-    </div>
-  </Section>
+    </Section>
 
-  <Section id="conclusion" class="relative overflow-hidden border-y border-brand-orange/25 bg-linear-115 from-jaune-pale to-creme text-brand-navy" interieur="relative max-w-290 px-gouttiere py-20 max-md:py-12">
-    <p class:list={[surtitre, "text-brique"]}>Conclusion</p>
-    <h2 class="max-w-24ch text-titre-section font-bold">Sept habitants sur dix vivent déjà dans la chaleur</h2>
+    <Section id="choix" interieur="max-w-300 px-gouttiere py-16 max-md:py-10">
+      <div class="grid grid-cols-commune items-start gap-7 max-ml:grid-cols-1">
+        <div class="sticky top-28 grid gap-5 max-ml:static max-ml:grid-cols-2 max-ml:items-start max-xs:grid-cols-1">
+          <div class="rounded-bloc border border-ligne bg-white p-5.5">
+            <label for="commune" class="block text-14 font-semibold">Choisissez votre commune</label>
+            <div class="relative mt-2">
+              <select
+                id="commune"
+                class="w-full appearance-none rounded-lg border border-neutral-300 bg-neutral-50 py-3 pr-10 pl-3 text-16 leading-select"
+              >
+                {
+                  listeCommunes.map((nom) => (
+                    <option selected={nom === communeParDefaut}>{nom}</option>
+                  ))
+                }
+              </select>
+              <svg
+                class="pointer-events-none absolute top-1/2 right-3 size-5 -translate-y-1/2 text-neutral-600"
+                viewBox="0 0 20 20"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <path d="M5 8l5 5 5-5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </div>
+            <p class="mt-2 text-12 leading-note text-neutral-600 max-md:hidden">
+              Vous pouvez aussi cliquer sur une barre du graphique.
+            </p>
+          </div>
 
-    <div class="mt-10 grid gap-10 lg:grid-cols-5 lg:gap-14">
-      <div class="space-y-8 text-16 leading-texte text-neutral-700 lg:col-span-3">
-        <div>
-          <h3 class="mb-2 text-17 font-semibold text-brique">Ce que montrent les données</h3>
-          <p>
-            Depuis 1950, les jours à 30 °C ou plus ont plus que doublé à Mérignac, et l'été 2022 a établi un
-            record avec 54 jours. En ville, cette chaleur se concentre dans des îlots de chaleur, où vivent
-            environ 7 habitants sur 10. Le centre de la métropole est le plus touché, de Talence à Bordeaux.
+          <div
+            aria-live="polite"
+            aria-atomic="true"
+            class="relative isolate overflow-hidden rounded-bloc bg-brand-navy p-6.5 text-papier max-ml:col-start-2 max-ml:row-span-2 max-ml:row-start-1 max-xs:col-auto max-xs:row-auto after:absolute after:-top-13.75 after:-right-16.25 after:-z-1 after:size-32.5 after:rounded-full after:border-2 after:border-brand-red/50 after:outline after:outline-offset-14 after:outline-brand-red/30 after:outline-dashed"
+          >
+            <p id="nom-commune" class="text-12 leading-nom font-semibold tracking-widest text-brand-orange uppercase">
+              {infos.nom}
+            </p>
+            <p class="mt-4.5 text-48 leading-chiffre font-bold tracking-tighter">
+              <span id="part">{formatPart(infos.part)}</span> %
+            </p>
+            <p class="mt-2.5 text-sm leading-note text-neutral-300">des habitants vivent dans un îlot de chaleur</p>
+            <p id="ecart" class="mt-3 border-t border-neutral-300/20 pt-4 text-12 leading-note text-neutral-300">{phraseEcart(infos.ecart)}</p>
+          </div>
+
+          <dl class="divide-y divide-neutral-200 rounded-bloc border border-ligne bg-white px-4 py-1 text-sm">
+            <div class="flex justify-between gap-4.5 py-3.75">
+              <dt class="text-neutral-600">Habitants</dt>
+              <dd id="habitants" class="text-right font-bold whitespace-nowrap text-brand-navy">{formatNombre(infos.habitants)}</dd>
+            </div>
+            <div class="flex justify-between gap-4.5 py-3.75">
+              <dt class="text-neutral-600">En îlot de chaleur</dt>
+              <dd id="exposes" class="text-right font-bold whitespace-nowrap text-brand-navy">{formatNombre(infos.exposes)}</dd>
+            </div>
+            <div class="flex justify-between gap-4.5 py-3.75">
+              <dt class="text-neutral-600">Rang (1 = la plus exposée)</dt>
+              <dd class="text-right font-bold whitespace-nowrap text-brand-navy"><span id="rang">{infos.rang}</span> sur {exposition.length}</dd>
+            </div>
+          </dl>
+
+          <p class="px-1.5 text-12 leading-note text-neutral-600">
+            L'adresse de la page change avec la commune, vous pouvez la partager.
           </p>
         </div>
-        <div>
-          <h3 class="mb-2 text-17 font-semibold text-brand-blue">Ce que nous n'attendions pas</h3>
-          <p>
-            On pouvait penser que les quartiers modestes étaient les plus exposés. Les données disent autre
-            chose. Entre les habitants les plus modestes et les plus aisés, l'écart ne dépasse pas 3 points.
-            La chaleur en ville concerne presque tout le monde.
-          </p>
-        </div>
-        <div>
-          <h3 class="mb-2 text-17 font-semibold text-brand-red-fonce">Ce que ça change pour vous</h3>
-          <p>
-            Connaître la situation de sa commune aide à anticiper les fortes chaleurs et à adapter son
-            quotidien pendant les canicules. Nos données ont pourtant leurs limites. Elles mesurent la
-            température du sol sur deux journées de 2022 et ne comptent pas les personnes en maison de
-            retraite, parmi les plus fragiles. Croiser ces îlots avec l'âge des habitants ou l'état des
-            logements permettrait de savoir qui souffre vraiment de la chaleur.
-          </p>
+
+        <div class="min-w-0 *:mt-0">
+          <Figure
+            compact
+            titre={`Selon la commune, de ${Math.round(moinsExposee.part)} % à ${Math.round(plusExposee.part)} % des habitants vivent dans un îlot de chaleur`}
+            sousTitre="Part des habitants vivant dans une zone au moins 3 °C plus chaude que la moyenne de la métropole, par commune"
+            note="La ligne en pointillés indique la moyenne de la métropole. Les habitants viennent des carreaux INSEE de 2019, les îlots des relevés de l'été 2022."
+            source="Bordeaux Métropole 2022 et INSEE Filosofi 2019"
+          >
+            <div id="graphique" class="min-h-155 md:min-h-169"></div>
+          </Figure>
         </div>
       </div>
+    </Section>
 
-      <div class="lg:col-span-2">
-        <h3 class="mb-4 text-12 font-bold tracking-label text-neutral-700 uppercase">Le récit en quatre chiffres</h3>
-        <ul class="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-          {
-            bilan.map(({ url, etape, valeur, unite, texte }, i) => (
-              <li>
-                <a href={url} class:list={[couleursBilan[i], "group block h-full rounded-bloc p-5 shadow-stat transition duration-200 survol:-translate-y-1 survol:shadow-sujet"]}>
-                  <span class="text-10 font-bold tracking-surtitre uppercase opacity-80">{etape}</span>
-                  <span class="mt-2 flex flex-wrap items-baseline gap-x-2 font-bold">
-                    <span class="text-chiffre-compact leading-chiffre tracking-chiffre">{valeur}</span>
-                    <span class="text-17">{unite}</span>
-                  </span>
-                  <span class="mt-1 block text-13 leading-note">
-                    {texte} <span class="inline-block transition duration-200 group-survol:translate-x-1" aria-hidden="true">→</span>
-                  </span>
-                </a>
-              </li>
-            ))
-          }
-        </ul>
+    <Section id="conclusion" class="relative overflow-hidden border-y border-brand-orange/25 bg-linear-115 from-jaune-pale to-creme text-brand-navy" interieur="relative max-w-290 px-gouttiere py-20 max-md:py-12">
+      <p class:list={[surtitre, "text-brique"]}>Conclusion</p>
+      <h2 class="max-w-24ch text-titre-section font-bold">Sept habitants sur dix vivent déjà dans la chaleur</h2>
+
+      <div class="mt-10 grid gap-10 lg:grid-cols-5 lg:gap-14">
+        <div class="space-y-8 text-16 leading-texte text-neutral-700 lg:col-span-3">
+          <div>
+            <h3 class="mb-2 text-17 font-semibold text-brique">Ce que montrent les données</h3>
+            <p>
+              Depuis 1950, les journées très chaudes, à 30 °C ou plus, ont fortement augmenté à Mérignac.
+              En 2022, Mérignac a enregistré 54 journées aussi chaudes, selon nos données.
+              Environ {Math.round(moyenneMetropole)} % des habitants étudiés dans Bordeaux Métropole vivent
+              dans un îlot de chaleur. Les communes comme Talence et Bordeaux sont parmi les plus concernées,
+              mais il existe de grandes différences d'exposition d'une commune à l'autre.
+            </p>
+          </div>
+          <div>
+            <h3 class="mb-2 text-17 font-semibold text-brand-blue">Ce que nous n'attendions pas</h3>
+            <p>
+              On pouvait penser que les habitants les plus modestes seraient davantage exposés.
+              Mais, d'après nos résultats, les différents niveaux de vie présentent des taux d'exposition
+              assez proches. La différence entre le groupe le moins exposé et le plus exposé est de
+              {virgule(Math.max(...parts) - Math.min(...parts))} points de pourcentage.
+              Cela montre que les îlots de chaleur concernent tous les niveaux de vie,
+              sans prouver que chacun ressent la chaleur de la même manière.
+            </p>
+          </div>
+          <div>
+            <h3 class="mb-2 text-17 font-semibold text-brand-red-fonce">Ce que ça change pour vous</h3>
+            <p>
+              Connaître l'exposition de sa commune permet de mieux comprendre les risques liés aux fortes chaleurs.
+              Mais il existe une différence entre la température de surface et la température ressentie.
+              Les relevés ont été effectués les 17 juin et 11 juillet 2022, tandis que les données de population
+              proviennent de l'INSEE en 2019. Notre étude porte sur une population estimée à
+              {formatNombre(totalHabitantsEstimes)} habitants dans les {exposition.length} communes,
+              à partir de carreaux de population : il ne s'agit pas d'un comptage individuel exact.
+              Avec ces seules données, on ne peut pas dire qui souffre le plus de la chaleur.
+            </p>
+          </div>
+        </div>
+
+        <div class="lg:col-span-2">
+          <h3 class="mb-4 text-12 font-bold tracking-label text-neutral-700 uppercase">Le récit en quatre chiffres</h3>
+          <ul class="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+            {
+              bilan.map(({ url, etape, valeur, unite, texte }, i) => (
+                <li>
+                  <a href={url} class:list={[couleursBilan[i], "group block h-full rounded-bloc p-5 shadow-stat transition duration-200 survol:-translate-y-1 survol:shadow-sujet"]}>
+                    <span class="text-10 font-bold tracking-surtitre uppercase opacity-80">{etape}</span>
+                    <span class="mt-2 flex flex-wrap items-baseline gap-x-2 font-bold">
+                      <span class="text-chiffre-compact leading-chiffre tracking-chiffre">{valeur}</span>
+                      <span class="text-17">{unite}</span>
+                    </span>
+                    <span class="mt-1 block text-13 leading-note">
+                      {texte} <span class="inline-block transition duration-200 group-survol:translate-x-1" aria-hidden="true">→</span>
+                    </span>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
       </div>
-    </div>
-  </Section>
+    </Section>
 
-  <Section class="px-gouttiere py-16 max-md:py-10" interieur="max-w-268 rounded-3xl border border-neutral-200 bg-ciel-gris p-encart">
-    <p class:list={[surtitre, "text-brand-blue"]}>Prendre du recul</p>
-    <h2 class="text-titre-encart font-bold">Et les autres communes ?</h2>
-    <p class="mt-4 max-w-2xl text-15 leading-texte text-neutral-700">
-      La carte montre la part des habitants en îlot de chaleur dans les 28
-      communes de la métropole.
-    </p>
-    <a href="/habitants/#carte" class="mt-7 inline-flex items-center justify-between gap-7.5 rounded-xl bg-brand-orange px-4.5 py-3 text-13 font-bold text-brand-navy transition duration-200 survol:-translate-y-0.5 survol:shadow-encart">
-      Voir la carte
-    </a>
-  </Section>
+    <Section class="px-gouttiere py-16 max-md:py-10" interieur="max-w-268 rounded-3xl border border-neutral-200 bg-ciel-gris p-encart">
+      <p class:list={[surtitre, "text-brand-blue"]}>Prendre du recul</p>
+      <h2 class="text-titre-encart font-bold">Et les autres communes ?</h2>
+      <p class="mt-4 max-w-2xl text-15 leading-texte text-neutral-700">
+        La carte montre la part des habitants en îlot de chaleur dans les 28
+        communes de la métropole.
+      </p>
+      <a href="/habitants/#carte" class="mt-7 inline-flex items-center justify-between gap-7.5 rounded-xl bg-brand-orange px-4.5 py-3 text-13 font-bold text-brand-navy transition duration-200 survol:-translate-y-0.5 survol:shadow-encart">
+        Voir la carte
+      </a>
+    </Section>
   </div>
 </Layout>
-
 
 <script>
   import * as Plot from "@observablehq/plot";

@@ -22,12 +22,12 @@ Les étapes sont définies dans [src/data/navigation.ts](src/data/navigation.ts)
 
 | Visualisation | Page | Route | Pourquoi |
 |---|---|---|---|
-| V1 · Distribution des écarts de température | Îlots de chaleur | A | L'histogramme est dessiné une fois au moment de la construction du site. Il n'a pas besoin de bouger chez le lecteur, puisqu'il montre toujours la même chose et ne dépend d'aucun choix de sa part. |
-| V2 · Carte de la part des habitants en îlot de chaleur | Les habitants | A | La carte est fixe et ne dépend d'aucun choix du lecteur. Sur le site, la carte est dessinée une seule fois au moment de la construction. Le survol d'une commune affiche quand même son nom et sa part, grâce à l'infobulle du navigateur, qui ne demande aucun JavaScript. |
-| V3 · Jours à 30 °C ou plus depuis 1950 | Le climat | A | L'évolution des jours chauds ne change pas selon le lecteur. On réutilise la fonction graphiqueJoursChauds au moment de la construction du site, avec le fichier jours-chauds.json. |
-| V4 · Comparaison de ma commune | Ma commune | B | Nous utilisons les données JSON des communes pour permettre aux visiteurs de sélectionner leur commune et de voir son classement concernant l'exposition à la chaleur. |
-| V5 · Surfaces brûlées en Gironde | Le climat | A | Les surfaces brûlées par année sont un graphique fixe, rien n'y bouge selon le lecteur. |
-| V6 · Exposition selon le niveau de vie | Les habitants | A | La comparaison entre les cinq groupes de niveau de vie est fixe et ne dépend d'aucun choix du lecteur. |
+| V1 · Distribution des écarts de température | Îlots de chaleur | A | L'histogramme est créé une seule fois quand le site est construit. Il n'a pas besoin de changer puisque les données restent les mêmes et que le visiteur n'a rien à sélectionner. |
+| V2 · Carte de la part des habitants en îlot de chaleur | Les habitants | A | La carte est créée directement avec le site, car les données ne changent pas selon le visiteur. Par contre, quand on passe la souris sur une commune, on peut voir son nom et son pourcentage d'habitants exposés, sans avoir besoin de JavaScript. |
+| V3 · Jours à 30 °C ou plus depuis 1950 | Le climat | A | Le graphique montre l'évolution des journées à 30 °C ou plus depuis 1950. Comme les données ne changent pas selon le visiteur, le graphique est créé une seule fois avec la fonction graphiqueJoursChauds et le fichier jours-chauds.json. |
+| V4 · Comparaison de ma commune | Ma commune | B | NOn utilise les données JSON des communes pour que le visiteur puisse choisir sa commune. Ensuite, le graphique change pour montrer son pourcentage d'habitants exposés et son classement par rapport aux autres communes. |
+| V5 · Surfaces brûlées en Gironde | Le climat | A | Le graphique montre les surfaces brûlées chaque année en Gironde. Il reste toujours le même puisque le visiteur ne peut pas modifier les données ou choisir une année. Il est donc créé directement avec le site. |
+| V6 · Exposition selon le niveau de vie | Les habitants | A | Le graphique compare les cinq groupes de niveau de vie pour voir s'il y a des différences d'exposition à la chaleur. Comme le visiteur n'a rien à sélectionner et que les données restent les mêmes, le graphique est créé une seule fois. |
 
 ## Graphiques
 
